@@ -1,7 +1,7 @@
 ## Interface: 90001
-## Title: Smart|cffffffffDebuff|r by |cff00ff00Aeldra|r
+## Title: Smart|cffffffffDebuff|r by |cff00ff00Aeldra|r [Unofficial fixes by |cff00ff00Kallye|r]
 ## Version: 7.0a
-## Author: |cff20d2ffAeldra|r (EU-Proudmoore)
+## Author: |cff20d2ffAeldra|r (EU-Proudmoore) [Unofficial fixes by |cff00ff00Kallye|r] (EU-Elune)
 ## Notes: Use << /sdb >> for debuff frame.
 ## Notes-deDE: Benutze << /sdb >> um das Debuff-Fenster zu �ffnen
 ## Notes-frFR: Use << /sdb >> for debuff menu.
