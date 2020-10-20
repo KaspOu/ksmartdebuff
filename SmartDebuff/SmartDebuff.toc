@@ -1,9 +1,9 @@
-## Interface: 70000
+## Interface: 90001
 ## Title: Smart|cffffffffDebuff|r by |cff00ff00Aeldra|r
 ## Version: 7.0a
 ## Author: |cff20d2ffAeldra|r (EU-Proudmoore)
 ## Notes: Use << /sdb >> for debuff frame.
-## Notes-deDE: Benutze << /sdb >> um das Debuff-Fenster zu öffnen
+## Notes-deDE: Benutze << /sdb >> um das Debuff-Fenster zu ï¿½ffnen
 ## Notes-frFR: Use << /sdb >> for debuff menu.
 ## eMail: aeldra@sonnenkinder.org
 ## DefaultState: Enabled

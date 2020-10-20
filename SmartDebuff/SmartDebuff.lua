@@ -16,6 +16,9 @@ SMARTDEBUFF_OPTIONS_TITLE = SMARTDEBUFF_VERS_TITLE .. " Options";
 BINDING_HEADER_SMARTDEBUFF = "SmartDebuff";
 SMARTDEBUFF_BOOK_TYPE_SPELL = "spell";
 
+
+local wowversion, wowbuild, wowdate, wowtocversion = GetBuildInfo()
+
 local OG = nil;
 local O = nil;
 local _;
@@ -767,6 +770,7 @@ function SmartDebuffOFSlider_OnLoad(self, low, high, step)
   self:SetMinMaxValues(low, high);
   self:SetValueStep(step);
   self:SetStepsPerPage(step);
+  if (wowtocversion > 90000) then  BackdropTemplateMixin.OnBackdropLoaded(self); end
   
   if (step < 1) then return; end
   
@@ -1729,7 +1733,7 @@ function SMARTDEBUFF_CheckSFBackdrop()
     if (O.ShowBackdrop) then
       --"Interface\\Tooltips\\UI-Tooltip-Background"
       f:SetBackdrop( { 
-        bgFile = "Interface\\AddOns\\SmartDebuff\\Icons\\white16x16", edgeFile = nil, tile = false, tileSize = 0, edgeSize = 2, 
+        bgFile = "Interface\\AddOns\\SmartDebuff\\Icons\\white16x16", edgeFile = nil, tile = false, tileSize = 0, edgeSize = 2,
         insets = { left = 0, right = 0, top = 0, bottom = 0 } });
       f:SetBackdropColor(O.ColBack.r, O.ColBack.g, O.ColBack.b, O.ColBack.a);
     else
@@ -1822,7 +1826,8 @@ function SMARTDEBUFF_CreateButtons()
       
       button.dropdown = CreateFrame("Frame", "SmartDebuffBtn"..i.."DropDown", button, "UIDropDownMenuTemplate");
       
-      button:SetBackdrop( { 
+      if (wowtocversion > 90000) then Mixin(button, BackdropTemplateMixin) end
+      button:SetBackdrop( {
         bgFile = nil, edgeFile = "Interface\\AddOns\\SmartDebuff\\Icons\\white16x16", tile = false, tileSize = 0, edgeSize = 2, 
         insets = { left = 0, right = 0, top = 0, bottom = 0 } });
       --button:SetBackdropColor(0,0,0,0);
@@ -1906,6 +1911,7 @@ function SMARTDEBUFF_CreateButtons()
       
       button.dropdown = CreateFrame("Frame", "SmartDebuffPetBtn"..i.."DropDown", button, "UIDropDownMenuTemplate");
       
+      if (wowtocversion > 90000) then Mixin(button, BackdropTemplateMixin) end
       button:SetBackdrop( { 
         bgFile = nil, edgeFile = "Interface\\AddOns\\SmartDebuff\\Icons\\white16x16", tile = false, tileSize = 0, edgeSize = 2, 
         insets = { left = 0, right = 0, top = 0, bottom = 0 } });      
@@ -2385,6 +2391,7 @@ function SMARTDEBUFF_SetButtonState(unit, idx, nr, ir, ti, pet, spellcd)
   end
   
   if (not sbs_iv and cSpellDefault[10] and cSpellDefault[10][3] ~= nil and O.ShowHealRange and not UnitIsDeadOrGhost(unit) and UnitIsConnected(unit)) then
+
     if (IsSpellInRange(cSpellDefault[10][3], unit) == 1) then
       sbs_btn:SetBackdropBorderColor(0, 0, 0, 0);
     else
@@ -2396,7 +2403,7 @@ function SMARTDEBUFF_SetButtonState(unit, idx, nr, ir, ti, pet, spellcd)
     end
   else
     sbs_btn:SetBackdropBorderColor(0, 0, 0, 0);
-  end  
+  end
   
   --SMARTDEBUFF_AddMsgD(un);
   -- GameFontHighlightSmall
@@ -3139,7 +3146,7 @@ function SMARTDEBUFF_SetStyle()
   local offPY = -offY-hox;
   if (O.SortedByClass or O.Vertical or O.SortedByRole) then offPY = -offY+hx; end
   for j = 0, (maxPets - 1), 1 do
-    btn = _G["SmartDebuffPetBtn"..(j + 1)];
+    btn = _G["SmartDebuffPetBtn"..(j + 1)];    
     btn:SetWidth(btnW);
     btn:SetHeight(btnH);        
 
