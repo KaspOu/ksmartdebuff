@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: Smart|cffffffffDebuff|r by |cff00ff00Aeldra|r [Unofficial fixes by |cff00ff00Kallye|r]
 ## Version: 7.0a
 ## Author: |cff20d2ffAeldra|r (EU-Proudmoore) [Unofficial fixes by |cff00ff00Kallye|r] (EU-Elune)
