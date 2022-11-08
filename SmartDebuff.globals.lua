@@ -2,6 +2,26 @@
 -- Globals
 -------------------------------------------------------------------------------
 
+wowversion, wowbuild, wowdate, wowtocversion = GetBuildInfo()
+SMARTDEBUFF_BACKDROP_OPTIONS = {
+  bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+  edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+  tile = true,
+  tileSize = 8,
+  edge = true,
+  edgeSize = 8,
+  insets = {left = 2, right = 2, top = 2, bottom = 2},
+};
+SMARTDEBUFF_BACKDROP_TOOLTIP = {
+  bgFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+  edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+  tile = true,
+  tileSize = 4,
+  edge = true,
+  edgeSize = 4,
+  insets = {left = 1, right = 1, top = 1, bottom = 1},
+};
+
 SMARTDEBUFF_TTC_R = 1.0;
 SMARTDEBUFF_TTC_G = 0.82;
 SMARTDEBUFF_TTC_B = 0.0;

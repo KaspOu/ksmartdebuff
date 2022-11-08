@@ -47,7 +47,7 @@ SMARTDEBUFF_KEYS = {["L"]  = "Left",
 
 
 -- Messages
-SMARTDEBUFF_MSG_LOADED         = "lanc\195\169";
+SMARTDEBUFF_MSG_LOADED         = "charg\195\169";
 SMARTDEBUFF_MSG_SDB            = "SmartDebuff menu d\'Options";
 
 -- Frame text

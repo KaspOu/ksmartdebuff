@@ -53,5 +53,5 @@ A5: Type in the chat "/sdbo" or "/sdbm" the options menu will displayed and the 
 
 ## Credits
 Fork by Kallye (EU-Elune)
-Created by Aeldra (EU-Proudmoore) 
+Created by Aeldra (EU-Proudmoore)
 https://www.curseforge.com/members/kaspou/projects

@@ -4,18 +4,10 @@
 
 -- Whats new info
 SMARTDEBUFF_WHATSNEW = "|cffffffffWhats new:|r\n\n"
-  .."- Updated TOC\n\n"
-  .."- Added Demon Hunter class\n\n"
-  .."- Adjusted colors\n\n"
+  .."- Reloaded and Updated for DragonFlight prepatch\n\n"
   .."- Fixed LUA errors\n\n"
-  .."- Thanks to all who have helped me to keep it alive.\n\n"
-  --.."- This release will restore basic functionality, but unfortunately it does not contain all the new aura changes, sorry.\n\n"
-  --.."- Please report any missing auras, thanks!\n\n"
-  --.."- Thanks for donation:\n"
-  --.."  xxx\n"
-  --.."  :)\n\n"
   ;
-  
+
 
 -- Debuff types
 SMARTDEBUFF_DISEASE = "Disease";
