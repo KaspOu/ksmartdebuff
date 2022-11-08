@@ -1,0 +1,15 @@
+## Interface: 90002
+## Title: Smart|cffffffffDebuff|r by |cff00ff00Kallye|r & |cff00ff00Aeldra|r
+## Version: 7.0a
+## Author: |cff00ff00Kallye|r (EU-Elune) , forked from |cff20d2ffAeldra|r (EU-Proudmoore)
+## Notes: Use << /sdb >> for debuff frame.
+## Notes-deDE: Benutze << /sdb >> um das Debuff-Fenster zu offnen
+## Notes-frFR: Utilisez << /sdb >> pour avoir la fenetre de debuff.
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## SavedVariables: SMARTDEBUFF_OptionsGlobal
+## SavedVariablesPerCharacter: SMARTDEBUFF_Options
+
+UTF8\utf8data.lua
+UTF8\utf8.lua
+SmartDebuff.xml
