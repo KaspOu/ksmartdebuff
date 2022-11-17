@@ -5,8 +5,8 @@
 -- Supports you to cast debuff spells on friendly units
 -------------------------------------------------------------------------------
 
-SMARTDEBUFF_VERSION       = "v10.0.001";
-SMARTDEBUFF_VERSIONNR     = 100000;
+SMARTDEBUFF_VERSION       = "v10.0.201";
+SMARTDEBUFF_VERSIONNR     = 100201;
 SMARTDEBUFF_TITLE         = "SmartDebuff";
 SMARTDEBUFF_SUBTITLE      = "Debuff support";
 SMARTDEBUFF_DESC          = "Supports you to cast debuff spells on friendly units";
@@ -85,7 +85,7 @@ local iTotRcRdy = 0;
 local iTotRcNRdy = 0;
 local iTotRcWait = 0;
 
-local cOrderClass = {"WARRIOR", "PRIEST", "DRUID", "PALADIN", "SHAMAN", "MAGE", "WARLOCK", "HUNTER", "ROGUE", "DEATHKNIGHT", "MONK", "DEMONHUNTER"};
+local cOrderClass = CLASS_SORT_ORDER;
 local cOrderGrp   = {1, 2, 3, 4, 5, 6, 7, 8};
 local cOrderKeys  = {"L", "R", "M", "SL", "SR", "SM", "AL", "AR", "AM", "CL", "CR", "CM"};
 
@@ -111,6 +111,7 @@ local Icons = {
   ["DEATHKNIGHT"] = "Interface\\AddOns\\SmartDebuff\\Icons\\Deathknight",
   ["MONK"]        = "Interface\\AddOns\\SmartDebuff\\Icons\\Monk",
   ["DEMONHUNTER"] = "Interface\\AddOns\\SmartDebuff\\Icons\\Demonhunter",
+  ["EVOKER"] = "Interface\\AddOns\\SmartDebuff\\Icons\\Evoker",
   --["PET"]         = "Interface\\AddOns\\SmartDebuff\\Icons\\HunterPet",
   ["PET"]         = "Interface\\Icons\\spell_nature_spiritwolf", --spell_nature_spiritwolf --Ability_Tracking
   ["ROLE"]        = "Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES",
@@ -130,6 +131,7 @@ local IconCoords = {
   ["DEATHKNIGHT"] = { 0.25, 0.50, 0.50, 0.75 },
   ["MONK"] = { 0.50, 0.75, 0.50, 0.75 },
   ["DEMONHUNTER"] = { 0.75, 1.00, 0.50, 0.75 },
+  ["EVOKER"] = { 0.00, 0.25, 0.75, 1.00 },
   ["PET"] = { 0.08, 0.92, 0.08, 0.92},
   ["TANK"] = { 0.0, 19/64, 22/64, 41/64 },
   ["HEALER"] = { 20/64, 39/64, 1/64, 20/64 },
@@ -435,8 +437,7 @@ function SMARTDEBUFF_OnUpdate(self, elapsed)
   else
     ou_time = ou_time + elapsed;
     if (not isTTreeLoaded and ou_time > 0.5) then
-      local _, tName = GetTalentInfo(1, 1, 1);
-      if (tName) then
+      if (C_ClassTalents.CanChangeTalents()) then
         --DEFAULT_CHAT_FRAME:AddMessage("Talent tree ready ("..ou_time.."sec) -> Init SDB");
         isTTreeLoaded = true;
         SMARTDEBUFF_OnEvent(self, "ONUPDATE");
@@ -611,7 +612,7 @@ function SMARTDEBUFF_SetUnits()
       if (name or (iTest > 0 and n <= iTest)) then
 
         if (iTest > 0) then
-          SMARTDEBUFF_AddUnit("raid", n, math.ceil(n / 5), cOrderClass[math.fmod(n - 1, 12) + 1]);
+          SMARTDEBUFF_AddUnit("raid", n, math.ceil(n / 5), cOrderClass[math.fmod(n - 1, #cOrderClass) + 1]);
         else
           SMARTDEBUFF_AddUnit("raid", n, subgroup, classeng);
         end
@@ -1085,6 +1086,47 @@ function SMARTDEBUFF_SetSpells()
       cSpellDefault[10] = {7, 2, sName};
     end
 
+  elseif (sPlayerClass == "EVOKER") then
+    if (sRole == "HEALER") then
+      -- Naturalize
+      sName = GetSpellInfo(SMARTDEBUFF_NATURALIZE_ID);
+      if (sName and SMARTDEBUFF_GetSpellID(sName)) then
+        SMARTDEBUFF_AddMsgD("Debuff spell found: " .. sName);
+        cSpellList[sName] = {SMARTDEBUFF_POISON, SMARTDEBUFF_MAGIC};
+        cSpellDefault[1] = {1, 7, sName};
+      end
+    else
+      -- Expunge
+      sName = GetSpellInfo(SMARTDEBUFF_EXPUNGE_ID);
+      if (sName and SMARTDEBUFF_GetSpellID(sName)) then
+        SMARTDEBUFF_AddMsgD("Debuff spell found: " .. sName);
+        cSpellList[sName] = {SMARTDEBUFF_POISON};
+        cSpellDefault[1] = {1, 7, sName};
+      end
+    end
+
+    -- Cauterizing Flame
+    sName = GetSpellInfo(SMARTDEBUFF_CAUTERIZINGFLAME_ID);
+    if (sName and SMARTDEBUFF_GetSpellID(sName)) then
+      SMARTDEBUFF_AddMsgD("Debuff Spell found: " .. sName);
+      cSpellList[sName] = {SMARTDEBUFF_CURSE, SMARTDEBUFF_POISON, SMARTDEBUFF_DISEASE, SMARTDEBUFF_BLEEDING};
+      cSpellDefault[2] = {2, 8, sName};
+    end
+
+    -- Reversion (Heal)
+    sName = GetSpellInfo(SMARTDEBUFF_REVERSION_ID);
+    if (sName and SMARTDEBUFF_GetSpellID(sName)) then
+      SMARTDEBUFF_AddMsgD("Heal spell found: " .. sName);
+      cSpellDefault[10] = {7, 2, sName};
+    end
+
+    -- Verdant Embrace (Heal utility)
+    sName = GetSpellInfo(SMARTDEBUFF_VERDANTEMBRACE_ID);
+    if (sName and SMARTDEBUFF_GetSpellID(sName)) then
+      SMARTDEBUFF_AddMsgD("Misc Heal spell found: " .. sName);
+      cSpellDefault[3] = {nil, nil, sName};
+    end
+
   else
     -- do nothing
   end
@@ -1140,9 +1182,10 @@ function SMARTDEBUFF_Options_Init()
   if (O.ShowLR == nil) then O.ShowLR = true; end
 
   if (O.DebuffGrp == nil) then O.DebuffGrp = {true, true, true, true, true, true, true, true}; end
-  if (O.DebuffClasses == nil) then O.DebuffClasses = {["WARRIOR"] = true, ["PRIEST"] = true, ["DRUID"] = true, ["PALADIN"] = true, ["SHAMAN"] = true, ["MAGE"] = true, ["WARLOCK"] = true, ["HUNTER"] = true, ["ROGUE"] = true, ["DEATHKNIGHT"] = true, ["MONK"] = true, ["DEMONHUNTER"] = true}; end
-  if (O.DebuffClasses["MONK"] == nil) then O.DebuffClasses["MONK"] = true; end
-  if (O.DebuffClasses["DEMONHUNTER"] == nil) then O.DebuffClasses["DEMONHUNTER"] = true; end
+  if (O.DebuffClasses == nil) then O.DebuffClasses = {}; end
+  for _, class in ipairs(CLASS_SORT_ORDER) do
+    if (O.DebuffClasses[class] == nil) then O.DebuffClasses[class] = true; end;
+  end;
 
   if (O.ANormal == nil) then O.ANormal = 0.8; end
   if (O.ANormalOOR == nil) then O.ANormalOOR = 0.4; end
@@ -1553,6 +1596,10 @@ end
 function SMARTDEBUFF_command(msgIn)
   if (not isInit) then
     SMARTDEBUFF_AddMsgWarn(SMARTDEBUFF_VERS_TITLE.." not initialized correctly!", true);
+    if (not isTTreeLoaded) then
+      SMARTDEBUFF_AddMsgWarn("Talent tree not loaded, have you finished the quests in the starting zone?", true);
+    end
+    -- print("isLoaded:", isLoaded, ", isPlayer:", isPlayer, ", isTTreeLoaded:", isTTreeLoaded, ", isInit:", isInit);
     return;
   end
 
@@ -1891,7 +1938,7 @@ function SMARTDEBUFF_CreateButtons()
 
       button:EnableMouse(true);
       --button:EnableMouseWheel(true);
-      button:RegisterForClicks("LeftButtonUp", "RightButtonUp", "MiddleButtonUp");
+      button:RegisterForClicks("AnyUp", "AnyDown");
       button:SetScript("OnEnter", SMARTDEBUFF_ButtonTooltipOnEnter);
       button:SetScript("OnLeave", SMARTDEBUFF_ButtonTooltipOnLeave);
 

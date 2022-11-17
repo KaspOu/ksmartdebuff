@@ -324,7 +324,7 @@
 
   <Frame name="SmartDebuffOF" movable="true" toplevel="true" frameStrata="MEDIUM" parent="UIParent" hidden="true" enableMouse="true">
     <Size>
-      <AbsDimension x="304" y="500"/>
+      <AbsDimension x="304" y="520"/>
     </Size>
     <Anchors>
       <Anchor point="CENTER" relativePoint="CENTER" relativeTo="UIParent">
@@ -399,6 +399,13 @@
           <OnClick>
             SMARTDEBUFF_OFToggleGrp(1);
           </OnClick>
+          <OnEnter>
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+            GameTooltip:SetText(SMARTDEBUFF_OFT_GROUPNR.." 1", SMARTBUFF_TTC_R, SMARTBUFF_TTC_G, SMARTBUFF_TTC_B, SMARTBUFF_TTC_A);
+          </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -426,6 +433,13 @@
           <OnClick>
             SMARTDEBUFF_OFToggleGrp(2);
           </OnClick>
+          <OnEnter>
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+            GameTooltip:SetText(SMARTDEBUFF_OFT_GROUPNR.." 2", SMARTBUFF_TTC_R, SMARTBUFF_TTC_G, SMARTBUFF_TTC_B, SMARTBUFF_TTC_A);
+          </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -453,6 +467,13 @@
           <OnClick>
             SMARTDEBUFF_OFToggleGrp(3);
           </OnClick>
+          <OnEnter>
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+            GameTooltip:SetText(SMARTDEBUFF_OFT_GROUPNR.." 3", SMARTBUFF_TTC_R, SMARTBUFF_TTC_G, SMARTBUFF_TTC_B, SMARTBUFF_TTC_A);
+          </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -480,6 +501,13 @@
           <OnClick>
             SMARTDEBUFF_OFToggleGrp(4);
           </OnClick>
+          <OnEnter>
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+            GameTooltip:SetText(SMARTDEBUFF_OFT_GROUPNR.." 4", SMARTBUFF_TTC_R, SMARTBUFF_TTC_G, SMARTBUFF_TTC_B, SMARTBUFF_TTC_A);
+          </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -507,6 +535,13 @@
           <OnClick>
             SMARTDEBUFF_OFToggleGrp(5);
           </OnClick>
+          <OnEnter>
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+            GameTooltip:SetText(SMARTDEBUFF_OFT_GROUPNR.." 5", SMARTBUFF_TTC_R, SMARTBUFF_TTC_G, SMARTBUFF_TTC_B, SMARTBUFF_TTC_A);
+          </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -534,6 +569,13 @@
           <OnClick>
             SMARTDEBUFF_OFToggleGrp(6);
           </OnClick>
+          <OnEnter>
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+            GameTooltip:SetText(SMARTDEBUFF_OFT_GROUPNR.." 6", SMARTBUFF_TTC_R, SMARTBUFF_TTC_G, SMARTBUFF_TTC_B, SMARTBUFF_TTC_A);
+          </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -561,6 +603,13 @@
           <OnClick>
             SMARTDEBUFF_OFToggleGrp(7);
           </OnClick>
+          <OnEnter>
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+            GameTooltip:SetText(SMARTDEBUFF_OFT_GROUPNR.." 7", SMARTBUFF_TTC_R, SMARTBUFF_TTC_G, SMARTBUFF_TTC_B, SMARTBUFF_TTC_A);
+          </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -588,6 +637,13 @@
           <OnClick>
             SMARTDEBUFF_OFToggleGrp(8);
           </OnClick>
+          <OnEnter>
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+            GameTooltip:SetText(SMARTDEBUFF_OFT_GROUPNR.." 8", SMARTBUFF_TTC_R, SMARTBUFF_TTC_G, SMARTBUFF_TTC_B, SMARTBUFF_TTC_A);
+          </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -988,8 +1044,8 @@
       </CheckButton>
 
       <CheckButton name="$parent_cbClassIcon13">
-        <NormalTexture alphaMode="BLEND" file="Interface\AddOns\SmartDebuff\Icons\HunterPetD"/>
-        <CheckedTexture alphaMode="BLEND" file="Interface\AddOns\SmartDebuff\Icons\HunterPet"/>
+        <NormalTexture alphaMode="BLEND" file="Interface\AddOns\SmartDebuff\Icons\EvokerD"/>
+        <CheckedTexture alphaMode="BLEND" file="Interface\AddOns\SmartDebuff\Icons\Evoker"/>
         <Size>
           <AbsDimension x="16" y="16"/>
         </Size>
@@ -997,6 +1053,39 @@
           <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parent_cbClassIcon12">
             <Offset>
               <AbsDimension x="4" y="0"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnLoad>
+          </OnLoad>
+          <OnShow>
+            self:SetChecked(SMARTDEBUFF_Options.DebuffClasses["EVOKER"]);
+          </OnShow>
+          <OnClick>
+            SMARTDEBUFF_Options.DebuffClasses["EVOKER"] = not SMARTDEBUFF_Options.DebuffClasses["EVOKER"];
+            SMARTDEBUFF_SetButtons();
+          </OnClick>
+          <OnEnter>
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+            GameTooltip:SetText(SMARTDEBUFF_CLASSES["EVOKER"], SMARTBUFF_TTC_R, SMARTBUFF_TTC_G, SMARTBUFF_TTC_B, SMARTBUFF_TTC_A);
+          </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
+        </Scripts>
+      </CheckButton>
+
+      <CheckButton name="$parent_cbClassIcon14">
+        <NormalTexture alphaMode="BLEND" file="Interface\AddOns\SmartDebuff\Icons\HunterPetD"/>
+        <CheckedTexture alphaMode="BLEND" file="Interface\AddOns\SmartDebuff\Icons\HunterPet"/>
+        <Size>
+          <AbsDimension x="16" y="16"/>
+        </Size>
+        <Anchors>
+          <Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="$parent_cbClassIcon1">
+            <Offset>
+              <AbsDimension x="0" y="-20"/>
             </Offset>
           </Anchor>
         </Anchors>
@@ -1020,14 +1109,14 @@
         </Scripts>
       </CheckButton>
 
-      <CheckButton name="$parent_cbClassIcon14">
+      <CheckButton name="$parent_cbClassIcon15">
         <NormalTexture alphaMode="BLEND" file="Interface\AddOns\SmartDebuff\Icons\WarlockPetD"/>
         <CheckedTexture alphaMode="BLEND" file="Interface\AddOns\SmartDebuff\Icons\WarlockPet"/>
         <Size>
           <AbsDimension x="16" y="16"/>
         </Size>
         <Anchors>
-          <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parent_cbClassIcon13">
+          <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parent_cbClassIcon14">
             <Offset>
               <AbsDimension x="4" y="0"/>
             </Offset>
@@ -1053,14 +1142,14 @@
         </Scripts>
       </CheckButton>
 
-      <CheckButton name="$parent_cbClassIcon15">
+      <CheckButton name="$parent_cbClassIcon16">
         <NormalTexture alphaMode="BLEND" file="Interface\AddOns\SmartDebuff\Icons\DeathknightPetD"/>
         <CheckedTexture alphaMode="BLEND" file="Interface\AddOns\SmartDebuff\Icons\DeathknightPet"/>
         <Size>
           <AbsDimension x="16" y="16"/>
         </Size>
         <Anchors>
-          <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parent_cbClassIcon14">
+          <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parent_cbClassIcon15">
             <Offset>
               <AbsDimension x="4" y="0"/>
             </Offset>
@@ -1097,7 +1186,7 @@
         <Anchors>
           <Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="$parent_cbClassIcon1">
             <Offset>
-              <AbsDimension x="0" y="-20"/>
+              <AbsDimension x="0" y="-40"/>
             </Offset>
           </Anchor>
         </Anchors>
