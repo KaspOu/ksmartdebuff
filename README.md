@@ -1,6 +1,7 @@
 # SmartDebuff_Reloaded
 
-SmartDebuff is an addon to support you in cast debuff spells.
+SmartDebuff is an addon that shows additionnal party frames for debuff casting.
+Reloaded from the well known, but abandonned SmartDebuff
 
 ## Features:
 - Supports all classes

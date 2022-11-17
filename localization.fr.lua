@@ -4,6 +4,11 @@
 
 if (GetLocale() == "frFR") then
 
+SMARTDEBUFF_WHATSNEW = "|cffffffffNouveaut\195\169s:|r\n\n"
+  .."- Mis \195\160 jour pour DragonFlight prepatch phase 2\n\n"
+  .."- L'\195\137vocateur est maintenant g\195\169r\195\169\n\n"
+  .."- Corrections d'erreurs\n\n"
+  ;
 
 -- Debuff types, in english in game!
 --[[
@@ -25,24 +30,25 @@ SMARTDEBUFF_FELHUNTER = "Chasseur corrompu";
 SMARTDEBUFF_DOOMGUARD = "Garde funeste";
 
 -- Classes
-SMARTDEBUFF_CLASSES = { ["DRUID"] = "Druide", ["HUNTER"] = "Chasseur", ["MAGE"] = "Mage", ["PALADIN"] = "Paladin", ["PRIEST"] = "Pr\195\170tre", ["ROGUE"] = "Voleur"
-                      , ["SHAMAN"] = "Chaman", ["WARLOCK"] = "D\195\169moniste", ["WARRIOR"] = "Guerrier", ["DEATHKNIGHT"] = "Chevalier de la mort", ["MONK"] = "Moine", ["DEMONHUNTER"] = "Chasseur de démons", ["HPET"] = "Chasseur Pet", ["WPET"] = "D\195\169moniste Pet"};
+SMARTDEBUFF_CLASSES = {["HPET"] = "Familier Chasseur", ["WPET"] = "Familier D\195\169moniste", ["DPET"] = "Familier Chasseur de d\195\169mons"};
+for _, class in ipairs(CLASS_SORT_ORDER) do SMARTDEBUFF_CLASSES[class] = LOCALIZED_CLASS_NAMES_MALE[class] end;
+
 
 -- Bindings
 BINDING_NAME_SMARTDEBUFF_BIND_OPTIONS = "Menu d\'Options";
 
-SMARTDEBUFF_KEYS = {["L"]  = "Left",
-                    ["R"]  = "Right",
-                    ["M"]  = "Middle",
-                    ["SL"] = "Shift left",
-                    ["SR"] = "Shift right",
-                    ["SM"] = "Shift middle",
-                    ["AL"] = "Alt left",
-                    ["AR"] = "Alt right",
-                    ["AM"] = "Alt middle",
-                    ["CL"] = "Ctrl left",
-                    ["CR"] = "Ctrl right",
-                    ["CM"] = "Ctrl middle"
+SMARTDEBUFF_KEYS = {["L"]  = "Gauche (L)",
+                    ["R"]  = "Droite (R)",
+                    ["M"]  = "Milieu (M)",
+                    ["SL"] = "Maj gauche",
+                    ["SR"] = "Maj droite",
+                    ["SM"] = "Maj milieu",
+                    ["AL"] = "Alt gauche",
+                    ["AR"] = "Alt droite",
+                    ["AM"] = "Alt milieu",
+                    ["CL"] = "Ctrl gauche",
+                    ["CR"] = "Ctrl droite",
+                    ["CM"] = "Ctrl milieu"
                     };
 
 
@@ -51,16 +57,16 @@ SMARTDEBUFF_MSG_LOADED         = "charg\195\169";
 SMARTDEBUFF_MSG_SDB            = "SmartDebuff menu d\'Options";
 
 -- Frame text
-SMARTDEBUFF_FT_MODES           = "Keys/Modes";
+SMARTDEBUFF_FT_MODES           = "Touches/Modes";
 SMARTDEBUFF_FT_MODENORMAL      = "Norm";
 SMARTDEBUFF_FT_MODETARGET      = "Trgt";
 
 
 -- Options frame text
 SMARTDEBUFF_OFT                = "Show/Hide SmartDebuff options frame";
-SMARTDEBUFF_OFT_HUNTERPETS     = "Hunter pets";
-SMARTDEBUFF_OFT_WARLOCKPETS    = "Warlock pets";
-SMARTDEBUFF_OFT_DEATHKNIGHTPETS= "Death Knight pets";
+SMARTDEBUFF_OFT_HUNTERPETS     = "Familiers Chasseur";
+SMARTDEBUFF_OFT_WARLOCKPETS    = "Familiers D\195\169moniste";
+SMARTDEBUFF_OFT_DEATHKNIGHTPETS= "Familiers Chevalier de la mort";
 SMARTDEBUFF_OFT_HP             = "HP";
 SMARTDEBUFF_OFT_MANA           = "Mana";
 SMARTDEBUFF_OFT_HPTEXT         = "%";

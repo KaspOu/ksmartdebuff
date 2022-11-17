@@ -26,8 +26,8 @@ SMARTDEBUFF_FELHUNTER = "Man\195\161fago";
 SMARTDEBUFF_DOOMGUARD = "Guardia apocal\195\173ptico";
 
 -- Classes
-SMARTDEBUFF_CLASSES = { ["DRUID"] = "Druida", ["HUNTER"] = "Cazador", ["MAGE"] = "Mago", ["PALADIN"] = "Palad\195\173n", ["PRIEST"] = "Sacerdote", ["ROGUE"] = "P\195\173caro"
-                      , ["SHAMAN"] = "Cham\195\161n", ["WARLOCK"] = "Brujo", ["WARRIOR"] = "Guerrero", ["DEATHKNIGHT"] = "Caballero de la Muerte", ["MONK"] = "Monje", ["DEMONHUNTER"] = "Cazador de demonios", ["HPET"] = "Mascota de cazador", ["WPET"] = "Mascota de Brujo"};
+SMARTDEBUFF_CLASSES = { ["HPET"] = "Mascota de cazador", ["WPET"] = "Mascota de Brujo", ["DPET"] = "Mascota de Caballero de la Muerte"};
+for _, class in ipairs(CLASS_SORT_ORDER) do SMARTDEBUFF_CLASSES[class] = LOCALIZED_CLASS_NAMES_MALE[class] end;
 
 -- Bindings
 BINDING_NAME_SMARTDEBUFF_BIND_OPTIONS = "Marco de opciones";

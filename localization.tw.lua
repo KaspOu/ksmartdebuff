@@ -14,8 +14,8 @@ SMARTDEBUFF_FELHUNTER = "地獄犬";
 SMARTDEBUFF_DOOMGUARD = "惡魔守衛";
 
 -- 職業
-SMARTDEBUFF_CLASSES = { ["DRUID"] = "德魯伊", ["HUNTER"] = "獵人", ["MAGE"] = "法師", ["PALADIN"] = "圣騎士", ["PRIEST"] = "牧師", ["ROGUE"] = "盜賊"
-                      , ["SHAMAN"] = "薩滿", ["WARLOCK"] = "術士", ["WARRIOR"] = "戰士", ["DEATHKNIGHT"] = "死亡騎士", ["MONK"] = "武僧", ["DEMONHUNTER"] = "恶魔猎手", ["HPET"] = "獵人寵物", ["WPET"] = "法師寵物"};
+SMARTDEBUFF_CLASSES = { ["HPET"] = "獵人寵物", ["WPET"] = "法師寵物", ["DPET"] = "死亡騎士寵物"};
+for _, class in ipairs(CLASS_SORT_ORDER) do SMARTDEBUFF_CLASSES[class] = LOCALIZED_CLASS_NAMES_MALE[class] end;
 
 -- Bindings
 BINDING_NAME_SMARTDEBUFF_BIND_OPTIONS = "選項";

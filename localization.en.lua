@@ -4,7 +4,8 @@
 
 -- Whats new info
 SMARTDEBUFF_WHATSNEW = "|cffffffffWhats new:|r\n\n"
-  .."- Reloaded and Updated for DragonFlight prepatch\n\n"
+  .."- Reloaded and Updated for DragonFlight prepatch phase 2\n\n"
+  .."- Evoker is now supported\n\n"
   .."- Fixed LUA errors\n\n"
   ;
 
@@ -15,6 +16,7 @@ SMARTDEBUFF_MAGIC   = "Magic";
 SMARTDEBUFF_POISON  = "Poison";
 SMARTDEBUFF_CURSE   = "Curse";
 SMARTDEBUFF_CHARMED = "Mind Control";
+SMARTDEBUFF_BLEEDING   = "Bleeding";
 SMARTDEBUFF_HEAL    = "Heal";
 
 
@@ -28,8 +30,8 @@ SMARTDEBUFF_FELHUNTER = "Felhunter";
 SMARTDEBUFF_DOOMGUARD = "Doomguard";
 
 -- Classes
-SMARTDEBUFF_CLASSES = { ["DRUID"] = "Druid", ["HUNTER"] = "Hunter", ["MAGE"] = "Mage", ["PALADIN"] = "Paladin", ["PRIEST"] = "Priest", ["ROGUE"] = "Rogue"
-                      , ["SHAMAN"] = "Shaman", ["WARLOCK"] = "Warlock", ["WARRIOR"] = "Warrior", ["DEATHKNIGHT"] = "Death Knight", ["MONK"] = "Monk", ["DEMONHUNTER"] = "Demon Hunter", ["HPET"] = "Hunter Pet", ["WPET"] = "Warlock Pet"};
+SMARTDEBUFF_CLASSES = { ["HPET"] = "Hunter Pet", ["WPET"] = "Warlock Pet", ["DPET"] = "Death Knight pet"};
+for _, class in ipairs(CLASS_SORT_ORDER) do SMARTDEBUFF_CLASSES[class] = LOCALIZED_CLASS_NAMES_MALE[class] end;
 
 -- Bindings
 BINDING_NAME_SMARTDEBUFF_BIND_OPTIONS = "Options frame";

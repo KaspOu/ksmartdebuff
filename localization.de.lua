@@ -25,8 +25,8 @@ SMARTDEBUFF_FELHUNTER = "Teufelsjäger";
 SMARTDEBUFF_DOOMGUARD = "Verdammniswache";
 
 -- Classes
-SMARTDEBUFF_CLASSES = { ["DRUID"] = "Druide", ["HUNTER"] = "Jäger", ["MAGE"] = "Magier", ["PALADIN"] = "Paladin", ["PRIEST"] = "Priester", ["ROGUE"] = "Schurke"
-                      , ["SHAMAN"] = "Schamane", ["WARLOCK"] = "Hexer", ["WARRIOR"] = "Krieger", ["DEATHKNIGHT"] = "Todesritter", ["MONK"] = "Mönch", ["DEMONHUNTER"] = "Dämonenjäger", ["HPET"] = "Jäger Pet", ["WPET"] = "Hexer Pet"};
+SMARTDEBUFF_CLASSES = { ["HPET"] = "Jäger Pet", ["WPET"] = "Hexer Pet", ["DPET"] = "Todesritter Pets"};
+for _, class in ipairs(CLASS_SORT_ORDER) do SMARTDEBUFF_CLASSES[class] = LOCALIZED_CLASS_NAMES_MALE[class] end;
 
 -- Bindings
 BINDING_NAME_SMARTDEBUFF_BIND_OPTIONS = "Optionen";
