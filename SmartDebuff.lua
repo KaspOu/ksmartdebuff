@@ -5,8 +5,8 @@
 -- Supports you to cast debuff spells on friendly units
 -------------------------------------------------------------------------------
 
-SMARTDEBUFF_VERSION       = "v10.0.201";
-SMARTDEBUFF_VERSIONNR     = 100201;
+SMARTDEBUFF_VERSION       = "v10.0.202";
+SMARTDEBUFF_VERSIONNR     = 100202;
 SMARTDEBUFF_TITLE         = "SmartDebuff";
 SMARTDEBUFF_SUBTITLE      = "Debuff support";
 SMARTDEBUFF_DESC          = "Supports you to cast debuff spells on friendly units";
@@ -437,7 +437,7 @@ function SMARTDEBUFF_OnUpdate(self, elapsed)
   else
     ou_time = ou_time + elapsed;
     if (not isTTreeLoaded and ou_time > 0.5) then
-      if (C_ClassTalents.CanChangeTalents()) then
+      if (C_ClassTalents.CanCreateNewConfig()) then
         --DEFAULT_CHAT_FRAME:AddMessage("Talent tree ready ("..ou_time.."sec) -> Init SDB");
         isTTreeLoaded = true;
         SMARTDEBUFF_OnEvent(self, "ONUPDATE");
@@ -3047,7 +3047,7 @@ function SMARTDEBUFF_SetStyle()
     sbtn = SecureButton_GetEffectiveButton(btn);
     unit = SecureButton_GetModifiedAttribute(btn, "unit", sbtn, "");
 
-    if (unit) then
+    if (unit and not _G.InCombatLockdown()) then
       if (O.SortedByRole and (isRoleSet or iTest > 0)) then
         if (btn:IsVisible()) then
           if (iTest > 0) then
