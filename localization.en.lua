@@ -2,6 +2,7 @@
 -- English localization (Default)
 -------------------------------------------------------------------------------
 
+SMARTDEBUFF_UPGRADED = "SmartDebuff upgraded to "..SMARTDEBUFF_VERSION;
 -- Whats new info
 SMARTDEBUFF_WHATSNEW = "|cffffffffWhats new:|r\n\n"
   .."- Reloaded and Updated for DragonFlight prepatch phase 2\n\n"
