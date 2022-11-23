@@ -2,6 +2,18 @@
 -- Globals
 -------------------------------------------------------------------------------
 
+SMARTDEBUFF_VERSION       = "v"..GetAddOnMetadata("SmartDebuff", "Version"); -- "v10.0.202"
+SMARTDEBUFF_VERSIONNR     = tonumber(gsub(SMARTDEBUFF_VERSION, "%D", ""), 10); -- "100202"
+SMARTDEBUFF_TITLE         = "SmartDebuff";
+SMARTDEBUFF_SUBTITLE      = "Debuff support";
+SMARTDEBUFF_DESC          = "Supports you to cast debuff spells on friendly units";
+SMARTDEBUFF_VERS_TITLE    = SMARTDEBUFF_TITLE .. " " .. SMARTDEBUFF_VERSION;
+SMARTDEBUFF_OPTIONS_TITLE = SMARTDEBUFF_VERS_TITLE .. " Options";
+
+BINDING_HEADER_SMARTDEBUFF = "SmartDebuff";
+SMARTDEBUFF_BOOK_TYPE_SPELL = "spell";
+
+
 wowversion, wowbuild, wowdate, wowtocversion = GetBuildInfo()
 SMARTDEBUFF_BACKDROP_OPTIONS = {
   bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
@@ -147,37 +159,45 @@ SMARTDEBUFF_NOTREMOVABLE_ID = {
   38049, --Watery Grave (Morogrim)
 };
 
-
+-- https://wowpedia.fandom.com/wiki/API_PlaySoundFile
 SMARTDEBUFF_SOUNDS = {
-  {"Alarm Clock 1", "Sound\\Interface\\AlarmClockWarning1.ogg"},
-  {"Alarm Clock 2", "Sound\\Interface\\AlarmClockWarning2.ogg"},
-  {"Alarm Clock 3", "Sound\\Interface\\AlarmClockWarning3.ogg"},
-  {"Anti Holy", "Sound\\Spells\\AntiHoly.ogg"},
-  {"Auction House", "Sound\\interface\\AuctionWindowOpen.ogg"},
-  {"Bell Alliance", "Sound\\Doodad\\BellTollAlliance.ogg"},
-  {"Bell Horde", "Sound\\Doodad\\BellTollHorde.ogg"},
-  {"Bell Karazhan", "Sound\\Doodad\\KharazahnBellToll.ogg"},
-  {"Bell Night Elf", "Sound\\Doodad\\BellTollNightElf.ogg"},
-  {"Bell Tribal", "Sound\\Doodad\\BellTollTribal.ogg"},
-  {"Cartoon FX", "Sound\\Doodad\\Goblin_Lottery_Open03.ogg"},
-  {"Cheer", "Sound\\Event Sounds\\OgreEventCheerUnique.ogg"},
-  {"Explosion", "Sound\\Doodad\\Hellfire_Raid_FX_Explosion05.ogg"},
-  {"Fel Nova", "Sound\\Spells\\SeepingGaseous_Fel_Nova.ogg"},
-  {"Fel Portal", "Sound\\Spells\\Sunwell_Fel_PortalStand.ogg"},
-  {"Friend Join", "Sound\\interface\\FriendJoin.ogg"},
-  {"Gong Troll", "Sound\\Doodad\\G_GongTroll01.ogg"},
-  {"Humm", "Sound\\Spells\\SimonGame_Visual_GameStart.ogg"},
-  {"Level Up", "Sound\\interface\\levelup.ogg"},
-  {"Loot Chime", "Sound\\interface\\igLootCreature.ogg"},
-  {"Magic Click", "Sound\\interface\\MagicClick.ogg"},
-  {"Mellow Bells", "Sound\\Spells\\ShaysBell.ogg"},
-  {"Murloc", "Sound\\Creature\\Murloc\\mMurlocAggroOld.ogg"},
-  {"Ready Check", "Sound\\interface\\levelup2.ogg"},  
-  {"Rubber Ducky", "Sound\\Doodad\\Goblin_Lottery_Open01.ogg"},
-  {"Shing", "Sound\\Doodad\\PortcullisActive_Closed.ogg"},
-  {"Short Circuit", "Sound\\Spells\\SimonGame_Visual_BadPress.ogg"},
-  {"Simon Chime", "Sound\\Doodad\\SimonGame_LargeBlueTree.ogg"},
-  {"War Drums", "Sound\\Event Sounds\\Event_wardrum_ogre.ogg"},
-  {"Wham", "Sound\\Doodad\\PVP_Lordaeron_Door_Open.ogg"},
-  {"Whisper Ping", "Sound\\interface\\iTellMessage.ogg"}
+  {"Alarm Clock 1", 567436, "AlarmClockWarning1.ogg"},
+  {"Alarm Clock 2", 567399, "AlarmClockWarning2.ogg"},
+  {"Alarm Clock 3", 567458, "AlarmClockWarning3.ogg"},
+  {"Anti Holy", 568986, "AntiHoly.ogg"},
+  {"Auction House", 567482, "AuctionWindowOpen.ogg"},
+  {"Bell Alliance", 566564, "BellTollAlliance.ogg"},
+  {"Bell Horde", 565853, "BellTollHorde.ogg"},
+  {"Bell Karazhan", 566254, "KharazahnBellToll.ogg"},
+  {"Bell Night Elf", 566558, "BellTollNightElf.ogg"},
+  {"Bell Tribal", 566027, "BellTollTribal.ogg"},
+  {"Cartoon FX", 566543, "Goblin_Lottery_Open03.ogg"},
+  {"Cheer", 567283, "OgreEventCheerUnique.ogg"},
+  {"Diiing", 554922, "vo_zg2_mandokir_levelup_event_01.ogg"},
+  {"Explosion", 566982, "Hellfire_Raid_FX_Explosion05.ogg"},
+  {"Fel Nova", 568582, "SeepingGaseous_Fel_Nova.ogg"},
+  {"Fel Portal", 569215, "Sunwell_Fel_PortalStand.ogg"},
+  {"Follower Level Up", 1068310, "ui_garrison_commandtable_follower_levelup1.ogg"},
+  {"Friend Join", 567518, "FriendJoin.ogg"},
+  {"Gong Troll", 565564, "G_GongTroll01.ogg"},
+  {"Humm", 569518, "SimonGame_Visual_GameStart.ogg"},
+  {"Level Up", 567431, "levelup.ogg"},
+  {"Lightning", 2182425, "fx_weather_80_lightningstorm_periodic_01.ogg"},
+  {"Lightning 2", 2182424, "fx_weather_80_lightningstorm_periodic_02.ogg"},
+  {"Lightning 3", 2182423, "fx_weather_80_lightningstorm_periodic_03.ogg"},
+  {"Loot Chime", 567435, "igLootCreature.ogg"},
+  {"Magic Click", 567455, "MagicClick.ogg"},
+  {"Mellow Bells", 568154, "ShaysBell.ogg"},
+  {"Murloc", 556000, "mMurlocAggroOld.ogg"},
+  {"Pet Level Up", 642841, "ui_pet_levelup_01.ogg"},
+  {"Ready Check", 567478, "levelup2.ogg"},
+  {"Reputation Level Up", 568016, "reputationlevelup.ogg"},
+  {"Rubber Ducky", 566121, "Goblin_Lottery_Open01.ogg"},
+  {"Shing", 566240, "PortcullisActive_Closed.ogg"},
+  {"Short Circuit", 568975, "SimonGame_Visual_BadPress.ogg"},
+  {"Simon Chime", 566076, "SimonGame_LargeBlueTree.ogg"},
+  {"Simon Tick", 568232, "simongame_visual_gametick.ogg"},
+  {"War Drums", 567275, "Event_wardrum_ogre.ogg"},
+  {"Wham", 566946, "PVP_Lordaeron_Door_Open.ogg"},
+  {"Whisper Ping", 567421, "iTellMessage.ogg"}
 };

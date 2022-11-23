@@ -5,17 +5,6 @@
 -- Supports you to cast debuff spells on friendly units
 -------------------------------------------------------------------------------
 
-SMARTDEBUFF_VERSION       = "v10.0.201";
-SMARTDEBUFF_VERSIONNR     = 100201;
-SMARTDEBUFF_TITLE         = "SmartDebuff";
-SMARTDEBUFF_SUBTITLE      = "Debuff support";
-SMARTDEBUFF_DESC          = "Supports you to cast debuff spells on friendly units";
-SMARTDEBUFF_VERS_TITLE    = SMARTDEBUFF_TITLE .. " " .. SMARTDEBUFF_VERSION;
-SMARTDEBUFF_OPTIONS_TITLE = SMARTDEBUFF_VERS_TITLE .. " Options";
-
-BINDING_HEADER_SMARTDEBUFF = "SmartDebuff";
-SMARTDEBUFF_BOOK_TYPE_SPELL = "spell";
-
 
 local wowversion, wowbuild, wowdate, wowtocversion = GetBuildInfo()
 
@@ -437,7 +426,7 @@ function SMARTDEBUFF_OnUpdate(self, elapsed)
   else
     ou_time = ou_time + elapsed;
     if (not isTTreeLoaded and ou_time > 0.5) then
-      if (C_ClassTalents.CanChangeTalents()) then
+      if (C_ClassTalents.CanCreateNewConfig()) then
         --DEFAULT_CHAT_FRAME:AddMessage("Talent tree ready ("..ou_time.."sec) -> Init SDB");
         isTTreeLoaded = true;
         SMARTDEBUFF_OnEvent(self, "ONUPDATE");
@@ -1350,20 +1339,18 @@ function SMARTDEBUFF_Options_Init()
   isInit = true;
 
   if (O.VersionNr == nil or O.VersionNr < SMARTDEBUFF_VERSIONNR) then
+    if (math.floor(O.VersionNr / 1000) < math.floor(SMARTDEBUFF_VERSIONNR / 1000)) then
+      -- only on major patchs, i.e. from 100xxx to 101xxx
+      StaticPopup_Show("SMARTDEBUFF_RESET_KEYS");
+    end
     O.VersionNr = SMARTDEBUFF_VERSIONNR;
-    print("Upgrade SmartDebuff to "..SMARTDEBUFF_VERSION);
-    StaticPopup_Show("SMARTDEBUFF_RESET_KEYS");
+    print(SMARTDEBUFF_UPGRADED);
   end
 
   if (SMARTDEBUFF_OptionsGlobal == nil) then SMARTDEBUFF_OptionsGlobal = { }; end
   OG = SMARTDEBUFF_OptionsGlobal;
   if (OG.FirstStart == nil) then OG.FirstStart = "V0";  end
   if (OG.FirstStart ~= SMARTDEBUFF_VERSION) then
-    -- Upgrade to 4.0a
-    if (SMARTDEBUFF_VERSION == "v4.0a") then
-      SMARTDEBUFF_SetDefaultKeys(true);
-    end
-
     OG.FirstStart = SMARTDEBUFF_VERSION;
     SMARTDEBUFF_ToggleOF();
     SMARTDEBUFF_ToggleAOFKeys();
@@ -3047,7 +3034,7 @@ function SMARTDEBUFF_SetStyle()
     sbtn = SecureButton_GetEffectiveButton(btn);
     unit = SecureButton_GetModifiedAttribute(btn, "unit", sbtn, "");
 
-    if (unit) then
+    if (unit and not _G.InCombatLockdown()) then
       if (O.SortedByRole and (isRoleSet or iTest > 0)) then
         if (btn:IsVisible()) then
           if (iTest > 0) then
@@ -3151,6 +3138,7 @@ function SMARTDEBUFF_SetStyle()
           i = 0;
         end
         btn:ClearAllPoints();
+        -- TODO BUG ICI sur raid: fonction protégée SetPoint
         btn:SetPoint(anchor, frame, anchor, 4 + i * (btnW + O.BtnSpX) + sp, (-hx - hox - ln * (btnH + O.BtnSpY + hox)) * vu);
         if (b) then
           grp = grp + 1;
@@ -3160,6 +3148,9 @@ function SMARTDEBUFF_SetStyle()
       end
 
       if (btn:IsVisible()) then
+        -- TODO BUG ICI sur raid, attempt to perform arythmetic on a nil value
+        -- ? btn:GetLeft() == nil?
+        -- ? use btn:IsRectValid() ?
         tX = btn:GetLeft() - frame:GetLeft() + btnW + 8;
         if (O.VerticalUp) then
           tY = frame:GetBottom() - btn:GetTop() - 4;
@@ -4127,10 +4118,11 @@ function SmartDebuff_SoundsBtnOnClick(self, button)
   if (button == "LeftButton") then
     O.Sound = n;
     SmartDebuffSounds_txtIn:SetText(self:GetText());
-    PlaySoundFile(SMARTDEBUFF_SOUNDS[n][2]);
-  else
-    PlaySoundFile(SMARTDEBUFF_SOUNDS[n][2]);
   end
+  if (SmartDebuffFrame.SoundHandle) then
+    StopSound(SmartDebuffFrame.SoundHandle);
+  end
+  SmartDebuffFrame.SoundHandle = select(2, PlaySoundFile(SMARTDEBUFF_SOUNDS[n][2]));
   SmartDebuffSpellGuard_txtIn:ClearFocus();
 end
 
