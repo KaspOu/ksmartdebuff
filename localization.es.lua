@@ -149,6 +149,16 @@ SMARTDEBUFF_TT_TARGETINFO      = "Selects the specified unit\nas the current tar
 SMARTDEBUFF_TT_DROPTARGET      = "Unit click:\nRemove";
 SMARTDEBUFF_TT_DROPACTION      = "Pet action:\nRemove not possible!";
 
+--Tooltips added by Semi#1287
+SMARTDEBUFF_TT_OPTIONS		   		= "Left click: Open options\n|cff20d2ff- O button -|r";
+SMARTDEBUFF_OFT_NOTREMOVABLE_LIST 	= "Debuff Guard List";
+SMARTDEBUFF_TT_NOTREMOVABLE_LIST 	= "Click to Edit List";
+SMARTDEBUFF_OFT_SKILLS 				= "Skill Menu";
+SMARTDEBUFF_TT_SKILLS				= "Click to Edit Skill Quick Slots";
+SMARTDEBUFF_OFT_SHOWDEBUFFGUARD 	= "Spell Guard List";
+SMARTDEBUFF_TT_SHOWDEBUFFGUARD 		= "Click to Edit\nList of Spells to Track";
+SMARTDEBUFF_TT_SOUNDLIST 			= "Click to Select Sound";
+
 -- Tooltip support
 SMARTDEBUFF_FUBAR_TT           = "\nClick izquierdo: Abrir opciones\nMay\195\186sulas-Click izquierdo: On/Off";
 SMARTDEBUFF_BROKER_TT          = "\nClick izquierdo: Abrir opciones\nClick derecho: On/Off";
