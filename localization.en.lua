@@ -7,7 +7,7 @@ SMARTDEBUFF_UPGRADED = "SmartDebuff upgraded to "..SMARTDEBUFF_VERSION;
 SMARTDEBUFF_WHATSNEW = "|cffffffffWhats new:|r\n\n"
   .."- Reloaded and Updated for DragonFlight prepatch phase 2\n\n"
   .."- Evoker is now supported\n\n"
-  .."- Fixed LUA errors\n\n"
+  .."- Sounds and Spell icons are fixed\n\n"
   ;
 
 
