@@ -1874,7 +1874,7 @@ function SMARTDEBUFF_CreateButtons()
 
 
       -- create bg texture
-      button.texture = button:CreateTexture(nil, "BORDER");
+      button.texture = button:CreateTexture(nil, "BACKGROUND");
       button.texture:SetColorTexture(0, 0, 0);
       button.texture:SetAllPoints(button);
       button.texture:SetBlendMode("DISABLE");
@@ -1915,7 +1915,7 @@ function SMARTDEBUFF_CreateButtons()
       button.aggro:ClearAllPoints();
 
       -- create raid icon texture
-      button.raidicon = button:CreateTexture(nil, "OVERLAY");
+      button.raidicon = button:CreateTexture(nil, "ARTWORK");
       button.raidicon:SetTexture(nil);
       button.raidicon:SetBlendMode("BLEND");
       button.raidicon:ClearAllPoints();
@@ -1957,7 +1957,7 @@ function SMARTDEBUFF_CreateButtons()
         insets = { left = 0, right = 0, top = 0, bottom = 0 } });
 
       -- create bg texture
-      button.texture = button:CreateTexture(nil, "BORDER");
+      button.texture = button:CreateTexture(nil, "BACKGROUND");
       button.texture:SetColorTexture(0, 0, 0);
       button.texture:SetAllPoints(button);
       button.texture:SetBlendMode("DISABLE");
@@ -1996,7 +1996,7 @@ function SMARTDEBUFF_CreateButtons()
       button.aggro:ClearAllPoints();
 
       -- create raid icon texture
-      button.raidicon = button:CreateTexture(nil, "OVERLAY");
+      button.raidicon = button:CreateTexture(nil, "ARTWORK");
       button.raidicon:SetTexture(nil);
       button.raidicon:SetBlendMode("BLEND");
       button.raidicon:ClearAllPoints();
