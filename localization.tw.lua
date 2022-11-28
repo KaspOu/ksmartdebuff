@@ -1,4 +1,4 @@
-﻿-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 -- Chinese localization (Taiwan)
 -------------------------------------------------------------------------------
 
@@ -128,6 +128,16 @@ SMARTDEBUFF_TT_TARGET          = "目標";
 SMARTDEBUFF_TT_TARGETINFO      = "選擇指定單位\n作為當前目標.";
 SMARTDEBUFF_TT_DROPTARGET      = "單位點擊:\n刪除";
 SMARTDEBUFF_TT_DROPACTION      = "寵物行動:\n不能刪除!";
+
+--Tooltips added by Semi#1287
+SMARTDEBUFF_TT_OPTIONS		   		= "Left click: Open options\n|cff20d2ff- O button -|r";
+SMARTDEBUFF_OFT_NOTREMOVABLE_LIST 	= "Debuff Guard List";
+SMARTDEBUFF_TT_NOTREMOVABLE_LIST 	= "Click to Edit List";
+SMARTDEBUFF_OFT_SKILLS 				= "Skill Menu";
+SMARTDEBUFF_TT_SKILLS				= "Click to Edit Skill Quick Slots";
+SMARTDEBUFF_OFT_SHOWDEBUFFGUARD 	= "Spell Guard List";
+SMARTDEBUFF_TT_SHOWDEBUFFGUARD 		= "Click to Edit\nList of Spells to Track";
+SMARTDEBUFF_TT_SOUNDLIST 			= "Click to Select Sound";
 
 -- Tooltip support
 SMARTDEBUFF_FUBAR_TT           = "\n左點擊: 打開選項\nShift-左點擊: On/Off";

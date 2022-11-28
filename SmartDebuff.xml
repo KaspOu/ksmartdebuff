@@ -87,12 +87,12 @@
     <Frames>
       <Button name="$parent_btnClose" inherits="UIPanelCloseButton">
         <Size>
-          <AbsDimension x="20" y="20"/>
+          <AbsDimension x="15" y="15"/>
         </Size>
         <Anchors>
           <Anchor point="TOPRIGHT" relativeTo="$parent">
             <Offset>
-              <AbsDimension x="2" y="0"/>
+              <AbsDimension x="0" y="-2"/>
             </Offset>
           </Anchor>
         </Anchors>
@@ -154,7 +154,7 @@
         <Anchors>
           <Anchor point="TOPRIGHT" relativePoint="TOPLEFT" relativeTo="$parent_btnClose">
             <Offset>
-              <AbsDimension x="2" y="-4"/>
+              <AbsDimension x="-5" y="0"/>
             </Offset>
           </Anchor>
         </Anchors>
@@ -167,6 +167,14 @@
           <OnClick>
             SMARTDEBUFF_ToggleOF();
           </OnClick>
+          <OnEnter>
+            if (not InCombatLockdown()) then
+              SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_TITLE, SMARTDEBUFF_TT_OPTIONS);
+            end
+          </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </Button>
 
@@ -365,7 +373,7 @@
         <Anchors>
           <Anchor point="TOPRIGHT" relativeTo="$parent">
             <Offset>
-              <AbsDimension x="2" y="1"/>
+              <AbsDimension x="-3" y="-3"/>
             </Offset>
           </Anchor>
         </Anchors>
@@ -1208,6 +1216,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_HP, SMARTDEBUFF_TT_HP);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -1243,6 +1254,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_MANA, SMARTDEBUFF_TT_MANA);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -1278,6 +1292,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_HPTEXT, SMARTDEBUFF_TT_HPTEXT);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -1313,6 +1330,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_INVERT, SMARTDEBUFF_TT_INVERT);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -1348,6 +1368,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_CLASSVIEW, SMARTDEBUFF_TT_CLASSVIEW);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -1406,6 +1429,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_CLASSCOLOR, SMARTDEBUFF_TT_CLASSCOLOR);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -1441,6 +1467,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_HEADERS, SMARTDEBUFF_TT_HEADERS);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -1476,6 +1505,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_ROLE, SMARTDEBUFF_TT_ROLE);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -1511,6 +1543,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_GROUPNR, SMARTDEBUFF_TT_GROUPNR);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -1546,6 +1581,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_SHOWLR, SMARTDEBUFF_TT_SHOWLR);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -1581,6 +1619,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_HEALRANGE, SMARTDEBUFF_TT_HEALRANGE);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -1616,6 +1657,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_SHOWAGGRO, SMARTDEBUFF_TT_SHOWAGGRO);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -1651,6 +1695,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_SHOWRAIDICON, SMARTDEBUFF_TT_SHOWRAIDICON);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -1711,6 +1758,12 @@
           <OnClick>
             SMARTDEBUFF_ToggleNRDebuffs();
           </OnClick>
+          <OnEnter>
+            SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_NOTREMOVABLE_LIST, SMARTDEBUFF_TT_NOTREMOVABLE_LIST);
+          </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </Button>
 
@@ -1746,6 +1799,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_SHOWSPELLICON, SMARTDEBUFF_TT_SHOWSPELLICON);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -1768,6 +1824,12 @@
           <OnClick>
             SMARTDEBUFF_SpellGuardToggle();
           </OnClick>
+          <OnEnter>
+            SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_SHOWDEBUFFGUARD, SMARTDEBUFF_TT_SHOWDEBUFFGUARD);
+          </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </Button>
 
@@ -1828,6 +1890,12 @@
           <OnClick>
             SMARTDEBUFF_ToggleAOFKeys();
           </OnClick>
+          <OnEnter>
+            SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_SKILLS, SMARTDEBUFF_TT_SKILLS);
+          </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </Button>
 
@@ -1863,6 +1931,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_VEHICLE, SMARTDEBUFF_TT_VEHICLE);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -1899,6 +1970,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_INFOROW, SMARTDEBUFF_TT_INFOROW);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -1934,6 +2008,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_SOUND, SMARTDEBUFF_TT_SOUND);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -1956,7 +2033,13 @@
           <OnClick>
             SMARTDEBUFF_SoundsToggle();
           </OnClick>
-        </Scripts>
+			<OnEnter>
+				SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_SOUND, SMARTDEBUFF_TT_SOUNDLIST);
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide();
+			</OnLeave>
+		</Scripts>
       </Button>
 
       <CheckButton name="$parent_cbShowHeaderRow" inherits="InterfaceOptionsCheckButtonTemplate">
@@ -1992,6 +2075,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_HEADERROW, SMARTDEBUFF_TT_HEADERROW);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -2027,6 +2113,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_TOOLTIP, SMARTDEBUFF_TT_TOOLTIP);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -2062,6 +2151,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_VERTICAL, SMARTDEBUFF_TT_VERTICAL);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -2098,6 +2190,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_VERTICALUP, SMARTDEBUFF_TT_VERTICALUP);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -2132,6 +2227,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_BACKDROP, SMARTDEBUFF_TT_BACKDROP);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -2167,6 +2265,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_SHOWGRADIENT, SMARTDEBUFF_TT_SHOWGRADIENT);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -2201,6 +2302,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_INFOFRAME, SMARTDEBUFF_TT_INFOFRAME);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -2236,6 +2340,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_AUTOHIDE, SMARTDEBUFF_TT_AUTOHIDE);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -2270,6 +2377,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_ADVANCHORS, SMARTDEBUFF_TT_ADVANCHORS);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -2304,6 +2414,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_STOPCAST, SMARTDEBUFF_TT_STOPCAST);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -2338,6 +2451,9 @@
           <OnEnter>
             SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_IGNOREDEBUFF, SMARTDEBUFF_TT_IGNOREDEBUFF);
           </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </CheckButton>
 
@@ -3167,12 +3283,12 @@
 
       <Button name="$parent_btnClose" inherits="UIPanelCloseButton">
         <Size>
-          <AbsDimension x="20" y="20"/>
+          <AbsDimension x="15" y="15"/>
         </Size>
         <Anchors>
           <Anchor point="TOPRIGHT" relativeTo="$parent">
             <Offset>
-              <AbsDimension x="2" y="2"/>
+              <AbsDimension x="-2" y="-2"/>
             </Offset>
           </Anchor>
         </Anchors>

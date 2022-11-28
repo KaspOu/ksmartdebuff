@@ -100,7 +100,7 @@ local Icons = {
   ["DEATHKNIGHT"] = "Interface\\AddOns\\SmartDebuff\\Icons\\Deathknight",
   ["MONK"]        = "Interface\\AddOns\\SmartDebuff\\Icons\\Monk",
   ["DEMONHUNTER"] = "Interface\\AddOns\\SmartDebuff\\Icons\\Demonhunter",
-  ["EVOKER"] = "Interface\\AddOns\\SmartDebuff\\Icons\\Evoker",
+  ["EVOKER"] 	  = "Interface\\AddOns\\SmartDebuff\\Icons\\Evoker",
   --["PET"]         = "Interface\\AddOns\\SmartDebuff\\Icons\\HunterPet",
   ["PET"]         = "Interface\\Icons\\spell_nature_spiritwolf", --spell_nature_spiritwolf --Ability_Tracking
   ["ROLE"]        = "Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES",
@@ -1339,7 +1339,7 @@ function SMARTDEBUFF_Options_Init()
   isInit = true;
 
   if (O.VersionNr == nil or O.VersionNr < SMARTDEBUFF_VERSIONNR) then
-    if (math.floor(O.VersionNr / 1000) < math.floor(SMARTDEBUFF_VERSIONNR / 1000)) then
+    if (O.VersionNr == nil or math.floor(O.VersionNr / 1000) < math.floor(SMARTDEBUFF_VERSIONNR / 1000)) then
       -- only on major patchs, i.e. from 100xxx to 101xxx
       StaticPopup_Show("SMARTDEBUFF_RESET_KEYS");
     end
@@ -1724,12 +1724,18 @@ function SMARTDEBUFF_CheckSFButtons(hide)
       SmartDebuffSF_btnStyle:ClearAllPoints();
       SmartDebuffSF_btnStyle:SetPoint("BOTTOMLEFT", SmartDebuffSF, "BOTTOMLEFT", 2, 1);
       SmartDebuffSF_btnClose:ClearAllPoints();
-      SmartDebuffSF_btnClose:SetPoint("BOTTOMRIGHT", SmartDebuffSF, "BOTTOMRIGHT", 3, -3);
+      --Semi #1287
+      SmartDebuffSF_btnClose:SetPoint("BOTTOMRIGHT", SmartDebuffSF, "BOTTOMRIGHT", 0, 1);
+      SmartDebuffSF_btnOptions:ClearAllPoints();
+      SmartDebuffSF_btnOptions:SetPoint("BOTTOMRIGHT", SmartDebuffSF_btnClose, "BOTTOMLEFT", -5, 0);
     else
       SmartDebuffSF_btnStyle:ClearAllPoints();
       SmartDebuffSF_btnStyle:SetPoint("TOPLEFT", SmartDebuffSF, "TOPLEFT", 2, -1);
       SmartDebuffSF_btnClose:ClearAllPoints();
-      SmartDebuffSF_btnClose:SetPoint("TOPRIGHT", SmartDebuffSF, "TOPRIGHT", 3, 3);
+      --Semi #1287
+      SmartDebuffSF_btnClose:SetPoint("TOPRIGHT", SmartDebuffSF, "TOPRIGHT", 0, -2);
+      SmartDebuffSF_btnOptions:ClearAllPoints();
+      SmartDebuffSF_btnOptions:SetPoint("TOPRIGHT", SmartDebuffSF_btnClose, "TOPLEFT", -5, 1);
     end
 
   end
@@ -2847,54 +2853,70 @@ function SmartDebuff_SetButtonBars(btn, unit, unitclass)
     else
       btn.raidicon:Hide();
     end
-
+    --Semi #1287 - Edited Code for Spell Guard to show  -begin
     for j = 1, maxSpellIcons, 1 do
-      if (O.ShowSpellIcon and O.SpellGuard[j] ~= nil) then
-        _, _, sbb_s, _, _, sbb_exp, ssb_source = AuraUtil.FindAuraByName(O.SpellGuard[j], unit)
-        if (sbb_s ~= nil and ssb_source == "player") then
-          -- SMARTDEBUFF_AddMsgD(sbb_s);
-          sbb_exp = (sbb_exp - GetTime()) / 10 + 0.1;
-          if (sbb_exp > 0.9) then
-            sbb_exp = 0.9;
+    loop2 = j
+      local name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[j], unit);
+      if name == nil then
+        name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[j], unit, "HARMFUL");
+      end
+      if name == nil then
+        name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[j], unit, "NOT_CANCELABLE");
+      end
+      if name == nil then
+        name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[j], unit, "CANCELABLE");
+      end
+      if name == nil then
+        name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[j], unit, "RAID");
+      end
+      if name == nil then
+        name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[j], unit, "PLAYER");
+      end
+      if name ~= nil then
+          sbb_s = texture;
+          sbb_exp = tonumber(expirationTime);
+          if sbb_exp == 0 or sbb_exp == nil or sbb_exp == "" then
+            sbb_exp = 0
+          else
+            sbb_exp = (sbb_exp - GetTime()) / 10 + 0.1;
+            if (sbb_exp > 0.9) then
+              sbb_exp = 0.9;
+            end
           end
-          btn.spellicon[j]:SetTexture(sbb_s);
+          btn.spellicon[loop2]:SetTexture(sbb_s);
           sbb_n = btn:GetHeight() / 3;
           --sbb_n = O.RaidIconSize;
 
           sbb_ach = "TOPLEFT";
           sbb_y = 2;
-          if (j % 2 == 0) then
+          if (loop2 % 2 == 0) then
             sbb_ach = "BOTTOMLEFT";
             sbb_y = -2+sbb_n;
           end
 
-          if (j <= 2) then
+          if (loop2 <= 2) then
             sbb_x = sbb_w/2;
           else
-            sbb_xo = math.ceil(j/2);
+            sbb_xo = math.ceil(loop2/2);
             if (sbb_xo % 2 == 0) then
               sbb_x = sbb_w/2 - sbb_xo*sbb_n/2;
             else
               sbb_x = sbb_w/2 + sbb_xo*sbb_n/2 - sbb_n/2;
             end
           end
-
           sbb_xo = sbb_n/2;
-          btn.spellicon[j]:ClearAllPoints();
-          btn.spellicon[j]:SetPoint("TOPLEFT", btn , sbb_ach, sbb_x - sbb_xo, sbb_y);
-          btn.spellicon[j]:SetPoint("TOPRIGHT", btn , sbb_ach, sbb_x + sbb_xo, sbb_y);
-          btn.spellicon[j]:SetPoint("BOTTOMLEFT", btn , sbb_ach, sbb_x - sbb_xo, sbb_y-sbb_n);
-          btn.spellicon[j]:SetPoint("BOTTOMRIGHT", btn , sbb_ach, sbb_x + sbb_xo, sbb_y-sbb_n);
-          btn.spellicon[j]:SetAlpha(sbb_exp);
-          btn.spellicon[j]:Show();
-        else
-          btn.spellicon[j]:Hide();
-        end
+          btn.spellicon[loop2]:ClearAllPoints();
+          btn.spellicon[loop2]:SetPoint("TOPLEFT", btn , sbb_ach, sbb_x - sbb_xo, sbb_y);
+          btn.spellicon[loop2]:SetPoint("TOPRIGHT", btn , sbb_ach, sbb_x + sbb_xo, sbb_y);
+          btn.spellicon[loop2]:SetPoint("BOTTOMLEFT", btn , sbb_ach, sbb_x - sbb_xo, sbb_y-sbb_n);
+          btn.spellicon[loop2]:SetPoint("BOTTOMRIGHT", btn , sbb_ach, sbb_x + sbb_xo, sbb_y-sbb_n);
+          btn.spellicon[loop2]:SetAlpha(sbb_exp);
+          btn.spellicon[loop2]:Show();
       else
-        btn.spellicon[j]:Hide();
+          btn.spellicon[loop2]:Hide();
       end
     end
-
+    --Semi #1287 - Edited code for spell guard to show -end
   end
 end
 

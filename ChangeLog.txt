@@ -1,4 +1,8 @@
+v10.0.203
+ - Spellguard reworked (thanks to Semi#1287)
+
 v10.0.202
+ - Sounds are back
  - Minor Bugfixes
 
 v10.0.201
