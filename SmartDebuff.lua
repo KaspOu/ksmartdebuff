@@ -2854,66 +2854,73 @@ function SmartDebuff_SetButtonBars(btn, unit, unitclass)
       btn.raidicon:Hide();
     end
     --Semi #1287 - Edited Code for Spell Guard to show  -begin
-    for j = 1, maxSpellIcons, 1 do
-    loop2 = j
-      local name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[j], unit);
-      if name == nil then
-        name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[j], unit, "HARMFUL");
-      end
-      if name == nil then
-        name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[j], unit, "NOT_CANCELABLE");
-      end
-      if name == nil then
-        name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[j], unit, "CANCELABLE");
-      end
-      if name == nil then
-        name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[j], unit, "RAID");
-      end
-      if name == nil then
-        name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[j], unit, "PLAYER");
-      end
-      if name ~= nil then
-          sbb_s = texture;
-          sbb_exp = tonumber(expirationTime);
-          if sbb_exp == 0 or sbb_exp == nil or sbb_exp == "" then
-            sbb_exp = 0
-          else
-            sbb_exp = (sbb_exp - GetTime()) / 10 + 0.1;
-            if (sbb_exp > 0.9) then
-              sbb_exp = 0.9;
-            end
-          end
-          btn.spellicon[loop2]:SetTexture(sbb_s);
-          sbb_n = btn:GetHeight() / 3;
-          --sbb_n = O.RaidIconSize;
-
-          sbb_ach = "TOPLEFT";
-          sbb_y = 2;
-          if (loop2 % 2 == 0) then
-            sbb_ach = "BOTTOMLEFT";
-            sbb_y = -2+sbb_n;
-          end
-
-          if (loop2 <= 2) then
-            sbb_x = sbb_w/2;
-          else
-            sbb_xo = math.ceil(loop2/2);
-            if (sbb_xo % 2 == 0) then
-              sbb_x = sbb_w/2 - sbb_xo*sbb_n/2;
+    if (O.ShowSpellIcon) then
+      for loop2 = 1, math.min(#O.SpellGuard, maxSpellIcons), 1 do
+        local name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[loop2], unit);
+        if name == nil then
+          name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[loop2], unit, "HARMFUL");
+        end
+        if name == nil then
+          name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[loop2], unit, "NOT_CANCELABLE");
+        end
+        if name == nil then
+          name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[loop2], unit, "CANCELABLE");
+        end
+        if name == nil then
+          name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[loop2], unit, "RAID");
+        end
+        if name == nil then
+          name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[loop2], unit, "PLAYER");
+        end
+        if name ~= nil then
+            sbb_s = texture;
+            sbb_exp = tonumber(expirationTime);
+            if sbb_exp == 0 or sbb_exp == nil or sbb_exp == "" then
+              sbb_exp = 0
             else
-              sbb_x = sbb_w/2 + sbb_xo*sbb_n/2 - sbb_n/2;
+              sbb_exp = (sbb_exp - GetTime()) / 10 + 0.1;
+              if (sbb_exp > 0.9) then
+                sbb_exp = 0.9;
+              end
             end
-          end
-          sbb_xo = sbb_n/2;
-          btn.spellicon[loop2]:ClearAllPoints();
-          btn.spellicon[loop2]:SetPoint("TOPLEFT", btn , sbb_ach, sbb_x - sbb_xo, sbb_y);
-          btn.spellicon[loop2]:SetPoint("TOPRIGHT", btn , sbb_ach, sbb_x + sbb_xo, sbb_y);
-          btn.spellicon[loop2]:SetPoint("BOTTOMLEFT", btn , sbb_ach, sbb_x - sbb_xo, sbb_y-sbb_n);
-          btn.spellicon[loop2]:SetPoint("BOTTOMRIGHT", btn , sbb_ach, sbb_x + sbb_xo, sbb_y-sbb_n);
-          btn.spellicon[loop2]:SetAlpha(sbb_exp);
-          btn.spellicon[loop2]:Show();
-      else
+            btn.spellicon[loop2]:SetTexture(sbb_s);
+            sbb_n = btn:GetHeight() / 3;
+            --sbb_n = O.RaidIconSize;
+
+            sbb_ach = "TOPLEFT";
+            sbb_y = 2;
+            if (loop2 % 2 == 0) then
+              sbb_ach = "BOTTOMLEFT";
+              sbb_y = -2+sbb_n;
+            end
+
+            if (loop2 <= 2) then
+              sbb_x = sbb_w/2;
+            else
+              sbb_xo = math.ceil(loop2/2);
+              if (sbb_xo % 2 == 0) then
+                sbb_x = sbb_w/2 - sbb_xo*sbb_n/2;
+              else
+                sbb_x = sbb_w/2 + sbb_xo*sbb_n/2 - sbb_n/2;
+              end
+            end
+            sbb_xo = sbb_n/2;
+            btn.spellicon[loop2]:ClearAllPoints();
+            btn.spellicon[loop2]:SetPoint("TOPLEFT", btn , sbb_ach, sbb_x - sbb_xo, sbb_y);
+            btn.spellicon[loop2]:SetPoint("TOPRIGHT", btn , sbb_ach, sbb_x + sbb_xo, sbb_y);
+            btn.spellicon[loop2]:SetPoint("BOTTOMLEFT", btn , sbb_ach, sbb_x - sbb_xo, sbb_y-sbb_n);
+            btn.spellicon[loop2]:SetPoint("BOTTOMRIGHT", btn , sbb_ach, sbb_x + sbb_xo, sbb_y-sbb_n);
+            btn.spellicon[loop2]:SetAlpha(sbb_exp);
+            btn.spellicon[loop2]:Show();
+        else
+            btn.spellicon[loop2]:Hide();
+        end
+      end
+    else
+      if (btn.spellicon[1]:IsVisible()) then
+        for loop2 = 1, maxSpellIcons, 1 do
           btn.spellicon[loop2]:Hide();
+        end
       end
     end
     --Semi #1287 - Edited code for spell guard to show -end
