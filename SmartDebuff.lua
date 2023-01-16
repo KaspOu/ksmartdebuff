@@ -1223,6 +1223,7 @@ function SMARTDEBUFF_Options_Init()
   if (O.AdvAnchors == nil) then O.AdvAnchors = false; end
   if (O.StopCast == nil) then O.StopCast = false; end
   if (O.IgnoreDebuff == nil) then O.IgnoreDebuff = true; end
+  if (O.ChatNotif == nil) then O.ChatNotif = true; end
   --O.AutoHide = false;
 
   if (O.ShowMsgNormal == nil) then O.ShowMsgNormal = true; end
@@ -1334,8 +1335,10 @@ function SMARTDEBUFF_Options_Init()
   cRaidicons[10] = "Interface\\RAIDFRAME\\ReadyCheck-NotReady";
   cRaidicons[11] = "Interface\\RAIDFRAME\\ReadyCheck-Waiting";
 
-  SMARTDEBUFF_AddMsg(SMARTDEBUFF_VERS_TITLE .. " " .. SMARTDEBUFF_MSG_LOADED, true);
-  SMARTDEBUFF_AddMsg("/sdb - " .. SMARTDEBUFF_MSG_SDB, true);
+  if (O.ChatNotif) then
+    SMARTDEBUFF_AddMsg(SMARTDEBUFF_VERS_TITLE .. " " .. SMARTDEBUFF_MSG_LOADED, true);
+    SMARTDEBUFF_AddMsg("/sdb - " .. SMARTDEBUFF_MSG_SDB, true);
+  end
   isInit = true;
 
   if (O.VersionNr == nil or O.VersionNr < SMARTDEBUFF_VERSIONNR) then
@@ -2874,10 +2877,8 @@ function SmartDebuff_SetButtonBars(btn, unit, unitclass)
         end
         if name ~= nil then
             sbb_s = texture;
-            sbb_exp = tonumber(expirationTime);
-            if sbb_exp == 0 or sbb_exp == nil or sbb_exp == "" then
-              sbb_exp = 0
-            else
+            sbb_exp = tonumber(expirationTime) or 0;
+            if sbb_exp > 0 then
               sbb_exp = (sbb_exp - GetTime()) / 10 + 0.1;
               if (sbb_exp > 0.9) then
                 sbb_exp = 0.9;
@@ -3568,7 +3569,7 @@ end
 
 function SMARTDEBUFF_PlaySound()
   if (O.UseSound and not isSoundPlayed) then
-    PlaySoundFile(SMARTDEBUFF_SOUNDS[O.Sound][2]);
+    PlaySoundFile(SMARTDEBUFF_SOUNDS[O.Sound][2], "master");
     isSoundPlayed = true;
     --SMARTDEBUFF_AddMsgD("Play sound");
   end
@@ -3810,6 +3811,7 @@ local function GlobalLoadSave(L, S)
   S.AutoHide = L.AutoHide;
   S.StopCast = L.StopCast or false;
   S.IgnoreDebuff = L.IgnoreDebuff or true;
+  S.ChatNotif = L.ChatNotif or true;
   S.ShowVehicles = L.ShowVehicles;
 end
 
@@ -4151,7 +4153,7 @@ function SmartDebuff_SoundsBtnOnClick(self, button)
   if (SmartDebuffFrame.SoundHandle) then
     StopSound(SmartDebuffFrame.SoundHandle);
   end
-  SmartDebuffFrame.SoundHandle = select(2, PlaySoundFile(SMARTDEBUFF_SOUNDS[n][2]));
+  SmartDebuffFrame.SoundHandle = select(2, PlaySoundFile(SMARTDEBUFF_SOUNDS[n][2], "master"));
   SmartDebuffSpellGuard_txtIn:ClearFocus();
 end
 

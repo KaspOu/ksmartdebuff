@@ -7,9 +7,8 @@ if (GetLocale() == "frFR") then
 SMARTDEBUFF_UPGRADED = "SmartDebuff mis \195\160 jour : "..SMARTDEBUFF_VERSION;
 
 SMARTDEBUFF_WHATSNEW = "|cffffffffNouveaut\195\169s:|r\n\n"
-  .."- Mis \195\160 jour pour DragonFlight !\n\n"
-  .."- L'\195\137vocateur est g\195\169r\195\169\n\n"
-  .."- Bug majeurs corrig\195\169s\n\n"
+  .."- Le son jou\195\169 utilise le canal Ma\195\174tre\n\n"
+  .."- La notification en chat au chargement est maintenant optionnelle\n\n"
   ;
 
 -- Debuff types, in english in game!
