@@ -5,9 +5,8 @@
 SMARTDEBUFF_UPGRADED = "SmartDebuff upgraded to "..SMARTDEBUFF_VERSION;
 -- Whats new info
 SMARTDEBUFF_WHATSNEW = "|cffffffffWhats new:|r\n\n"
-  .."- Reloaded for DragonFlight!\n\n"
-  .."- Evoker supported\n\n"
-  .."- Major bugs fixed\n\n"
+  .."- Played sound uses master channel instead of SFX\n\n"
+  .."- Initial chat notification is now optional\n\n"
   ;
 
 
@@ -113,6 +112,7 @@ SMARTDEBUFF_OFT_SPACEY         = "Space Y";
 SMARTDEBUFF_OFT_TESTMODE       = "Test Mode";
 SMARTDEBUFF_OFT_STOPCAST       = "Stop Casting";
 SMARTDEBUFF_OFT_IGNOREDEBUFF   = "Ignore Debuffs";
+SMARTDEBUFF_OFT_CHATNOTIF        = "Chat notification";
 SMARTDEBUFF_OFT_RESET_KEYS     = "Reset the SmartDebuff spell bindings to default?\nThis action is only necessary, if you have the feeling\nthat not all debuffs are correctly detected.";
 
 SMARTDEBUFF_AOFT_SORTBYCLASS   = "Sort by class order";
@@ -155,6 +155,7 @@ SMARTDEBUFF_TT_ROLE            = "Displays the unit buttons\norder by role.";
 SMARTDEBUFF_TT_ADVANCHORS      = "Displays and uses the advanced\nanchoring setup for the debuff\nframe.";
 SMARTDEBUFF_TT_STOPCAST        = "Stops immediately the current\ncasting or channeling,\nto cast the defined spell.\n(Debuff spells only)";
 SMARTDEBUFF_TT_IGNOREDEBUFF    = "Ignores the debuff on the unit\nif your debuff spell is on cooldown";
+SMARTDEBUFF_TT_CHATNOTIF         = "Displays chat messages on load";
 
 --SMARTDEBUFF_TT_COLUMNS         = "Columns";
 --SMARTDEBUFF_TT_INTERVAL        = "Interval";

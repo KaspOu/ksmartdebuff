@@ -1,3 +1,7 @@
+v10.0.205
+ - Sound uses master channel instead of SFX (is played even if SFX are off).
+ - Initial chat notification is now optional.
+
 v10.0.204
  - Fix UI visibility (mana / hp bars)
 

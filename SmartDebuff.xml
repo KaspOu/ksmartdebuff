@@ -2420,6 +2420,43 @@
         </Scripts>
       </CheckButton>
 
+      <CheckButton name="$parent_cbChatNotif" inherits="InterfaceOptionsCheckButtonTemplate">
+        <HitRectInsets>
+          <AbsInset left="0" right="0" top="0" bottom="0"/>
+        </HitRectInsets>
+        <Size>
+          <AbsDimension x="16" y="16"/>
+        </Size>
+        <Anchors>
+          <Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="$parent_cbAdvAnchors">
+            <Offset>
+              <AbsDimension x="0" y="-16"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnLoad>
+            _G[self:GetName().."Text"]:SetText(SMARTDEBUFF_OFT_CHATNOTIF);
+          </OnLoad>
+          <OnShow>
+            if (SMARTDEBUFF_Options) then
+              self:SetChecked(SMARTDEBUFF_Options.ChatNotif);
+            end
+          </OnShow>
+          <OnClick>
+            if (SMARTDEBUFF_Options) then
+              SMARTDEBUFF_Options.ChatNotif = not SMARTDEBUFF_Options.ChatNotif;
+            end
+          </OnClick>
+          <OnEnter>
+            SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_CHATNOTIF, SMARTDEBUFF_TT_CHATNOTIF);
+          </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
+        </Scripts>
+      </CheckButton>
+
       <CheckButton name="$parent_cbIgnoreDebuff" inherits="InterfaceOptionsCheckButtonTemplate" hidden="false">
         <HitRectInsets>
           <AbsInset left="0" right="0" top="0" bottom="0"/>
@@ -2428,9 +2465,9 @@
           <AbsDimension x="16" y="16"/>
         </Size>
         <Anchors>
-          <Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="$parent_cbStopCast">
+          <Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="$parent_cbChatNotif">
             <Offset>
-              <AbsDimension x="0" y="-16"/>
+              <AbsDimension x="152" y="0"/>
             </Offset>
           </Anchor>
         </Anchors>
