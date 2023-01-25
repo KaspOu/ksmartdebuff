@@ -6,7 +6,7 @@ if (GetLocale() == "frFR") then
 
 SMARTDEBUFF_UPGRADED = "SmartDebuff mis \195\160 jour : "..SMARTDEBUFF_VERSION;
 
-SMARTDEBUFF_WHATSNEW = "|cffffffffNouveaut\195\169s:|r\n\n"
+SMARTDEBUFF_WHATSNEW = "|cffffffffNouveaut\195\169s :|r\n\n"
   .."- Le son jou\195\169 utilise le canal Ma\195\174tre\n\n"
   .."- La notification en chat au chargement est maintenant optionnelle\n\n"
   ;

@@ -1,3 +1,6 @@
+v10.0.206
+ - Wow DF 10.0.5
+
 v10.0.205
  - Sound uses master channel instead of SFX (is played even if SFX are off).
  - Initial chat notification is now optional.
