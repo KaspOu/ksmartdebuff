@@ -2014,7 +2014,7 @@ function SMARTDEBUFF_CreateButtons()
       end
 
       button:EnableMouse(true);
-      button:RegisterForClicks("LeftButtonUp", "RightButtonUp", "MiddleButtonUp");
+      button:RegisterForClicks("AnyUp", "AnyDown");
       button:SetScript("OnEnter", SMARTDEBUFF_ButtonTooltipOnEnter);
       button:SetScript("OnLeave", SMARTDEBUFF_ButtonTooltipOnLeave);
 
@@ -3850,7 +3850,7 @@ local function CreateScrollButton(name, parent, cBtn, onClick, onDragStop)
 	local button = CreateFrame("Button", name, parent);
 	button:SetWidth(parent:GetWidth());
 	button:SetHeight(ScrBtnHeight);
-  button:RegisterForClicks("LeftButtonUp", "RightButtonUp");
+  button:RegisterForClicks("AnyUp", "AnyDown");
 	button:SetScript("OnClick", onClick);
 
   if (onDragStop ~= nil) then
