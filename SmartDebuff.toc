@@ -1,7 +1,7 @@
-## Interface: 100007
+## Interface: 100100
 ## Title: Smart|cffffffffDebuff|r Reloaded by |cff00ff00Kallye|r & |cff00ff00Aeldra|r
 ## Title-frFR: Smart|cffffffffDebuff|r Reloaded, par |cff00ff00Kallye|r & |cff00ff00Aeldra|r
-## Version: 10.0.701
+## Version: 10.1.001
 ## Author: |cff00ff00Kallye|r (EU-Elune) , forked from |cff20d2ffAeldra|r (EU-Proudmoore)
 ## Notes: Use << |cff00ff00/sdb|r >> for debuff frame.
 ## Notes-deDE: Benutze << |cff00ff00/sdb|r >> um das Debuff-Fenster zu offnen
