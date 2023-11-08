@@ -1604,9 +1604,15 @@ function SMARTDEBUFF_command(msgIn)
     SMARTDEBUFF_AddMsg("bsx # -  " .. "Button space X # = 0-16", true);
     SMARTDEBUFF_AddMsg("bsy # -  " .. "Button space Y # = 0-16", true);
     SMARTDEBUFF_AddMsg("tm # -  " .. "Test mode # = number of buttons", true);
-    SMARTDEBUFF_AddMsg("rafp  -  " .. "Reset all frame positions", true);
+    SMARTDEBUFF_AddMsg("new  -  " .. "Show What's new window", true);
+    SMARTDEBUFF_AddMsg("rafp  -  " .. "Reset all frames positions", true);
   elseif (msg == "options" or msg == "o") then
     SMARTDEBUFF_ToggleOF();
+  elseif (msg == "new") then
+    SMARTDEBUFF_ToggleOF();
+    SMARTDEBUFF_ToggleAOFKeys();
+    SmartDebuffWNF_lblText:SetText(SMARTDEBUFF_WHATSNEW);
+    ShowF(SmartDebuffWNF);
   elseif (msg == "rafp") then
     SmartDebuffSF:ClearAllPoints();
     O.SFPosX = 400;
