@@ -5,9 +5,7 @@
 SMARTDEBUFF_UPGRADED = "SmartDebuff upgraded to "..SMARTDEBUFF_VERSION;
 -- Whats new info
 SMARTDEBUFF_WHATSNEW = "|cffffffffWhats new:|r\n\n"
-  .."- Played sound uses master channel instead of SFX\n\n"
-  .."- Initial chat notification is now optional\n\n"
-  .."- Pet buttons are now fixed\n\n"
+  .."- Update compatibility with 10.2.0\n\n"
   ;
 
 
