@@ -4,12 +4,18 @@
 
 SMARTDEBUFF_UPGRADED = "SmartDebuff upgraded to "..SMARTDEBUFF_VERSION;
 -- Whats new info
-SMARTDEBUFF_WHATSNEW = "|cffffffffWhats new:|r\n\n"
-  .."- Update compatibility with 10.2.0\n\n"
+SMARTDEBUFF_WHATSNEW = "|cffffffffWhats new:\n\n"
+  .."- Many fixes: Reset recommended!|r\n\n"
+  .."- Detection list of spells fully updated for DF\n\n"
+  .."- Detects dispels enhanced by healer talent\n\n"
+  .."- Fixed spells shortcuts icons display\n\n"
+  .."- French localization at last\n\n"
+  .."- Update compatibility with 10.2.5\n\n"
   ;
 
-
--- Debuff types
+--@do-not-package@
+-- Debuff types, in english in game! => global
+--[[
 SMARTDEBUFF_DISEASE = "Disease";
 SMARTDEBUFF_MAGIC   = "Magic";
 SMARTDEBUFF_POISON  = "Poison";
@@ -17,6 +23,8 @@ SMARTDEBUFF_CURSE   = "Curse";
 SMARTDEBUFF_CHARMED = "Mind Control";
 SMARTDEBUFF_BLEEDING   = "Bleeding";
 SMARTDEBUFF_HEAL    = "Heal";
+]]--
+--@end-do-not-package@
 
 
 -- Creatures
@@ -35,6 +43,9 @@ for _, class in ipairs(CLASS_SORT_ORDER) do SMARTDEBUFF_CLASSES[class] = LOCALIZ
 -- Bindings
 BINDING_NAME_SMARTDEBUFF_BIND_OPTIONS = "Options frame";
 
+SMARTDEBUFF_KEY_L = "L";
+SMARTDEBUFF_KEY_M = "M";
+SMARTDEBUFF_KEY_R = "R";
 SMARTDEBUFF_KEYS = {["L"]  = "Left",
                     ["R"]  = "Right",
                     ["M"]  = "Middle",
@@ -174,6 +185,7 @@ SMARTDEBUFF_TT_DROPITEM        = "Item click:\nLeft to pickup\nShift-Left to clo
 SMARTDEBUFF_TT_DROPMACRO       = "Macro click:\nLeft to pickup\nShift-Left to clone\nRight to remove";
 SMARTDEBUFF_TT_TARGET          = "Target";
 SMARTDEBUFF_TT_TARGETINFO      = "Selects the specified unit\nas the current target.";
+SMARTDEBUFF_TT_MISSINGINFO     = "Spell temporarily inactive with current\nSpecialization/Talents.";
 SMARTDEBUFF_TT_DROPTARGET      = "Mouse click:\nRight to remove";
 SMARTDEBUFF_TT_DROPACTION      = "Pet action:\nRemove not possible!";
 SMARTDEBUFF_TT_MENU            = "Menu";
@@ -181,11 +193,13 @@ SMARTDEBUFF_TT_MENUINFO        = "Opens the unit options menu.";
 SMARTDEBUFF_TT_DROPMENU        = "Mouse click:\nRight to remove";
 
 --Tooltips added by Semi#1287
-SMARTDEBUFF_TT_OPTIONS		   		= "Left click: Open options\n|cff20d2ff- O button -|r";
+SMARTDEBUFF_TT_OPTIONS		   		= "|cff20d2ff- O button -|r\nLeft click: Open options";
+SMARTDEBUFF_OFT_CLASSSORT       = "Sorted list of classes";
+SMARTDEBUFF_TT_CLASSSORT        = "Click to modify the class order";
 SMARTDEBUFF_OFT_NOTREMOVABLE_LIST 	= "Debuff Guard List";
 SMARTDEBUFF_TT_NOTREMOVABLE_LIST 	= "Click to Edit List";
-SMARTDEBUFF_OFT_SKILLS 				= "Skill Menu";
-SMARTDEBUFF_TT_SKILLS				= "Click to Edit Skill Quick Slots";
+SMARTDEBUFF_OFT_SKILLS 				= "Mouse shortcuts";
+SMARTDEBUFF_TT_SKILLS				= "Click to edit mouse shortcuts\n(L/R/M clicks with Alt/Shift/Ctrl)\n\n"..RD.."Activate your right talents before";
 SMARTDEBUFF_OFT_SHOWDEBUFFGUARD 	= "Spell Guard List";
 SMARTDEBUFF_TT_SHOWDEBUFFGUARD 		= "Click to Edit\nList of Spells to Track";
 SMARTDEBUFF_TT_SOUNDLIST 			= "Click to Select Sound";

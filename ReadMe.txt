@@ -72,7 +72,7 @@ Type /sdbo or /sdbm for SmartDebuff options frame in game
 Please send me a mail or write a comment if you discover Bugs or have Suggestions.
 
 Contact:
-aeldra@sonnenkinder.org
+https://www.curseforge.com/wow/addons/smartdebuff-reloaded
 
 
 ***********************************************************************

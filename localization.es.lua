@@ -5,6 +5,7 @@
 if (GetLocale() == "esES") then
 
 
+--@do-not-package@
 -- Debuff types, in english in game!
 --[[
 SMARTDEBUFF_DISEASE = "Enfermedad";
@@ -14,7 +15,7 @@ SMARTDEBUFF_CURSE   = "Maldici\195\179n";
 SMARTDEBUFF_CHARMED = "Control mental";
 SMARTDEBUFF_HEAL    = "Sanar";
 ]]--
-
+--@end-do-not-package@
 
 -- Creatures
 SMARTDEBUFF_HUMANOID  = "Humanoide";
@@ -104,29 +105,29 @@ SMARTDEBUFF_S_TITLE            = "Debuff alarma tono";
 -- Tooltip text
 SMARTDEBUFF_TT                 = "May\195\186sculas-arrastrar izquierdo: Mover marco\n|cff20d2ff- S bot\195\179n -|r\nClick Izquierdo: Mostrar por clases\nMay\195\186scuals-Click Izquierdo: Colores de clase\nAlt-Click izquierdo: Destacar L/R\nClick derecho: Fondo";
 SMARTDEBUFF_TT_TARGETMODE      = "En modo objetivo |cff20d2ffClick izquierdo|r selecciona la unidad y |cff20d2ffClick derecho|r lanza el hechizo m\195\161s r\195\161pido de curaci\195\179n.\nUsar |cff20d2ffAlt-Click derecho/izquierdo|r para debuff.";
-SMARTDEBUFF_TT_NOTREMOVABLE    = "Displays critical debuffs\nwhich are not removable.";
-SMARTDEBUFF_TT_HP              = "Displays actual health\npoints of the unit.";
-SMARTDEBUFF_TT_MANA            = "Displays actual mana\npool of the unit.";
-SMARTDEBUFF_TT_HPTEXT          = "Displays actual hp/mana\npool as percentage of\nthe unit as text.";
-SMARTDEBUFF_TT_INVERT          = "Displays health points\nand mana pool inverted.";
-SMARTDEBUFF_TT_CLASSVIEW       = "Displays the unit buttons\norder by class.";
-SMARTDEBUFF_TT_CLASSCOLOR      = "Displays the unit buttons in\ntheir corresponding class colors.";
-SMARTDEBUFF_TT_SHOWLR          = "Displays the corresponding\nmouse button (L/R/M), if\na unit has a debuff.";
-SMARTDEBUFF_TT_HEADERS         = "Displays the class name\nas header row.";
-SMARTDEBUFF_TT_GROUPNR         = "Displays the group number\nin front of the unit name.";
-SMARTDEBUFF_TT_SOUND           = "Plays a sound, if a\nunit gets a debuff.";
-SMARTDEBUFF_TT_TOOLTIP         = "Displays the tooltip,\nonly out of combat.";
-SMARTDEBUFF_TT_HEALRANGE       = "Displays a red boarder,\nif your spell is out of range.";
-SMARTDEBUFF_TT_SHOWAGGRO       = "Displays which\nunit has aggro.";
-SMARTDEBUFF_TT_VERTICAL        = "Displays the units\nvertical arranged.";
-SMARTDEBUFF_TT_VERTICALUP      = "Displays the units\nfrom bottom to top.";
-SMARTDEBUFF_TT_HEADERROW       = "Displays header row,\nincluding menu buttons.";
-SMARTDEBUFF_TT_BACKDROP        = "Displays a black\nbackground frame.";
-SMARTDEBUFF_TT_SHOWGRADIENT    = "Displays the unit buttons\nwith color gradient.";
-SMARTDEBUFF_TT_INFOFRAME       = "Displays the summary frame,\nonly in group or raid setup.";
-SMARTDEBUFF_TT_AUTOHIDE        = "Hides the unit buttons automatically,\nif you are out of combat and\nno one has a debuff.";
-SMARTDEBUFF_TT_VEHICLE         = "Displays in addition the vehicle of\na unit  as own button.";
-SMARTDEBUFF_TT_SHOWRAIDICON    = "Displays the raid icon\nof the unit.";
+SMARTDEBUFF_TT_NOTREMOVABLE    = "Muestra debuffs críticos\nque no son removibles.";
+SMARTDEBUFF_TT_HP              = "Muestra los puntos de salud\nactuales de la unidad.";
+SMARTDEBUFF_TT_MANA            = "Muestra la cantidad de mana\nactual de la unidad.";
+SMARTDEBUFF_TT_HPTEXT          = "Muestra la cantidad de hp/mana\nactual como porcentaje de\nla unidad en texto.";
+SMARTDEBUFF_TT_INVERT          = "Muestra los puntos de salud\ny el mana de forma invertida.";
+SMARTDEBUFF_TT_CLASSVIEW       = "Muestra los botones de unidad\nordenados por clase.";
+SMARTDEBUFF_TT_CLASSCOLOR      = "Muestra los botones de unidad en\nlos colores correspondientes a su clase.";
+SMARTDEBUFF_TT_SHOWLR          = "Muestra el botón del mouse correspondiente\n(L/R/M), si una unidad tiene un debuff.";
+SMARTDEBUFF_TT_HEADERS         = "Muestra el nombre de la clase\ncomo fila de encabezado.";
+SMARTDEBUFF_TT_GROUPNR         = "Muestra el número de grupo\nfrente al nombre de la unidad.";
+SMARTDEBUFF_TT_SOUND           = "Reproduce un sonido, si una\nunidad recibe un debuff.";
+SMARTDEBUFF_TT_TOOLTIP         = "Muestra la descripción emergente,\nsolo fuera de combate.";
+SMARTDEBUFF_TT_HEALRANGE       = "Muestra un borde rojo,\nsi tu hechizo está fuera de alcance.";
+SMARTDEBUFF_TT_SHOWAGGRO       = "Muestra qué\nunidad tiene aggro.";
+SMARTDEBUFF_TT_VERTICAL        = "Muestra las unidades\norganizadas verticalmente.";
+SMARTDEBUFF_TT_VERTICALUP      = "Muestra las unidades\nde abajo hacia arriba.";
+SMARTDEBUFF_TT_HEADERROW       = "Muestra la fila de encabezado,\nincluyendo los botones de menú.";
+SMARTDEBUFF_TT_BACKDROP        = "Muestra un marco de\nfondo negro.";
+SMARTDEBUFF_TT_SHOWGRADIENT    = "Muestra los botones de unidad\ncon gradiente de color.";
+SMARTDEBUFF_TT_INFOFRAME       = "Muestra el marco de resumen,\nsolo en configuración de grupo o raid.";
+SMARTDEBUFF_TT_AUTOHIDE        = "Oculta automáticamente los botones de unidad,\nsi estás fuera de combate y\nnadie tiene un debuff.";
+SMARTDEBUFF_TT_VEHICLE         = "Muestra además el vehículo de\nla unidad como su propio botón.";
+SMARTDEBUFF_TT_SHOWRAIDICON    = "Muestra el icono de raid\nde la unidad.";
 
 --SMARTDEBUFF_TT_COLUMNS         = "Columns";
 --SMARTDEBUFF_TT_INTERVAL        = "Interval";
@@ -138,26 +139,26 @@ SMARTDEBUFF_TT_SHOWRAIDICON    = "Displays the raid icon\nof the unit.";
 --SMARTDEBUFF_TT_OPACITYOOR      = "Opacity out of range";
 --SMARTDEBUFF_TT_OPACITYDEBUFF   = "Opacity debuff";
 
--- Tooltip text key bindings
-SMARTDEBUFF_TT_DROP            = "Drop";
-SMARTDEBUFF_TT_DROPINFO        = "Drop a spell/item/macro\nof your book/inventory.\n|cff00ff00Left click set target function.";
-SMARTDEBUFF_TT_DROPSPELL       = "Spell click:\nLeft to pickup\nShift-Left to clone\nRight to remove";
-SMARTDEBUFF_TT_DROPITEM        = "Item click:\nLeft to pickup\nShift-Left to clone\nRight to remove";
-SMARTDEBUFF_TT_DROPMACRO       = "Macro click:\nLeft to pickup\nShift-Left to clone\nRight to remove";
-SMARTDEBUFF_TT_TARGET          = "Target";
-SMARTDEBUFF_TT_TARGETINFO      = "Selects the specified unit\nas the current target.";
-SMARTDEBUFF_TT_DROPTARGET      = "Unit click:\nRemove";
-SMARTDEBUFF_TT_DROPACTION      = "Pet action:\nRemove not possible!";
+-- -- Tooltip text key bindings
+-- SMARTDEBUFF_TT_DROP            = "Drop";
+-- SMARTDEBUFF_TT_DROPINFO        = "Drop a spell/item/macro\nof your book/inventory.\n|cff00ff00Left click set target function.";
+-- SMARTDEBUFF_TT_DROPSPELL       = "Spell click:\nLeft to pickup\nShift-Left to clone\nRight to remove";
+-- SMARTDEBUFF_TT_DROPITEM        = "Item click:\nLeft to pickup\nShift-Left to clone\nRight to remove";
+-- SMARTDEBUFF_TT_DROPMACRO       = "Macro click:\nLeft to pickup\nShift-Left to clone\nRight to remove";
+-- SMARTDEBUFF_TT_TARGET          = "Target";
+-- SMARTDEBUFF_TT_TARGETINFO      = "Selects the specified unit\nas the current target.";
+-- SMARTDEBUFF_TT_DROPTARGET      = "Unit click:\nRemove";
+-- SMARTDEBUFF_TT_DROPACTION      = "Pet action:\nRemove not possible!";
 
---Tooltips added by Semi#1287
-SMARTDEBUFF_TT_OPTIONS		   		= "Left click: Open options\n|cff20d2ff- O button -|r";
-SMARTDEBUFF_OFT_NOTREMOVABLE_LIST 	= "Debuff Guard List";
-SMARTDEBUFF_TT_NOTREMOVABLE_LIST 	= "Click to Edit List";
-SMARTDEBUFF_OFT_SKILLS 				= "Skill Menu";
-SMARTDEBUFF_TT_SKILLS				= "Click to Edit Skill Quick Slots";
-SMARTDEBUFF_OFT_SHOWDEBUFFGUARD 	= "Spell Guard List";
-SMARTDEBUFF_TT_SHOWDEBUFFGUARD 		= "Click to Edit\nList of Spells to Track";
-SMARTDEBUFF_TT_SOUNDLIST 			= "Click to Select Sound";
+-- --Tooltips added by Semi#1287
+-- SMARTDEBUFF_TT_OPTIONS		   		= "Left click: Open options\n|cff20d2ff- O button -|r";
+-- SMARTDEBUFF_OFT_NOTREMOVABLE_LIST 	= "Debuff Guard List";
+-- SMARTDEBUFF_TT_NOTREMOVABLE_LIST 	= "Click to Edit List";
+-- SMARTDEBUFF_OFT_SKILLS 				= "Skill Menu";
+-- SMARTDEBUFF_TT_SKILLS				= "Click to Edit Skill Quick Slots";
+-- SMARTDEBUFF_OFT_SHOWDEBUFFGUARD 	= "Spell Guard List";
+-- SMARTDEBUFF_TT_SHOWDEBUFFGUARD 		= "Click to Edit\nList of Spells to Track";
+-- SMARTDEBUFF_TT_SOUNDLIST 			= "Click to Select Sound";
 
 -- Tooltip support
 SMARTDEBUFF_FUBAR_TT           = "\nClick izquierdo: Abrir opciones\nMay\195\186sulas-Click izquierdo: On/Off";

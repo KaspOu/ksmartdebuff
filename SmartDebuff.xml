@@ -120,7 +120,7 @@
         </Anchors>
         <Scripts>
           <OnLoad>
-            self:RegisterForClicks("AnyUp", "AnyDown");
+            self:RegisterForClicks("AnyDown");
             self:SetAlpha(0.8);
             self:SetNormalFontObject(SmartDebuff_GameFontNormalMicro);
             self:SetHighlightFontObject(SmartDebuff_GameFontHighlightMicro);
@@ -205,7 +205,7 @@
 
     <Scripts>
       <OnLoad>
-        --self:RegisterForClicks("AnyUp", "AnyDown");
+        --self:RegisterForClicks("AnyDown");
         self:RegisterForDrag("LeftButton");
         self:EnableMouse(true);
         self:SetMovable(true);
@@ -1394,6 +1394,12 @@
             --SMARTDEBUFF_ToggleAOFOrder(1);
             SMARTDEBUFF_ClassOrderToggle();
           </OnClick>
+          <OnEnter>
+            SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_CLASSSORT, SMARTDEBUFF_TT_CLASSSORT);
+          </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </Button>
 
@@ -2872,7 +2878,7 @@
 
       <Button name="$parent_btnGlobalSave" inherits="UIPanelButtonTemplate" text="Save">
         <Size>
-          <AbsDimension x="48" y="20" />
+          <AbsDimension x="68" y="20" />
         </Size>
         <Anchors>
           <Anchor point="BOTTOMRIGHT">
@@ -2901,7 +2907,7 @@
 
       <Button name="$parent_btnGlobalLoad" inherits="UIPanelButtonTemplate" text="Load">
         <Size>
-          <AbsDimension x="48" y="20" />
+          <AbsDimension x="68" y="20" />
         </Size>
         <Anchors>
           <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMLEFT" relativeTo="$parent_btnGlobalSave">
