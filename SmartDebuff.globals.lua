@@ -2,7 +2,7 @@
 -- Globals
 -------------------------------------------------------------------------------
 
-SMARTDEBUFF_VERSION       = "v"..GetAddOnMetadata("SmartDebuff", "Version"); -- "v10.0.202"
+SMARTDEBUFF_VERSION       = "v"..C_AddOns.GetAddOnMetadata("SmartDebuff", "Version"); -- "v10.0.202"
 SMARTDEBUFF_VERSIONNR     = tonumber(gsub(SMARTDEBUFF_VERSION, "%D", ""), 10); -- "100202"
 SMARTDEBUFF_TITLE         = "SmartDebuff";
 SMARTDEBUFF_SUBTITLE      = "Debuff support";
@@ -42,8 +42,19 @@ SMARTDEBUFF_TTC_A = 1.0;
 SMARTDEBUFF_OF_HEIGHT = 500;
 SMARTDEBUFF_OF_WIDTH = 500;
 
+-- Debuff types
+SMARTDEBUFF_DISEASE = "Disease";
+SMARTDEBUFF_MAGIC   = "Magic";
+SMARTDEBUFF_POISON  = "Poison";
+SMARTDEBUFF_CURSE   = "Curse";
+SMARTDEBUFF_CHARMED = "Mind Control";
+SMARTDEBUFF_BLEEDING   = "Bleeding"; -- Not a really debuff type
+SMARTDEBUFF_HEAL    = "Heal";
+SMARTDEBUFF_UTIL    = "Utility";
+
 -- Support spell IDs
 SMARTDEBUFF_REJUVENATION_ID       = 774;
+SMARTDEBUFF_WILDCHARGE_ID         = 102401;
 SMARTDEBUFF_RENEW_ID              = 139;
 SMARTDEBUFF_FLASHHEAL_ID          = 2061;
 SMARTDEBUFF_FLASHOFLIGHT_ID       = 19750;
@@ -51,46 +62,147 @@ SMARTDEBUFF_HEALINGSURGE_ID       = 8004;
 SMARTDEBUFF_MISDIRECTION_ID       = 34477;
 SMARTDEBUFF_POLYMORPH_ID          = 118;
 SMARTDEBUFF_HEX_ID                = 51514;
+SMARTDEBUFF_PARALYSIS_ID          = 115078;
+SMARTDEBUFF_IMPRISON_ID           = 217832;
+-- SMARTDEBUFF_PURGE_ID              = 370;
+-- SMARTDEBUFF_GREATER_PURGE_ID      = 378773;
 SMARTDEBUFF_INTERVENE_ID          = 3411;
 SMARTDEBUFF_DEATHCOIL_ID          = 52375;
 SMARTDEBUFF_TRICKS_ID             = 57934;
 SMARTDEBUFF_RENEWINGMIST_ID       = 119611;
 SMARTDEBUFF_LEAPOFFAITH_ID        = 73325;
+SMARTDEBUFF_CAUTERIZINGFLAME_ID   = 374251;
 SMARTDEBUFF_REVERSION_ID          = 367364;
 SMARTDEBUFF_VERDANTEMBRACE_ID     = 360995;
-SMARTDEBUFF_EMERALDBLOSSOM_ID     = 355913;
 
--- Debuff spell IDs
-SMARTDEBUFF_NATURESCURE_ID        = 88423; -- Druid
-SMARTDEBUFF_REMOVECORRUPTION_ID   = 2782;  -- Druid
-SMARTDEBUFF_PURIFY_ID             = 527;   -- Priest
-SMARTDEBUFF_REMOVELESSERCURSE_ID  = 475;   -- Mage
-SMARTDEBUFF_CLEANSE_ID            = 4987;  -- Paladin
-SMARTDEBUFF_CLEANSESPIRIT_ID      = 51886; -- Shaman
-SMARTDEBUFF_PURIFYSPIRIT_ID       = 77130; -- Shaman
-SMARTDEBUFF_PURGE_ID              = 370;   -- Shaman
-SMARTDEBUFF_DETOX_ID              = 115450;-- Monk
-SMARTDEBUFF_EXPUNGE_ID            = 365585;-- Evoker
-SMARTDEBUFF_NATURALIZE_ID         = 360823;-- Evoker
-SMARTDEBUFF_CAUTERIZINGFLAME_ID   = 374251;-- Evoker
+--@do-not-package@
+--[[
+List dispells: https://warcraft.wiki.gg/wiki/Magic_(dispel_type)
+ALL Dispells : https://www.wowhead.com/spells?filter=109;38;0
+Class Dispells only: https://www.wowhead.com/spells/specialization?filter=109;38;0
+Talents dispells: https://www.wowhead.com/spells/talents?filter=109;38;0
+https://wago.tools/db2/SpellDispelType
+
+Format: [ClassName] = { [1] = { Spell_ID, Spell_List, Spell_CheckIsUsable?, Improved_Talent?, Improved_Spell_List?, } }
+]]--
+--@end-do-not-package@
+
+-- Debuff spell IDs (for L button)
+SMARTDEBUFF_CLASS_DISPELLS_LIST_ID = {
+  ["DRUID"]  = {
+    { -- Nature's Cure
+      Spell_ID = 88423,
+      Spell_List = {SMARTDEBUFF_MAGIC},
+      Improved_Talent = 392378,
+      Improved_Spell_List = {SMARTDEBUFF_MAGIC, SMARTDEBUFF_CURSE, SMARTDEBUFF_POISON},
+    },
+    { -- Remove Corruption
+      Spell_ID = 2782,
+      Spell_List = {SMARTDEBUFF_CURSE, SMARTDEBUFF_POISON},
+    },
+  },
+
+  ["EVOKER"] = {
+    { -- Expunge
+      Spell_ID = 365585,
+      Spell_List = {SMARTDEBUFF_POISON},
+    },
+    { -- Naturalize
+      Spell_ID = 360823,
+      Spell_List = {SMARTDEBUFF_MAGIC, SMARTDEBUFF_POISON},
+    },
+    -- Cauterizing Flame set on R
+  },
+
+
+  ["MONK"] = {
+    { -- Detox
+      Spell_ID = 115450,
+      Spell_List = {SMARTDEBUFF_MAGIC},
+      Improved_Talent = 388874,
+      Improved_Spell_List = {SMARTDEBUFF_MAGIC, SMARTDEBUFF_DISEASE, SMARTDEBUFF_POISON},
+    },
+    { -- Detox (again)
+      Spell_ID = 218164,
+      Spell_List = {SMARTDEBUFF_DISEASE, SMARTDEBUFF_POISON},
+    },
+  },
+
+  ["PALADIN"] = {
+    { -- Cleanse
+      Spell_ID = 4987, -- & 413393 ?
+      Spell_List = {SMARTDEBUFF_MAGIC},
+      Improved_Talent = 393024,
+      Improved_Spell_List = {SMARTDEBUFF_MAGIC, SMARTDEBUFF_DISEASE, SMARTDEBUFF_POISON},
+    },
+    { -- Cleanse Toxins
+      Spell_ID = 213644,
+      Spell_List = {SMARTDEBUFF_DISEASE, SMARTDEBUFF_POISON},
+    },
+  },
+
+  ["PRIEST"] = {
+    { -- Purify
+      Spell_ID = 527,
+      Spell_List = {SMARTDEBUFF_MAGIC},
+      Improved_Talent = 390632,
+      Improved_Spell_List = {SMARTDEBUFF_MAGIC, SMARTDEBUFF_DISEASE},
+    },
+    { -- Purify Disease ! Missdetected for Sacred: Check IDs match after SMARTDEBUFF_GetSpellID
+      Spell_ID = 213634,
+      Spell_List = {SMARTDEBUFF_DISEASE},
+    },
+    -- Dispel Magic only enemies
+  },
+
+  ["SHAMAN"] = {
+    { -- Purify Spirit
+      Spell_ID = 77130,
+      Spell_List = {SMARTDEBUFF_MAGIC},
+      Improved_Talent = 383016,
+      Improved_Spell_List = {SMARTDEBUFF_MAGIC, SMARTDEBUFF_CURSE},
+    },
+    { -- Cleanse Spirit
+      Spell_ID = 51886, -- & 234893 ?
+      Spell_List = {SMARTDEBUFF_CURSE},
+    },
+  },
+
+  ["MAGE"] = {
+    { -- Remove Curse
+      Spell_ID = 475,
+      Spell_List = {SMARTDEBUFF_CURSE},
+    },
+  },
+
+  -- ["DEMONHUNTER"] = {
+  --   -- Consume Magic only enemies
+  -- },
+
+  -- ["WARLOCK"] = {
+  --   { -- Singe Magic -- pet, ID missmatch after SMARTDEBUFF_GetSpellID
+  --     Spell_ID = 89808,
+  --     Spell_List = {SMARTDEBUFF_MAGIC},
+  --   },
+  -- },
+}
 
 -- Misc spell IDs
-SMARTDEBUFF_UNENDINGBREATH_ID     = 5697;
 SMARTDEBUFF_PET_IMP_ID            = 89808; -- "Singe Magic"
 
 
 -- Effects ignore list
 SMARTDEBUFF_DEBUFFSKIP_NAME = { };
 SMARTDEBUFF_DEBUFFSKIP_ID = {
-   [1] = 15822, --Dreamless Sleep
-	 [2] = 24360, --Greater Dreamless Sleep
-	 [3] = 28504, --Major Dreamless Sleep
-	 [4] = 2096,  --Mind Vision
-	 [5] = 28169, --Mutating Injection
-   [6] = 710,   --Banish
-   [7] = 4511,  --Phase Shift
-   [8] = 30451, --Arcane Blast
-   [9] = 30108, --Unstable Affliction
+  [ 1] = 15822, --Dreamless Sleep
+	[ 2] = 24360, --Greater Dreamless Sleep
+	[ 3] = 28504, --Major Dreamless Sleep
+	[ 4] = 2096,  --Mind Vision
+	[ 5] = 28169, --Mutating Injection
+  [ 6] = 710,   --Banish
+  [ 7] = 4511,  --Phase Shift
+  [ 8] = 30451, --Arcane Blast
+  [ 9] = 30108, --Unstable Affliction
   [10] = 13810, --Frost Trap Aura
   [11] = 30108, --Unstable Affliction
   [12] = 19372, --Ancient Hysteria

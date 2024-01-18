@@ -84,6 +84,7 @@ local imgSDB        = "Interface\\Icons\\Spell_Holy_LayOnHands";
 local imgActionSlot = "Interface/Buttons/UI-Quickslot2";
 local imgTarget     = nil;
 local imgMenu       = nil;
+local imgMissing    = nil;
 
 local DebugChatFrame = DEFAULT_CHAT_FRAME;
 
@@ -193,10 +194,7 @@ end
 
 -- Returns "" instead of nil
 local function ChkS(text)
-  if (text == nil) then
-    text = "";
-  end
-  return text;
+  return text or "";
 end
 
 -- Set texture on the key binding options frame
@@ -249,7 +247,7 @@ local function GetActionKeyInfo(mode, i)
         if (aType == "spell") then
           aId = SMARTDEBUFF_GetSpellID(aName, aRank);
           O.Keys[mode][cOrderKeys[i]][4] = aId;
-          --SMARTDEBUFF_AddMsgD("Id = "..ChkS(aId)..", Name = "..aName);
+          -- SMARTDEBUFF_AddMsgD("Id = "..ChkS(aId)..", Name = "..aName);
           if (not aLink) then
             O.Keys[mode][cOrderKeys[i]][5] = BOOKTYPE_SPELL;
           end
@@ -340,6 +338,7 @@ function SMARTDEBUFF_OnLoad(self)
   self:RegisterEvent("UNIT_EXITED_VEHICLE");
 
   self:RegisterEvent("SPELLS_CHANGED");
+  self:RegisterEvent("TRAIT_CONFIG_UPDATED");
   self:RegisterEvent("UNIT_PET");
 
   --One of them allows SmartDebuff to be closed with the Escape key
@@ -411,8 +410,10 @@ function SMARTDEBUFF_OnEvent(self, event, ...)
     SMARTDEBUFF_Ticker(true);
     SMARTDEBUFF_CheckIF();
 
-  elseif (event == "SPELLS_CHANGED") then
+  elseif (event == "SPELLS_CHANGED" or event == "TRAIT_CONFIG_UPDATED") then
+    SMARTDEBUFF_AddMsgD("Event: "..event);
     isSetSpells = true;
+    SMARTDEBUFF_Ticker(false);
   end
 
 end
@@ -427,7 +428,7 @@ function SMARTDEBUFF_OnUpdate(self, elapsed)
     ou_time = ou_time + elapsed;
     if (not isTTreeLoaded and ou_time > 0.5) then
       if (C_ClassTalents.CanCreateNewConfig()) then
-        --DEFAULT_CHAT_FRAME:AddMessage("Talent tree ready ("..ou_time.."sec) -> Init SDB");
+        SMARTDEBUFF_AddMsgD("Talent tree ready ("..ou_time.."sec) -> Init SDB");
         isTTreeLoaded = true;
         SMARTDEBUFF_OnEvent(self, "ONUPDATE");
       end
@@ -513,38 +514,13 @@ end
 function SMARTDEBUFF_CheckWarlockPet()
   if (sPlayerClass == "WARLOCK") then
     isSpellActive = false;
-    --SetActionInfoId(1, 1, nil);
-    --SetActionInfoId(2, 7, nil);
     if (UnitExists("pet")) then
       local ucf = UnitCreatureFamily("pet");
       if (ucf == SMARTDEBUFF_IMP) then
-        --[[
-        -- Detect spells on the pet action bar
-        local i = 1;
-        local name, subtext, texture;
-        for i = 1, 10, 1 do
-          name, subtext, texture = GetPetActionInfo(i);
-          if (name and name == GetSpellInfo(SMARTDEBUFF_PET_IMP_ID)) then
-            subtext = "";
-            SmartDebuffTooltip:ClearLines();
-            SmartDebuffTooltip:SetPetAction(i);
-            for j = 4, SmartDebuffTooltip:NumLines(), 1 do
-              subtext = subtext..SMARTDEBUFF_GetTooltipLine(j).."\n";
-            end
-            --SetActionInfo(1, 1, "action", name, subtext, i, texture);
-            --SetActionInfo(2, 7, "action", name, subtext, i, texture);
-            isSpellActive = true;
-            SMARTDEBUFF_AddMsgD("Warlock pet spell found: " .. GetSpellInfo(SMARTDEBUFF_PET_IMP_ID));
-            break;
-          end
-        end
-        ]]--
         isSpellActive = true;
         SMARTDEBUFF_AddMsgD("Warlock debuff pet found: " .. SMARTDEBUFF_IMP);
       end
     end
-  else
-    isSpellActive = true;
   end
 end
 
@@ -629,7 +605,7 @@ function SMARTDEBUFF_SetUnits()
     SMARTDEBUFF_AddMsgD("Solo Unit-Setup finished");
   end
 
-  --SMARTDEBUFF_CheckWarlockPet();
+  SMARTDEBUFF_CheckWarlockPet();
   SMARTDEBUFF_SetButtons();
   SMARTDEBUFF_CheckIF();
 end
@@ -779,28 +755,14 @@ function SmartDebuffOFSlider_OnLoad(self, low, high, step)
 end
 
 function SMARTDEBUFF_HideAllButThis(self)
-  iLastItem = 1;
-  if (self ~= SmartDebuffAOFKeys and SmartDebuffAOFKeys:IsVisible()) then
-    SmartDebuffAOFKeys:Hide();
-  end
-  if (self ~= SmartDebuffClassOrder and SmartDebuffClassOrder:IsVisible()) then
-    SmartDebuffClassOrder:Hide();
-  end
-  if (self ~= SmartDebuffNRDebuffs and SmartDebuffNRDebuffs:IsVisible()) then
-    SmartDebuffNRDebuffs:Hide();
-  end
-  if (self ~= SmartDebuffSpellGuard and SmartDebuffSpellGuard:IsVisible()) then
-    SmartDebuffSpellGuard:Hide();
-  end
-  if (self ~= SmartDebuffSounds and SmartDebuffSounds:IsVisible()) then
-    SmartDebuffSounds:Hide();
-  end
-  if (self ~= SmartDebuffColors and SmartDebuffColors:IsVisible()) then
-    SmartDebuffColors:Hide();
+  local elements = {SmartDebuffAOFKeys, SmartDebuffClassOrder, SmartDebuffNRDebuffs, SmartDebuffSpellGuard, SmartDebuffSounds, SmartDebuffColors}
+  
+  for _, element in ipairs(elements) do
+    if self ~= element and element:IsVisible() then
+      element:Hide()
+    end
   end
 end
--- END Bool helper functions
-
 
 -- IsFeignDeath(unit)
 local ifd_name, ifd_icon, ifd_i;
@@ -870,16 +832,16 @@ function SMARTDEBUFF_GetSpellID(spellname, rank, book)
     if (skillType == "FUTURESPELL" or not IsSpellKnown(spellId)) then return nil; end
   end
 
-  return id;
+  return spellId;
 end
 -- END SMARTDEBUFF_GetSpellID
 
 
 function SMARTDEBUFF_SetSpells()
   canDebuff = true;
-  sName = nil;
+  local sName = nil;
   sRangeCheckSpell = nil;
-  cSpellName = { };
+  cSpellName = { }; -- SpellGuard
   cSpellList = { };
   cSpellDefault = { };
   cSpellDefault[1] = { };
@@ -890,28 +852,37 @@ function SMARTDEBUFF_SetSpells()
   local curSpec = GetSpecialization();
   if (curSpec ~= nil) then
     sRole = GetSpecializationRole(curSpec);
-    --print(sRole);
   end
 
   -- check debuff spells
   -- name, rank, icon, cost, isFunnel, powerType, castTime, minRange, maxRange = GetSpellInfo(spellId or spellName or spellLink)
+
+  SMARTDEBUFF_AddMsgD("--- Smart Debuff Set spells --- "..sPlayerClass.." - "..sRole);
+  -- Dispells abilities
+  if (sPlayerClass and sRole and SMARTDEBUFF_CLASS_DISPELLS_LIST_ID[sPlayerClass]) then
+      SMARTDEBUFF_AddMsgD("Checking for class dispells...");
+      for _, val in ipairs(SMARTDEBUFF_CLASS_DISPELLS_LIST_ID[sPlayerClass]) do
+        sName = GetSpellInfo(val.Spell_ID);
+        -- Enforce ID match to avoid missdetection (ie: Sacred Priest's Purify Disease)
+        if (sName and (val.Spell_ID == SMARTDEBUFF_GetSpellID(sName)) ) then
+          cSpellList[sName] = val.Spell_List;
+          SMARTDEBUFF_AddMsgD("Debuff spell found: " .. sName.." - "..strjoin(" ",unpack(cSpellList[sName])));
+          if (val.Improved_Talent and IsSpellTalented(val.Improved_Talent)) then
+            cSpellList[sName] = val.Improved_Spell_List;
+            SMARTDEBUFF_AddMsgD("Debuff spell improved! - : "..strjoin(" ",unpack(cSpellList[sName])));
+          end
+          cSpellDefault[1] = {1, 7, sName};
+        end
+      end
+  end
+  -- Utility and heal abilities: cSpellDefault 1=L, 2=R, 3=M, 10=AL
   if (sPlayerClass == "DRUID") then
-    if (sRole == "HEALER") then
-      -- Nature's Cure
-      sName = GetSpellInfo(SMARTDEBUFF_NATURESCURE_ID);
-      if (sName and SMARTDEBUFF_GetSpellID(sName)) then
-        SMARTDEBUFF_AddMsgD("Debuff spell found: " .. sName);
-        cSpellList[sName] = {SMARTDEBUFF_CURSE, SMARTDEBUFF_POISON, SMARTDEBUFF_MAGIC};
-        cSpellDefault[1] = {1, 7, sName};
-      end
-    else
-      -- Remove Corruption
-      sName = GetSpellInfo(SMARTDEBUFF_REMOVECORRUPTION_ID);
-      if (sName and SMARTDEBUFF_GetSpellID(sName)) then
-        SMARTDEBUFF_AddMsgD("Debuff spell found: " .. sName);
-        cSpellList[sName] = {SMARTDEBUFF_CURSE, SMARTDEBUFF_POISON};
-        cSpellDefault[1] = {1, 7, sName};
-      end
+    -- Wild Charge
+    sName = GetSpellInfo(SMARTDEBUFF_WILDCHARGE_ID);
+    if (sName and SMARTDEBUFF_GetSpellID(sName)) then
+      SMARTDEBUFF_AddMsgD("Spell found: " .. sName);
+      cSpellDefault[2] = {2, 8, sName};
+      cSpellList[sName] = {SMARTDEBUFF_UTIL};
     end
 
     -- Rejuvenation
@@ -919,26 +890,17 @@ function SMARTDEBUFF_SetSpells()
     if (sName and SMARTDEBUFF_GetSpellID(sName)) then
       SMARTDEBUFF_AddMsgD("Heal spell found: " .. sName);
       cSpellDefault[10] = {7, 2, sName};
-      cSpellName[1] = sName;
+      cSpellList[sName] = {SMARTDEBUFF_HEAL};
     end
 
   elseif (sPlayerClass == "PRIEST") then
-    if (sRole == "HEALER") then
-      -- Purify
-      sName = GetSpellInfo(SMARTDEBUFF_PURIFY_ID);
-      if (sName and SMARTDEBUFF_GetSpellID(sName)) then
-        SMARTDEBUFF_AddMsgD("Debuff spell found: " .. sName);
-        cSpellList[sName] = {SMARTDEBUFF_DISEASE, SMARTDEBUFF_MAGIC};
-        cSpellDefault[1] = {1, 7, sName};
-      end
-    end
 
     -- Leap of Faith
     sName = GetSpellInfo(SMARTDEBUFF_LEAPOFFAITH_ID);
     if (sName and SMARTDEBUFF_GetSpellID(sName)) then
       SMARTDEBUFF_AddMsgD("Spell found: " .. sName);
       cSpellDefault[2] = {2, 8, sName};
-      cSpellName[1] = sName;
+      cSpellList[sName] = {SMARTDEBUFF_UTIL};
     end
 
     -- Renew
@@ -950,17 +912,10 @@ function SMARTDEBUFF_SetSpells()
     if (sName and SMARTDEBUFF_GetSpellID(sName)) then
       SMARTDEBUFF_AddMsgD("Heal spell found: " .. sName);
       cSpellDefault[10] = {7, 2, sName};
-      cSpellName[1] = sName;
+      cSpellList[sName] = {SMARTDEBUFF_HEAL};
     end
 
   elseif (sPlayerClass == "MAGE") then
-    -- Remove Curse
-    sName = GetSpellInfo(SMARTDEBUFF_REMOVELESSERCURSE_ID);
-    if (sName and SMARTDEBUFF_GetSpellID(sName)) then
-      SMARTDEBUFF_AddMsgD("Debuff spell found: " .. sName);
-      cSpellList[sName] = {SMARTDEBUFF_CURSE};
-      cSpellDefault[1] = {1, 7, sName};
-    end
     -- Polymorph
     sName = GetSpellInfo(SMARTDEBUFF_POLYMORPH_ID);
     if (sName and SMARTDEBUFF_GetSpellID(sName)) then
@@ -970,42 +925,15 @@ function SMARTDEBUFF_SetSpells()
     end
 
   elseif (sPlayerClass == "PALADIN") then
-    --Cleanse (Disease, Poison, Magic)
-    sName = GetSpellInfo(SMARTDEBUFF_CLEANSE_ID);
-    if (sName and SMARTDEBUFF_GetSpellID(sName)) then
-      SMARTDEBUFF_AddMsgD("Debuff spell found: " .. sName);
-      if (sRole == "HEALER") then
-        cSpellList[sName] = {SMARTDEBUFF_DISEASE, SMARTDEBUFF_POISON, SMARTDEBUFF_MAGIC};
-      else
-        cSpellList[sName] = {SMARTDEBUFF_DISEASE, SMARTDEBUFF_POISON};
-      end
-      cSpellDefault[1] = {1, 7, sName};
-    end
     -- Flash of light
     sName = GetSpellInfo(SMARTDEBUFF_FLASHOFLIGHT_ID);
     if (sName and SMARTDEBUFF_GetSpellID(sName)) then
       SMARTDEBUFF_AddMsgD("Heal spell found: " .. sName);
       cSpellDefault[10] = {7, 2, sName};
+      cSpellList[sName] = {SMARTDEBUFF_HEAL};
     end
 
   elseif (sPlayerClass == "SHAMAN") then
-    if (sRole == "HEALER") then
-      --Purify Spirit (Curse, Magic)
-      sName = GetSpellInfo(SMARTDEBUFF_PURIFYSPIRIT_ID);
-      if (sName and SMARTDEBUFF_GetSpellID(sName)) then
-        SMARTDEBUFF_AddMsgD("Debuff spell found: " .. sName);
-        cSpellList[sName] = {SMARTDEBUFF_CURSE, SMARTDEBUFF_MAGIC};
-        cSpellDefault[1] = {1, 7, sName};
-      end
-    else
-      --Cleanse Spirit (Curse)
-      sName = GetSpellInfo(SMARTDEBUFF_CLEANSESPIRIT_ID);
-      if (sName and SMARTDEBUFF_GetSpellID(sName)) then
-        SMARTDEBUFF_AddMsgD("Debuff spell found: " .. sName);
-        cSpellList[sName] = {SMARTDEBUFF_CURSE};
-        cSpellDefault[1] = {1, 7, sName};
-      end
-    end
 
     -- Hex
     sName = GetSpellInfo(SMARTDEBUFF_HEX_ID);
@@ -1020,17 +948,17 @@ function SMARTDEBUFF_SetSpells()
     if (sName and SMARTDEBUFF_GetSpellID(sName)) then
       SMARTDEBUFF_AddMsgD("Heal spell found: " .. sName);
       cSpellDefault[10] = {7, 2, sName};
+      cSpellList[sName] = {SMARTDEBUFF_HEAL};
     end
 
   elseif (sPlayerClass == "WARLOCK") then
     -- Dispel Magic
     sName = GetSpellInfo(SMARTDEBUFF_PET_IMP_ID);
-    SMARTDEBUFF_AddMsgD("Debuff spell found: " .. sName);
-    cSpellList[sName] = {SMARTDEBUFF_MAGIC};
-    cSpellDefault[1] = {1, 7, SMARTDEBUFF_PET_IMP_ID};
-
-    -- Used for range check
-    sRangeCheckSpell = GetSpellInfo(SMARTDEBUFF_UNENDINGBREATH_ID);
+    if (sName and IsUsableSpell(sName) and SMARTDEBUFF_GetSpellID(sName)) then -- pet: special book check
+      SMARTDEBUFF_AddMsgD("Debuff spell found: " .. sName);
+      cSpellList[sName] = {SMARTDEBUFF_MAGIC};
+      cSpellDefault[1] = {1, 7, sName};
+    end
 
   elseif (sPlayerClass == "HUNTER") then
     -- Misdirection
@@ -1038,6 +966,7 @@ function SMARTDEBUFF_SetSpells()
     if (sName and SMARTDEBUFF_GetSpellID(sName)) then
       SMARTDEBUFF_AddMsgD("Misc spell found: " .. sName);
       cSpellDefault[10] = {7, 2, sName};
+      cSpellList[sName] = {SMARTDEBUFF_UTIL};
     end
 
   elseif (sPlayerClass == "ROGUE") then
@@ -1046,6 +975,7 @@ function SMARTDEBUFF_SetSpells()
     if (sName and SMARTDEBUFF_GetSpellID(sName)) then
       SMARTDEBUFF_AddMsgD("Misc spell found: " .. sName);
       cSpellDefault[10] = {7, 2, sName};
+      cSpellList[sName] = {SMARTDEBUFF_UTIL};
     end
 
   elseif (sPlayerClass == "DEATHKNIGHT") then
@@ -1054,52 +984,51 @@ function SMARTDEBUFF_SetSpells()
     if (sName and SMARTDEBUFF_GetSpellID(sName)) then
       SMARTDEBUFF_AddMsgD("Misc spell found: " .. sName);
       cSpellDefault[10] = {7, 2, sName};
+      cSpellList[sName] = {SMARTDEBUFF_UTIL};
     end
 
   elseif (sPlayerClass == "MONK") then
-    -- Detox (Disease, Poison, Magic)
-    sName = GetSpellInfo(SMARTDEBUFF_DETOX_ID);
-    if (sName and SMARTDEBUFF_GetSpellID(sName)) then
-      SMARTDEBUFF_AddMsgD("Debuff spell found: " .. sName);
-      if (sRole == "HEALER") then
-        cSpellList[sName] = {SMARTDEBUFF_DISEASE, SMARTDEBUFF_POISON, SMARTDEBUFF_MAGIC};
-      else
-        cSpellList[sName] = {SMARTDEBUFF_DISEASE, SMARTDEBUFF_POISON};
-      end
-      cSpellDefault[1] = {1, 7, sName};
-    end
     -- Renewing Mist
     sName = GetSpellInfo(SMARTDEBUFF_RENEWINGMIST_ID);
     if (sName and SMARTDEBUFF_GetSpellID(sName)) then
       SMARTDEBUFF_AddMsgD("Heal spell found: " .. sName);
       cSpellDefault[10] = {7, 2, sName};
+      cSpellList[sName] = {SMARTDEBUFF_HEAL};
+    end
+
+    -- Paralysis
+    sName = GetSpellInfo(SMARTDEBUFF_PARALYSIS_ID);
+    if (sName and SMARTDEBUFF_GetSpellID(sName)) then
+      SMARTDEBUFF_AddMsgD("Spell found: " .. sName);
+      cSpellList[sName] = {SMARTDEBUFF_CHARMED};
+      cSpellDefault[2] = {2, 8, sName};
+    end
+
+  elseif (sPlayerClass == "DEMONHUNTER") then
+
+    -- Imprison
+    sName = GetSpellInfo(SMARTDEBUFF_IMPRISON_ID);
+    if (sName and SMARTDEBUFF_GetSpellID(sName)) then
+      SMARTDEBUFF_AddMsgD("Spell found: " .. sName);
+      cSpellList[sName] = {SMARTDEBUFF_CHARMED};
+      cSpellDefault[2] = {2, 8, sName};
     end
 
   elseif (sPlayerClass == "EVOKER") then
-    if (sRole == "HEALER") then
-      -- Naturalize
-      sName = GetSpellInfo(SMARTDEBUFF_NATURALIZE_ID);
-      if (sName and SMARTDEBUFF_GetSpellID(sName)) then
-        SMARTDEBUFF_AddMsgD("Debuff spell found: " .. sName);
-        cSpellList[sName] = {SMARTDEBUFF_POISON, SMARTDEBUFF_MAGIC};
-        cSpellDefault[1] = {1, 7, sName};
-      end
-    else
-      -- Expunge
-      sName = GetSpellInfo(SMARTDEBUFF_EXPUNGE_ID);
-      if (sName and SMARTDEBUFF_GetSpellID(sName)) then
-        SMARTDEBUFF_AddMsgD("Debuff spell found: " .. sName);
-        cSpellList[sName] = {SMARTDEBUFF_POISON};
-        cSpellDefault[1] = {1, 7, sName};
-      end
-    end
-
-    -- Cauterizing Flame
+    -- Cauterizing flame
     sName = GetSpellInfo(SMARTDEBUFF_CAUTERIZINGFLAME_ID);
     if (sName and SMARTDEBUFF_GetSpellID(sName)) then
-      SMARTDEBUFF_AddMsgD("Debuff Spell found: " .. sName);
-      cSpellList[sName] = {SMARTDEBUFF_CURSE, SMARTDEBUFF_POISON, SMARTDEBUFF_DISEASE, SMARTDEBUFF_BLEEDING};
+      SMARTDEBUFF_AddMsgD("Debuff spell found: " .. sName);
       cSpellDefault[2] = {2, 8, sName};
+      cSpellList[sName] = {SMARTDEBUFF_CURSE, SMARTDEBUFF_POISON, SMARTDEBUFF_DISEASE}; -- Bleed?
+    end
+
+    -- Verdant Embrace (Utility / Heal)
+    sName = GetSpellInfo(SMARTDEBUFF_VERDANTEMBRACE_ID);
+    if (sName and SMARTDEBUFF_GetSpellID(sName)) then
+      SMARTDEBUFF_AddMsgD("Utility spell found: " .. sName);
+      cSpellDefault[3] = {3, 9, sName};
+      cSpellList[sName] = {SMARTDEBUFF_UTIL};
     end
 
     -- Reversion (Heal)
@@ -1107,21 +1036,36 @@ function SMARTDEBUFF_SetSpells()
     if (sName and SMARTDEBUFF_GetSpellID(sName)) then
       SMARTDEBUFF_AddMsgD("Heal spell found: " .. sName);
       cSpellDefault[10] = {7, 2, sName};
+      cSpellList[sName] = {SMARTDEBUFF_HEAL};
     end
-
-    -- Verdant Embrace (Heal utility)
-    sName = GetSpellInfo(SMARTDEBUFF_VERDANTEMBRACE_ID);
-    if (sName and SMARTDEBUFF_GetSpellID(sName)) then
-      SMARTDEBUFF_AddMsgD("Misc Heal spell found: " .. sName);
-      cSpellDefault[3] = {nil, nil, sName};
-    end
-
-  else
-    -- do nothing
   end
-
+  SMARTDEBUFF_AddMsgD("--- END Set spells --- ");
 end
 
+function IsSpellTalented(spellID) -- this could be made to be a lot more efficient, if you already know the relevant nodeID and entryID
+    local configID = C_ClassTalents.GetActiveConfigID()
+    if configID == nil then return false; end
+
+    local configInfo = C_Traits.GetConfigInfo(configID)
+    if configInfo == nil then return false; end
+
+    for _, treeID in ipairs(configInfo.treeIDs) do -- in the context of talent trees, there is only 1 treeID
+        local nodes = C_Traits.GetTreeNodes(treeID)
+        for i, nodeID in ipairs(nodes) do
+            local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID)
+            for _, entryID in ipairs(nodeInfo.entryIDsWithCommittedRanks) do -- there should be 1 or 0
+                local entryInfo = C_Traits.GetEntryInfo(configID, entryID)
+                if entryInfo and entryInfo.definitionID then
+                    local definitionInfo = C_Traits.GetDefinitionInfo(entryInfo.definitionID)
+                    if definitionInfo.spellID == spellID then
+                        return true
+                    end
+                end
+            end
+        end
+    end
+    return false;
+end
 
 -- Init the SmartDebuff variables ---------------------------------------------------------------------------------------
 function SMARTDEBUFF_Options_Init()
@@ -1280,7 +1224,7 @@ function SMARTDEBUFF_Options_Init()
     SMARTDEBUFF_CreateButtons();
   end
 
-  sname = nil;
+  local sname = nil;
   SMARTDEBUFF_DEBUFFSKIP_NAME = { };
   -- Get localized spellnames from id list
   for key, val in ipairs(SMARTDEBUFF_DEBUFFSKIP_ID) do
@@ -1320,12 +1264,8 @@ function SMARTDEBUFF_Options_Init()
   end
 
   _, _, imgTarget = GetSpellInfo(1130);  -- Hunter's Mark
-  --_, _, imgTarget = GetSpellInfo(34500); -- Expose Weakness
-  --_, _, imgTarget = GetSpellInfo(34485); -- Master Marksman
-
   imgMenu = "Interface\\ICONS\\Trade_Engineering";
-  --imgMenu = "Interface\\ICONS\\INV_Inscription_ArmorScroll03";
-  --imgMenu = "Interface\\ICONS\\INV_Inscription_Certificate";
+  imgMissing = "Interface\\ICONS\\inv_misc_questionmark";
 
   -- Init icon textures
 	for i = 1, 8, 1 do
@@ -1565,7 +1505,7 @@ function SMARTDEBUFF_LinkSpellsToKeys()
         for i, s in ipairs(cSpellList[v[2]]) do
           if (s and not cSpells[s]) then
             cSpells[s] = {v[2], idx};
-            SMARTDEBUFF_AddMsgD("Debuff spell linked: "..v[2].." ("..s..") -> "..idx);
+            SMARTDEBUFF_AddMsgD("Spell linked: "..v[2].." ("..s..") -> "..k);
           end
         end
       end
@@ -2571,7 +2511,7 @@ function SMARTDEBUFF_SetButtonState(unit, idx, nr, ir, ti, pet, spellcd)
     if (ir == 1) then
       sbs_btn.texture:SetColorTexture(sbs_col.r, sbs_col.g, sbs_col.b, 1);
       if (O.ShowLR) then
-        sbs_st = "L";
+        sbs_st = SMARTDEBUFF_KEY_L;
       end
     else
       sbs_btn.texture:SetColorTexture(sbs_col.r / 2, sbs_col.g / 2, sbs_col.b / 2, 1);
@@ -2591,7 +2531,7 @@ function SMARTDEBUFF_SetButtonState(unit, idx, nr, ir, ti, pet, spellcd)
     if (ir == 1) then
       sbs_btn.texture:SetColorTexture(sbs_col.r, sbs_col.g, sbs_col.b, 1);
       if (O.ShowLR) then
-        sbs_st = "R";
+        sbs_st = SMARTDEBUFF_KEY_R;
       end
     else
       sbs_btn.texture:SetColorTexture(sbs_col.r / 2, sbs_col.g / 2, sbs_col.b / 2, 1);
@@ -2611,7 +2551,7 @@ function SMARTDEBUFF_SetButtonState(unit, idx, nr, ir, ti, pet, spellcd)
     if (ir == 1) then
       sbs_btn.texture:SetColorTexture(sbs_col.r, sbs_col.g, sbs_col.b, 1);
       if (O.ShowLR) then
-        sbs_st = "M";
+        sbs_st = SMARTDEBUFF_KEY_M;
       end
     else
       sbs_btn.texture:SetColorTexture(sbs_col.r / 2, sbs_col.g / 2, sbs_col.b / 2, 1);
@@ -2848,6 +2788,10 @@ function SmartDebuff_SetButtonBars(btn, unit, unitclass)
             btn.raidicon:SetTexCoord(20/64, 39/64, 22/64, 41/64);
           end
           ]]--
+          if (sbb_gr == "DAMAGER") then
+            btn.raidicon:Hide();
+            return;
+          end
         end
         --sbb_n = btn:GetHeight() / 3;
         sbb_n = O.RaidIconSize;
@@ -3174,7 +3118,6 @@ function SMARTDEBUFF_SetStyle()
           i = 0;
         end
         btn:ClearAllPoints();
-        -- TODO BUG ICI sur raid: fonction protégée SetPoint
         btn:SetPoint(anchor, frame, anchor, 4 + i * (btnW + O.BtnSpX) + sp, (-hx - hox - ln * (btnH + O.BtnSpY + hox)) * vu);
         if (b) then
           grp = grp + 1;
@@ -3184,9 +3127,6 @@ function SMARTDEBUFF_SetStyle()
       end
 
       if (btn:IsVisible()) then
-        -- TODO BUG ICI sur raid, attempt to perform arythmetic on a nil value
-        -- ? btn:GetLeft() == nil?
-        -- ? use btn:IsRectValid() ?
         tX = btn:GetLeft() - frame:GetLeft() + btnW + 8;
         if (O.VerticalUp) then
           tY = frame:GetBottom() - btn:GetTop() - 4;
@@ -3518,10 +3458,9 @@ function SMARTDEBUFF_CheckUnitDebuffs(spell, unit, idx, isActive, pet)
       cud_tl = cud_tl - GetTime();
 
       if (spell and cud_name and cud_dtype) then
-        --SMARTDEBUFF_AddMsgD("Debuff found: " .. name .. ", " .. cud_dtype);
+        -- SMARTDEBUFF_AddMsgD("Debuff found: " .. cud_dtype.." on "..unit.." (" .. cud_name .. ")");
         _, cud_uclass = UnitClass(unit);
 
-        --and not UnitCanAttack("player", unit)
         if (cSpells[cud_dtype] and (not UnitCanAttack("player", unit) or UnitIsCharmed(unit)) and not SMARTDEBUFF_DEBUFFSKIPLIST[cud_name] and not (SMARTDEBUFF_DEBUFFCLASSSKIPLIST[cud_uclass] and SMARTDEBUFF_DEBUFFCLASSSKIPLIST[cud_uclass][cud_name])) then
           cud_cds = GetSpellCD(cSpells[cud_dtype][1]);
           if (not O.IgnoreDebuff or cud_cds <= 0) then
@@ -3732,6 +3671,11 @@ function SMARTDEBUFF_SetMoving(b)
 
   local f = SmartDebuffSF;
   if (b) then
+    if (InCombatLockdown()) then
+      SMARTDEBUFF_AddMsgWarn("SmartDebuff Frame can't be moved in combat");
+      f.IsMoving = false;
+      return;
+    end
     f:StartMoving();
   else
     f:StopMovingOrSizing();
@@ -4280,9 +4224,13 @@ function SmartDebuffAOFKeys_OnShow(self)
     mode, j = GetActionMode(i);
     aType, aName, aRank, aId, aLink = GetActionKeyInfo(mode, j);
     --SMARTDEBUFF_AddMsgD("Show: "..ChkS(aType)..", "..ChkS(aName)..", "..ChkS(aRank)..", "..ChkS(aId)..", "..ChkS(aLink));
-    if (aType == "spell" and aName and aId) then
-      SetATexture(btn, GetSpellTexture(aId, BOOKTYPE_SPELL));
-      --SMARTDEBUFF_AddMsgD("Added: "..self:GetID().." - "..aName.." - "..aRank);
+    if (aType == "spell" and aName) then
+      if (aId) then      
+        SetATexture(btn, select(3, GetSpellInfo(aId)));
+        -- SMARTDEBUFF_AddMsgD("Added icon: "..self:GetID().." - "..aName.." - "..aId);
+      else
+        SetATexture(btn, imgMissing);
+      end
     elseif (aType == "item") then
       SetATexture(btn, GetItemIcon(aName));
     elseif (aType == "macro") then
@@ -4333,8 +4281,13 @@ function SMARTDEBUFF_PickAction(self, button)
   if (button == "LeftButton") then
     if (aType) then
       if (aType == "spell") then
-        --SMARTDEBUFF_AddMsgD("Pick: "..aId.." - "..aName.." - "..aRank);
-        PickupSpellBookItem(aId, BOOKTYPE_SPELL);
+        --SMARTDEBUFF_AddMsgD("Pick: "..ChkS(aId).." - "..aName.." - "..aRank);
+        if (aId) then
+          PickupSpell(aId);
+        else
+          -- Do nothing (spell missing)
+          return;
+        end
       elseif (aType == "item") then
         PickupItem(aId);
       elseif (aType == "macro") then
@@ -4343,8 +4296,10 @@ function SMARTDEBUFF_PickAction(self, button)
         PickupSpellBookItem(aId, BOOKTYPE_PET);
       elseif (aType == "menu") then
         -- Do nothing
+        return;
       elseif (aType == "target") then
         -- Do nothing
+        return;
       end
       if (not IsShiftKeyDown()) then
         SetActionInfo(mode, i, nil, nil, nil, nil, nil);
@@ -4364,6 +4319,7 @@ function SMARTDEBUFF_PickAction(self, button)
     SetATexture(self, imgActionSlot);
   end
   SMARTDEBUFF_SetButtons();
+  SMARTDEBUFF_BtnActionOnEnter(self); -- update tooltip
 end
 
 
@@ -4431,8 +4387,9 @@ function SMARTDEBUFF_DropAction(self, button)
         end
       end
       GameTooltip:Hide();
-      SMARTDEBUFF_AddMsgD("Droped: "..self:GetID().." - "..infoType.." - "..aName.." - "..infoId);
+      SMARTDEBUFF_AddMsgD("Dropped: "..self:GetID().." - "..infoType.." - "..aName.." - "..infoId);
       SMARTDEBUFF_SetButtons();
+      SMARTDEBUFF_BtnActionOnEnter(self); -- update tooltip
     end
   end
 end
@@ -4444,15 +4401,23 @@ function SMARTDEBUFF_BtnActionOnEnter(self, motion)
   mode, i = GetActionMode(i);
   local aType, aName, aRank, aId, aLink = GetActionKeyInfo(mode, i);
   GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-  if (aType == "spell" and aId ~= nil) then
-    --GameTooltip:SetText(WH..aName);
-    GameTooltip:SetSpellBookItem(aId, BOOKTYPE_SPELL);
-    GameTooltip:AddLine(GR..SMARTDEBUFF_TT_DROPSPELL);
+  if (aType == "spell") then
+    if (aId ~= nil) then
+      GameTooltip:SetSpellByID(aId);
+      GameTooltip:AddLine(GR..SMARTDEBUFF_TT_DROPSPELL);
+    else
+      -- Spell missing
+      -- SMARTDEBUFF_AddMsgD("SPELL missing: "..mode.." - "..i.." - "..ChkS(aName).." - "..ChkS(aLink));
+      GameTooltip:SetText(RD..aName);
+      GameTooltip:AddLine(SMARTDEBUFF_TT_MISSINGINFO);
+      GameTooltip:AddLine(GR..SMARTDEBUFF_TT_DROPTARGET);
+    end
   elseif (aType == "item") then
     GameTooltip:SetHyperlink(aLink);
     GameTooltip:AddLine(GR..SMARTDEBUFF_TT_DROPITEM);
   elseif (aType == "macro") then
     GameTooltip:SetText(WH..aName);
+    GameTooltip:AddLine(MACRO);
     GameTooltip:AddLine(GR..SMARTDEBUFF_TT_DROPMACRO);
   elseif (aType == "target") then
     GameTooltip:SetText(WH..SMARTDEBUFF_TT_TARGET);

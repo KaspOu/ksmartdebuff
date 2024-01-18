@@ -5,6 +5,7 @@
 if (GetLocale() == "deDE") then
 
 
+--@do-not-package@
 -- Debuff types, in english in game!
 --[[
 SMARTDEBUFF_DISEASE = "Krankheit";
@@ -13,6 +14,7 @@ SMARTDEBUFF_POISON  = "Gift";
 SMARTDEBUFF_CURSE   = "Fluch";
 SMARTDEBUFF_CHARMED = "Verführung";
 ]]--
+--@end-do-not-package@
 
 
 -- Creatures
