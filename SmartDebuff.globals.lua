@@ -49,46 +49,28 @@ SMARTDEBUFF_POISON  = "Poison";
 SMARTDEBUFF_CURSE   = "Curse";
 SMARTDEBUFF_CHARMED = "Mind Control";
 SMARTDEBUFF_BLEEDING   = "Bleeding"; -- Not a really debuff type
+
 SMARTDEBUFF_HEAL    = "Heal";
 SMARTDEBUFF_UTIL    = "Utility";
+SMARTDEBUFF_MISDIRECT = "Threat redirect";
 
--- Support spell IDs
-SMARTDEBUFF_REJUVENATION_ID       = 774;
-SMARTDEBUFF_WILDCHARGE_ID         = 102401;
-SMARTDEBUFF_RENEW_ID              = 139;
-SMARTDEBUFF_FLASHHEAL_ID          = 2061;
-SMARTDEBUFF_FLASHOFLIGHT_ID       = 19750;
-SMARTDEBUFF_HEALINGSURGE_ID       = 8004;
-SMARTDEBUFF_MISDIRECTION_ID       = 34477;
-SMARTDEBUFF_POLYMORPH_ID          = 118;
-SMARTDEBUFF_HEX_ID                = 51514;
-SMARTDEBUFF_PARALYSIS_ID          = 115078;
-SMARTDEBUFF_IMPRISON_ID           = 217832;
--- SMARTDEBUFF_PURGE_ID              = 370;
--- SMARTDEBUFF_GREATER_PURGE_ID      = 378773;
-SMARTDEBUFF_INTERVENE_ID          = 3411;
-SMARTDEBUFF_DEATHCOIL_ID          = 52375;
-SMARTDEBUFF_TRICKS_ID             = 57934;
-SMARTDEBUFF_RENEWINGMIST_ID       = 119611;
-SMARTDEBUFF_LEAPOFFAITH_ID        = 73325;
-SMARTDEBUFF_CAUTERIZINGFLAME_ID   = 374251;
-SMARTDEBUFF_REVERSION_ID          = 367364;
-SMARTDEBUFF_VERDANTEMBRACE_ID     = 360995;
+SMARTDEBUFF_WARLOCK_CMD_DEMON = 119898;
 
 --@do-not-package@
 --[[
-List dispells: https://warcraft.wiki.gg/wiki/Magic_(dispel_type)
-ALL Dispells : https://www.wowhead.com/spells?filter=109;38;0
-Class Dispells only: https://www.wowhead.com/spells/specialization?filter=109;38;0
-Talents dispells: https://www.wowhead.com/spells/talents?filter=109;38;0
+List dispels: https://warcraft.wiki.gg/wiki/Magic_(dispel_type)
+ALL Dispels : https://www.wowhead.com/spells?filter=109;38;0
+Class Dispels only: https://www.wowhead.com/spells/specialization?filter=109;38;0
+Talents dispels: https://www.wowhead.com/spells/talents?filter=109;38;0
 https://wago.tools/db2/SpellDispelType
 
 Format: [ClassName] = { [1] = { Spell_ID, Spell_List, Spell_CheckIsUsable?, Improved_Talent?, Improved_Spell_List?, } }
 ]]--
 --@end-do-not-package@
 
+
 -- Debuff spell IDs (for L button)
-SMARTDEBUFF_CLASS_DISPELLS_LIST_ID = {
+SMARTDEBUFF_CLASS_DISPELS_LIST_ID = {
   ["DRUID"]  = {
     { -- Nature's Cure
       Spell_ID = 88423,
@@ -103,13 +85,13 @@ SMARTDEBUFF_CLASS_DISPELLS_LIST_ID = {
   },
 
   ["EVOKER"] = {
-    { -- Expunge
-      Spell_ID = 365585,
-      Spell_List = {SMARTDEBUFF_POISON},
-    },
     { -- Naturalize
       Spell_ID = 360823,
       Spell_List = {SMARTDEBUFF_MAGIC, SMARTDEBUFF_POISON},
+    },
+    { -- Expunge
+      Spell_ID = 365585,
+      Spell_List = {SMARTDEBUFF_POISON},
     },
     -- Cauterizing Flame set on R
   },
@@ -148,7 +130,7 @@ SMARTDEBUFF_CLASS_DISPELLS_LIST_ID = {
       Improved_Talent = 390632,
       Improved_Spell_List = {SMARTDEBUFF_MAGIC, SMARTDEBUFF_DISEASE},
     },
-    { -- Purify Disease ! Missdetected for Sacred: Check IDs match after SMARTDEBUFF_GetSpellID
+    { -- Purify Disease (!: GetSpellInfo Missdetected for Sacred)
       Spell_ID = 213634,
       Spell_List = {SMARTDEBUFF_DISEASE},
     },
@@ -175,20 +157,77 @@ SMARTDEBUFF_CLASS_DISPELLS_LIST_ID = {
     },
   },
 
+  ["WARLOCK"] = {
+    { -- Singe Magic, pet (imp)
+      Spell_ID = 89808,
+      Spell_List = {SMARTDEBUFF_MAGIC},
+      Spell_Type = "petaction",
+    },
+  },
+
   -- ["DEMONHUNTER"] = {
   --   -- Consume Magic only enemies
   -- },
-
-  -- ["WARLOCK"] = {
-  --   { -- Singe Magic -- pet, ID missmatch after SMARTDEBUFF_GetSpellID
-  --     Spell_ID = 89808,
-  --     Spell_List = {SMARTDEBUFF_MAGIC},
-  --   },
-  -- },
 }
 
--- Misc spell IDs
-SMARTDEBUFF_PET_IMP_ID            = 89808; -- "Singe Magic"
+SMARTDEBUFF_BTN_DEFAULT_SKILLID = {
+  ["R"]   = 2,  -- 2, 8
+  ["M"]   = 3,  -- 3, 9
+  ["AL"]  = 7, -- 7, 2
+}
+-- Possible buttons : M,R,AL 
+SMARTDEBUFF_CLASS_SKILLS_LIST_ID = {
+  ["DRUID"]  = {
+    { Spell_ID = 102401, Button = "R", Types = {SMARTDEBUFF_UTIL} }, -- Wild charge
+    { Spell_ID = 102693, Button = "M", Types = {SMARTDEBUFF_HEAL} }, -- Grove Guardians
+    { Spell_ID = 774,   Button = "AL", Types = {SMARTDEBUFF_HEAL} }, -- Rejuvenation
+  },
+  ["EVOKER"]  = {
+    { Spell_ID = 374251, Button = "R", Types = {SMARTDEBUFF_CURSE, SMARTDEBUFF_POISON, SMARTDEBUFF_DISEASE} }, -- Cauterizing flame
+    { Spell_ID = 360995, Button = "M", Types = {SMARTDEBUFF_UTIL} }, -- Verdant embrace
+    { Spell_ID = 367364, Button = "AL", Types = {SMARTDEBUFF_HEAL} }, -- Reversion
+  },
+  ["MONK"]  = {
+    { Spell_ID = 115078, Button = "R", Types = {SMARTDEBUFF_CHARMED} }, -- Paralysis 
+    { Spell_ID = 119611, Button = "AL", Types = {SMARTDEBUFF_HEAL} }, -- Renewing Mist
+  },
+  ["PALADIN"]  = {
+    { Spell_ID = 20066, Button = "R", Types = {SMARTDEBUFF_CHARMED} }, -- Repentance
+    { Spell_ID = 1022,  Button = "M", Types = {SMARTDEBUFF_UTIL} }, --  Blessing of protection
+    { Spell_ID = 19750, Button = "AL", Types = {SMARTDEBUFF_HEAL} }, --  Flash light
+  },
+  ["PRIEST"]  = {
+    { Spell_ID = 73325, Button = "R", Types = {SMARTDEBUFF_UTIL} }, -- Leap of Faith
+    { Spell_ID = 2061,  Button = "M", Types = {SMARTDEBUFF_HEAL} }, -- Flash heal
+    { Spell_ID = 139,   Button = "AL", Types = {SMARTDEBUFF_HEAL} }, -- Renew
+    -- 64044 -- Psychic horror?
+  },
+  ["SHAMAN"]  = {
+    { Spell_ID = 51514, Button = "R", Types = {SMARTDEBUFF_CHARMED} }, -- Hex
+    { Spell_ID = 974,   Button = "M", Types = {SMARTDEBUFF_UTIL} }, -- Earth shield
+    { Spell_ID = 8004,  Button = "AL", Types = {SMARTDEBUFF_HEAL} }, -- Healing surge
+  },
+  
+  ["DEATHKNIGHT"]  = {
+    { Spell_ID = 52375, Button = "R", Types = {SMARTDEBUFF_HEAL} }, -- Death Coil
+  },
+  ["DEMONHUNTER"]  = {
+    { Spell_ID = 217832, Button = "R", Types = {SMARTDEBUFF_CHARMED} }, -- Imprison
+  },
+  ["HUNTER"]  = {
+    { Spell_ID = 34477, Button = "M", Types = {SMARTDEBUFF_MISDIRECT} }, -- Misdirection
+  }, 
+  ["MAGE"]  = {
+    { Spell_ID = 118,   Button = "R", Types = {SMARTDEBUFF_CHARMED} }, -- Polymorph
+  }, 
+  ["ROGUE"]  = {
+    { Spell_ID = 2094,  Button = "R", Types = {SMARTDEBUFF_CHARMED} }, -- Blind
+    { Spell_ID = 57934, Button = "M", Types = {SMARTDEBUFF_MISDIRECT} }, -- Tricks of the Trade
+  },  
+  ["WARRIOR"]  = {
+    { Spell_ID = 3411,  Button = "R", Types = {SMARTDEBUFF_UTIL} }, -- Intervene
+  },
+}
 
 
 -- Effects ignore list

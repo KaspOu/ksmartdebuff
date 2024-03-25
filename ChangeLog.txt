@@ -1,3 +1,10 @@
+v10.2.601
+- Many Mouse shortcuts enhancements and fixes
+- Spells detection reworked for 10.2.6
+- Added Druid's Grove guardians, Shaman's Earth shield and others..
+- Fixed issues with buttons mobility (pet button)
+- Update compatibility with 10.2.6
+
 v10.2.501
 - Detects dispels enhanced by healer talent
 - Detection list of spells fully updated for DF
