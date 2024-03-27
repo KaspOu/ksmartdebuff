@@ -6,13 +6,11 @@ if (GetLocale() == "frFR") then
 
 SMARTDEBUFF_UPGRADED = "SmartDebuff mis \195\160 jour : "..SMARTDEBUFF_VERSION;
 
-SMARTDEBUFF_WHATSNEW = "|cffffffffNouveaut\195\169s :\n\n"
-  .."- Nombreux correctifs : Reset recommand\195\169 !|r\n\n"
-  .."- D\195\169tecte les d\195\169buffs am\195\169lior\195\169s par un talent\n\n"
-  .."- Liste de d\195\169tection des d\195\169buffs totalement mise \195\160 jour\n\n"
-  .."- Correction de l'affichage des ic\195\180nes de raccourcis\n\n"
-  .."- Enfin traduit en Fran\195\167ais ! (avec G/M/D)\n\n"
-  .."- Compatible Wow 10.2.5\n\n"
+SMARTDEBUFF_WHATSNEW = "|cffffffffNouveaut\195\169s :|r\n\n"
+  .."- Raccourcis am\195\169lior\195\169s :|cffff0000 Reset recommand\195\169 !|r\n\n"
+  .."- Ajout des Gardiennes du Bosquet des Druides.|r\n\n"
+  .."- Ajout du Bouclier de terre des Chamans.|r\n\n"
+  .."- Compatible Wow 10.2.6\n\n"
   ;
 
 --@do-not-package@
@@ -185,7 +183,8 @@ SMARTDEBUFF_TT_DROPITEM        = "Clic sur l'objet:\nGauche pour prendre\nMaj-Ga
 SMARTDEBUFF_TT_DROPMACRO       = "Clic sur la macro:\nGauche pour prendre\nMaj-Gauche pour cloner\nDroit pour supprimer";
 SMARTDEBUFF_TT_TARGET          = "Cible";
 SMARTDEBUFF_TT_TARGETINFO      = "S\195\169lectionne l'unit\195\169 sp\195\169cifi\195\169e\ncomme cible actuelle.";
-SMARTDEBUFF_TT_MISSINGINFO     = "Sort temporairement inactif avec votre choix\nde Sp\195\169cialisation/Talents.";
+SMARTDEBUFF_TT_PETACTION       = "Sort de familier";
+SMARTDEBUFF_TT_MISSINGINFO     = "Sort temporairement inactif avec votre choix\nde Sp\195\169cialisation / Talents / Familier.";
 SMARTDEBUFF_TT_DROPTARGET      = "Clic de la souris :\nDroit pour supprimer";
 SMARTDEBUFF_TT_DROPACTION      = "Action du familier:\nSuppression impossible!";
 SMARTDEBUFF_TT_MENU            = "Menu";
@@ -199,9 +198,10 @@ SMARTDEBUFF_TT_CLASSSORT 	      = "Cliquez pour modifier l'ordre des classes";
 SMARTDEBUFF_OFT_NOTREMOVABLE_LIST = "Liste de protection contre les d\195\169buffs";
 SMARTDEBUFF_TT_NOTREMOVABLE_LIST 	= "Cliquez pour modifier la liste";
 SMARTDEBUFF_OFT_SKILLS          = "Raccourcis de la souris";
-SMARTDEBUFF_TT_SKILLS           = "Cliquez pour modifier les raccourcis\n(Clic G/D/M, avec Alt/Maj/Ctrl)\n\n"..RD.."Activez vos bons talents avant";
+SMARTDEBUFF_TT_SKILLS           = "Cliquez pour modifier les raccourcis\n(Clic G/D/M, avec Alt/Maj/Ctrl)";
+SMARTDEBUFF_TT_RESET_SKILLS     = "R\195\169initialise les raccourcis pour votre classe";
 SMARTDEBUFF_OFT_SHOWDEBUFFGUARD	= "Liste de protection contre les sorts";
-SMARTDEBUFF_TT_SHOWDEBUFFGUARD  = "Cliquez pour modifier\nLa liste des sorts \195\160 suivre";
+SMARTDEBUFF_TT_SHOWDEBUFFGUARD  = "Cliquez pour modifier\nla liste des sorts \195\160 suivre";
 SMARTDEBUFF_TT_SOUNDLIST        = "Cliquez pour s\195\169lectionner le son";
 
 -- Tooltip support

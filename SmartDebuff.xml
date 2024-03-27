@@ -3531,6 +3531,12 @@
             SMARTDEBUFF_SetDefaultKeys(false);
             SmartDebuffAOFKeys_OnShow();
           </OnClick>
+          <OnEnter>
+            SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_RESET, SMARTDEBUFF_TT_RESET_SKILLS);
+          </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
         </Scripts>
       </Button>
 

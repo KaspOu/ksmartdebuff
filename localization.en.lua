@@ -4,13 +4,11 @@
 
 SMARTDEBUFF_UPGRADED = "SmartDebuff upgraded to "..SMARTDEBUFF_VERSION;
 -- Whats new info
-SMARTDEBUFF_WHATSNEW = "|cffffffffWhats new:\n\n"
-  .."- Many fixes: Reset recommended!|r\n\n"
-  .."- Detection list of spells fully updated for DF\n\n"
-  .."- Detects dispels enhanced by healer talent\n\n"
-  .."- Fixed spells shortcuts icons display\n\n"
-  .."- French localization at last\n\n"
-  .."- Update compatibility with 10.2.5\n\n"
+SMARTDEBUFF_WHATSNEW = "|cffffffffWhats new:|r\n\n"
+  .."- Mouse shortcuts enhanced:|cffff0000 Reset recommended!|r\n\n"
+  .."- Added Druid's Grove guardians.|r\n\n"
+  .."- Added Shaman's Earth shield.|r\n\n"
+  .."- Update compatibility with 10.2.6\n\n"
   ;
 
 --@do-not-package@
@@ -113,6 +111,7 @@ SMARTDEBUFF_OFT_SHOWSPELLICON  = "Spell icon";
 SMARTDEBUFF_OFT_INFOROW        = "Info bar";
 SMARTDEBUFF_OFT_GLOBALSAVE     = "Save";
 SMARTDEBUFF_OFT_GLOBALLOAD     = "Load";
+SMARTDEBUFF_OFT_RESET          = "Reset";
 SMARTDEBUFF_OFT_ROLE           = "Role";
 SMARTDEBUFF_OFT_ADVANCHORS     = "Anchor Setup";
 SMARTDEBUFF_OFT_ICONSIZE       = "Icon size";
@@ -185,7 +184,8 @@ SMARTDEBUFF_TT_DROPITEM        = "Item click:\nLeft to pickup\nShift-Left to clo
 SMARTDEBUFF_TT_DROPMACRO       = "Macro click:\nLeft to pickup\nShift-Left to clone\nRight to remove";
 SMARTDEBUFF_TT_TARGET          = "Target";
 SMARTDEBUFF_TT_TARGETINFO      = "Selects the specified unit\nas the current target.";
-SMARTDEBUFF_TT_MISSINGINFO     = "Spell temporarily inactive with current\nSpecialization/Talents.";
+SMARTDEBUFF_TT_PETACTION       = "Pet spell";
+SMARTDEBUFF_TT_MISSINGINFO     = "Spell temporarily inactive with current\nSpecialization / Talents / Pet.";
 SMARTDEBUFF_TT_DROPTARGET      = "Mouse click:\nRight to remove";
 SMARTDEBUFF_TT_DROPACTION      = "Pet action:\nRemove not possible!";
 SMARTDEBUFF_TT_MENU            = "Menu";
@@ -199,10 +199,11 @@ SMARTDEBUFF_TT_CLASSSORT        = "Click to modify the class order";
 SMARTDEBUFF_OFT_NOTREMOVABLE_LIST 	= "Debuff Guard List";
 SMARTDEBUFF_TT_NOTREMOVABLE_LIST 	= "Click to Edit List";
 SMARTDEBUFF_OFT_SKILLS 				= "Mouse shortcuts";
-SMARTDEBUFF_TT_SKILLS				= "Click to edit mouse shortcuts\n(L/R/M clicks with Alt/Shift/Ctrl)\n\n"..RD.."Activate your right talents before";
+SMARTDEBUFF_TT_SKILLS				= "Click to edit mouse shortcuts\n(L/R/M clicks with Alt/Shift/Ctrl)";
+SMARTDEBUFF_TT_RESET_SKILLS = "Reset mouse shortcuts for your class";
 SMARTDEBUFF_OFT_SHOWDEBUFFGUARD 	= "Spell Guard List";
 SMARTDEBUFF_TT_SHOWDEBUFFGUARD 		= "Click to Edit\nList of Spells to Track";
-SMARTDEBUFF_TT_SOUNDLIST 			= "Click to Select Sound";
+SMARTDEBUFF_TT_SOUNDLIST 			= "Click to select Sound";
 
 -- Tooltip support
 SMARTDEBUFF_FUBAR_TT           = "\nLeft Click: Open options\nShift-Left Click: On/Off";
