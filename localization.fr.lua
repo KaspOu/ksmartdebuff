@@ -7,10 +7,11 @@ if (GetLocale() == "frFR") then
 SMARTDEBUFF_UPGRADED = "SmartDebuff mis \195\160 jour : "..SMARTDEBUFF_VERSION;
 
 SMARTDEBUFF_WHATSNEW = "|cffffffffNouveaut\195\169s :|r\n\n"
-  .."- Raccourcis am\195\169lior\195\169s :|cffff0000 Reset recommand\195\169 !|r\n\n"
-  .."- Ajout des Gardiennes du Bosquet des Druides.|r\n\n"
-  .."- Ajout du Bouclier de terre des Chamans.|r\n\n"
-  .."- Compatible Wow 10.2.6\n\n"
+  .."- Versions |cffff1111Wow Classic|r & |cff87CEEBWrath|r !\n\n\n"
+  .."- D\195\169tection des sorts r\195\169\195\169crite :\n|cffff1111 Reset des touches recommand\195\169 !|r\n\n"
+  .."- Visibilit\195\169 des sorts revue.\n\n"
+  .."- Les sorts inactifs sont bien d\195\169pla\195\167ables.\n\n"
+  .."- Sorts par d\195\169faut revus pour toutes les classes\n\n"
   ;
 
 --@do-not-package@
@@ -122,7 +123,7 @@ SMARTDEBUFF_OFT_TESTMODE       = "Mode test";
 SMARTDEBUFF_OFT_STOPCAST       = "Interrompre le sort";
 SMARTDEBUFF_OFT_IGNOREDEBUFF   = "Ignorer les d\195\169buffs";
 SMARTDEBUFF_OFT_CHATNOTIF      = "Notification de chat";
-SMARTDEBUFF_OFT_RESET_KEYS     = "R\195\169initialiser les sorts SmartDebuff par d\195\169faut?\nCette action est seulement n\195\169cessaire, si vous avez l'impression\nque tous les d\195\169buffs ne sont pas correctement d\195\169tect\195\169s.";
+SMARTDEBUFF_OFT_RESET_KEYS     = "R\195\169initialiser les sorts SmartDebuff par d\195\169faut ?\n\nCette action est n\195\169cessaire si vous avez l'impression que tous les d\195\169buffs ne sont pas correctement d\195\169tect\195\169s.";
 SMARTDEBUFF_AOFT_SORTBYCLASS   = "Trier par ordre de classe";
 SMARTDEBUFF_NRDT_TITLE         = "D\195\169buffs inamovibles";
 SMARTDEBUFF_SG_TITLE           = "Garde de sort";
@@ -130,7 +131,7 @@ SMARTDEBUFF_S_TITLE            = "Son d'alerte de d\195\169buff";
 
 
 -- Tooltip text
-SMARTDEBUFF_TT                 = "Glisser le titre avec Maj-Clic gauche : D\195\169place le cadre\n|cff20d2ff- Bouton S -|r\nClic gauche: Afficher par classes\nMaj-Clic gauche: Couleurs de classe\nAlt-Clic gauche: Mise en avant L/R\nClic droit: Arri\195\168re-plan";
+SMARTDEBUFF_TT                 = "Glisser le titre avec Maj-Clic gauche : D\195\169place le cadre\n|cff20d2ff- Bouton S -|r\nClic gauche : Afficher par classes\nMaj-Clic gauche : Couleurs de classe\nAlt-Clic gauche : Mise en avant L/R\nClic droit : Arri\195\168re-plan";
 SMARTDEBUFF_TT_TARGETMODE      = "En mode cible |cff20d2ffClic gauche|r s\195\169lectionne l'unit\195\169 et |cff20d2ffClic droit|r lance le sort de soin le plus rapide. Utilisez |cff20d2ffAlt-Clic gauche/droit|r pour d\195\169buff.";
 SMARTDEBUFF_TT_NOTREMOVABLE    = "Affiche les d\195\169buffs critiques\nqui ne sont pas amovibles.";
 SMARTDEBUFF_TT_HP              = "Affiche les points de vie\nr\195\169els de l'unit\195\169.";
@@ -178,26 +179,32 @@ SMARTDEBUFF_TT_CHATNOTIF       = "Affiche des messages de chat au chargement";
 -- Tooltip text key bindings
 SMARTDEBUFF_TT_DROP            = "L\195\162cher";
 SMARTDEBUFF_TT_DROPINFO        = "L\195\162cher un sort/objet/macro\n de votre livre/inventaire.\n|cff00ff00Clic gauche pour d\195\169finir la fonction cible.\nMaj-Gauche pour d\195\169finir la fonction menu";
-SMARTDEBUFF_TT_DROPSPELL       = "Clic sur le sort:\nGauche pour prendre\nMaj-Gauche pour cloner\nDroit pour supprimer";
-SMARTDEBUFF_TT_DROPITEM        = "Clic sur l'objet:\nGauche pour prendre\nMaj-Gauche pour cloner\nDroit pour supprimer";
-SMARTDEBUFF_TT_DROPMACRO       = "Clic sur la macro:\nGauche pour prendre\nMaj-Gauche pour cloner\nDroit pour supprimer";
+SMARTDEBUFF_TT_SPELLACTIONS    = "Clic sur le sort :\nGauche pour prendre\nMaj-Gauche pour cloner\nDroit pour supprimer";
+SMARTDEBUFF_TT_ITEMACTIONS     = "Clic sur l'objet :\nGauche pour prendre\nMaj-Gauche pour cloner\nDroit pour supprimer";
+SMARTDEBUFF_TT_MACROACTIONS    = "Clic sur la macro :\nGauche pour prendre\nMaj-Gauche pour cloner\nDroit pour supprimer";
 SMARTDEBUFF_TT_TARGET          = "Cible";
 SMARTDEBUFF_TT_TARGETINFO      = "S\195\169lectionne l'unit\195\169 sp\195\169cifi\195\169e\ncomme cible actuelle.";
 SMARTDEBUFF_TT_PETACTION       = "Sort de familier";
-SMARTDEBUFF_TT_MISSINGINFO     = "Sort temporairement inactif avec votre choix\nde Sp\195\169cialisation / Talents / Familier.";
-SMARTDEBUFF_TT_DROPTARGET      = "Clic de la souris :\nDroit pour supprimer";
-SMARTDEBUFF_TT_DROPACTION      = "Action du familier:\nSuppression impossible!";
+SMARTDEBUFF_TT_NOTFOUND        = "Erreur : Sort introuvable";
+SMARTDEBUFF_TT_MISSINGINFO     = "V\195\169rifiez votre Sp\195\169cialisation / Talent / Familier.";
+SMARTDEBUFF_TT_NOTMOVABLE      = "Impossible \195\160 d\195\169placer avec votre Sp\195\169cialisation";
+SMARTDEBUFF_TT_TARGETACTIONS   = "Clic de la souris :\nDroit pour supprimer";
+SMARTDEBUFF_TT_PETACTIONS      = "Action du familier :\nSuppression impossible!";
 SMARTDEBUFF_TT_MENU            = "Menu";
 SMARTDEBUFF_TT_MENUINFO        = "Ouvre le menu des options de l'unit\195\169.";
-SMARTDEBUFF_TT_DROPMENU        = "Clic de la souris :\nDroit pour supprimer";
+SMARTDEBUFF_TT_PICKMENU        = "Clic de la souris :\nDroit pour supprimer";
+SMARTDEBUFF_TT_DROPABBLE       = "Clic de la souris :\nGauche pour d\195\169poser\nDroit pour rel\195\162cher";
+SMARTDEBUFF_TT_DROPREPLACE     = "Clic de la souris :\nGauche pour remplacer\nDroit pour rel\195\162cher";
+SMARTDEBUFF_TT_DROPEXCHANGE    = "Clic de la souris :\nGauche pour \195\169changer\nDroit pour rel\195\162cher";
+SMARTDEBUFF_TT_CANTDROP        = "Clic de la souris :\nDroit pour rel\195\162cher";
 
 --Tooltips added by Semi#1287
-SMARTDEBUFF_TT_OPTIONS          = "|cff20d2ff- Bouton O -|r\nClic gauche: Ouvrir les options";
+SMARTDEBUFF_TT_OPTIONS          = "|cff20d2ff- Bouton O -|r\nClic gauche : Ouvrir les options";
 SMARTDEBUFF_OFT_CLASSSORT       = "Liste tri\195\169e des classes";
 SMARTDEBUFF_TT_CLASSSORT 	      = "Cliquez pour modifier l'ordre des classes";
 SMARTDEBUFF_OFT_NOTREMOVABLE_LIST = "Liste de protection contre les d\195\169buffs";
 SMARTDEBUFF_TT_NOTREMOVABLE_LIST 	= "Cliquez pour modifier la liste";
-SMARTDEBUFF_OFT_SKILLS          = "Raccourcis de la souris";
+SMARTDEBUFF_OFT_SKILLS          = "Touches de la souris";
 SMARTDEBUFF_TT_SKILLS           = "Cliquez pour modifier les raccourcis\n(Clic G/D/M, avec Alt/Maj/Ctrl)";
 SMARTDEBUFF_TT_RESET_SKILLS     = "R\195\169initialise les raccourcis pour votre classe";
 SMARTDEBUFF_OFT_SHOWDEBUFFGUARD	= "Liste de protection contre les sorts";
@@ -205,8 +212,13 @@ SMARTDEBUFF_TT_SHOWDEBUFFGUARD  = "Cliquez pour modifier\nla liste des sorts \19
 SMARTDEBUFF_TT_SOUNDLIST        = "Cliquez pour s\195\169lectionner le son";
 
 -- Tooltip support
-SMARTDEBUFF_FUBAR_TT           = "\nClic gauche: Ouvrir les options\nMaj-Clic gauche: On/Off";
-SMARTDEBUFF_BROKER_TT          = "Clic gauche: Ouvrir les options\nClic droit: On/Off";
+SMARTDEBUFF_FUBAR_TT           = "\nClic gauche : Ouvrir les options\nMaj-Clic gauche : On/Off";
+SMARTDEBUFF_BROKER_TT          = "Clic gauche : Ouvrir les options\nClic droit : On/Off";
 
 
 end
+
+--@do-not-package@
+-- https://code.google.com/archive/p/mangadmin/wikis/SpecialCharacters.wiki
+-- https://wowwiki.fandom.com/wiki/Localizing_an_addon
+--@end-do-not-package@

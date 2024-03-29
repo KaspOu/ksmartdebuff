@@ -1,12 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-  <Script file="SmartDebuff.globals.lua"/>
-  <Script file="localization.en.lua"/>
-  <Script file="localization.de.lua"/>
-  <Script file="localization.fr.lua"/>
-  <Script file="localization.es.lua"/>
-  <Script file="localization.tw.lua"/>
-  <Script file="SmartDebuff.lua"/>
 
   <Frame name="SmartDebuffFrame">
     <Scripts>
@@ -210,7 +203,7 @@
         self:EnableMouse(true);
         self:SetMovable(true);
 
-        if (wowtocversion > 90000) then Mixin(self, BackdropTemplateMixin) end
+        if (BackdropTemplateMixin) then Mixin(self, BackdropTemplateMixin) end
         self:SetBackdrop(SMARTDEBUFF_BACKDROP_TOOLTIP)
       </OnLoad>
       <OnShow>
@@ -304,7 +297,7 @@
         self:RegisterForDrag("LeftButton");
         self:EnableMouse(true);
         self:SetMovable(true);
-        if (wowtocversion > 90000) then Mixin(self, BackdropTemplateMixin) end
+        if (BackdropTemplateMixin) then Mixin(self, BackdropTemplateMixin) end
         self:SetBackdrop(SMARTDEBUFF_BACKDROP_OPTIONS)
       </OnLoad>
       <OnShow>
@@ -969,6 +962,9 @@
           <OnLoad>
           </OnLoad>
           <OnShow>
+            if (not SMARTDEBUFF_CLASSES["DEATHKNIGHT"]) then
+              self:Hide();
+            end
             self:SetChecked(SMARTDEBUFF_Options.DebuffClasses["DEATHKNIGHT"]);
           </OnShow>
           <OnClick>
@@ -1002,6 +998,9 @@
           <OnLoad>
           </OnLoad>
           <OnShow>
+            if (not SMARTDEBUFF_CLASSES["MONK"]) then
+              self:Hide();
+            end
             self:SetChecked(SMARTDEBUFF_Options.DebuffClasses["MONK"]);
           </OnShow>
           <OnClick>
@@ -1035,6 +1034,9 @@
           <OnLoad>
           </OnLoad>
           <OnShow>
+            if (not SMARTDEBUFF_CLASSES["DEMONHUNTER"]) then
+              self:Hide();
+            end
             self:SetChecked(SMARTDEBUFF_Options.DebuffClasses["DEMONHUNTER"]);
           </OnShow>
           <OnClick>
@@ -1068,6 +1070,9 @@
           <OnLoad>
           </OnLoad>
           <OnShow>
+            if (not SMARTDEBUFF_CLASSES["EVOKER"]) then
+              self:Hide();
+            end
             self:SetChecked(SMARTDEBUFF_Options.DebuffClasses["EVOKER"]);
           </OnShow>
           <OnClick>
@@ -1167,6 +1172,9 @@
           <OnLoad>
           </OnLoad>
           <OnShow>
+            if (not SMARTDEBUFF_CLASSES["DEATHKNIGHT"]) then
+              self:Hide();
+            end
             self:SetChecked(SMARTDEBUFF_Options.ShowPetsDK);
           </OnShow>
           <OnClick>
@@ -2415,6 +2423,7 @@
           <OnClick>
             if (SMARTDEBUFF_Options) then
               SMARTDEBUFF_Options.StopCast = not SMARTDEBUFF_Options.StopCast;
+              SMARTDEBUFF_SetButtons();
             end
           </OnClick>
           <OnEnter>
@@ -2854,6 +2863,38 @@
         </Scripts>
       </Button>
 
+      <Button name="$parent_btnReload" inherits="UIPanelButtonTemplate" text="|cff00ffffReload">
+        <Size>
+          <AbsDimension x="68" y="20" />
+        </Size>
+        <Anchors>
+          <Anchor point="BOTTOMRIGHT">
+            <Offset>
+              <AbsDimension x="-4" y="28"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnLoad>
+            self:SetAlpha(.8);
+            self:Hide();
+            self:SetNormalFontObject("GameFontNormalSmall");
+            self:SetHighlightFontObject("GameFontHighlightSmall");
+          </OnLoad>
+          <OnClick>
+            SMARTDEBUFF_Options.VersionNr = 0;
+            SMARTDEBUFF_OptionsGlobal.FirstStart = "V0";
+            ReloadUI();
+          </OnClick>
+          <OnEnter>
+            SMARTDEBUFF_SetGameTooltip(self, "|cff00ffffReload (Debug)", "Reload and reopen this window");
+          </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+          </OnLeave>
+        </Scripts>
+      </Button>
+
       <Button name="$parent_btnTestMode" inherits="UIPanelButtonTemplate" text="SMARTDEBUFF_OFT_TESTMODE">
         <Size>
           <AbsDimension x="72" y="20" />
@@ -2940,7 +2981,7 @@
       <OnLoad>
         self:RegisterForDrag("LeftButton");
         self:EnableMouse(true);
-        if (wowtocversion > 90000) then Mixin(self, BackdropTemplateMixin) end
+        if (BackdropTemplateMixin) then Mixin(self, BackdropTemplateMixin) end
         self:SetBackdrop(SMARTDEBUFF_BACKDROP_OPTIONS)
       </OnLoad>
       <OnShow>
@@ -3069,7 +3110,7 @@
     <Scripts>
       <OnLoad>
         self:SetHeight(SmartDebuffOF:GetHeight());
-        if (wowtocversion > 90000) then Mixin(self, BackdropTemplateMixin) end
+        if (BackdropTemplateMixin) then Mixin(self, BackdropTemplateMixin) end
         self:SetBackdrop(SMARTDEBUFF_BACKDROP_OPTIONS)
       </OnLoad>
       <OnShow>
@@ -3203,7 +3244,7 @@
     <Scripts>
       <OnLoad>
         self:SetHeight(SmartDebuffOF:GetHeight());
-        if (wowtocversion > 90000) then Mixin(self, BackdropTemplateMixin) end
+        if (BackdropTemplateMixin) then Mixin(self, BackdropTemplateMixin) end
         self:SetBackdrop(SMARTDEBUFF_BACKDROP_OPTIONS)
       </OnLoad>
       <OnShow>
@@ -3345,7 +3386,7 @@
     <Scripts>
       <OnLoad>
         self:SetHeight(SmartDebuffOF:GetHeight());
-        if (wowtocversion > 90000) then Mixin(self, BackdropTemplateMixin) end
+        if (BackdropTemplateMixin) then Mixin(self, BackdropTemplateMixin) end
         self:SetBackdrop(SMARTDEBUFF_BACKDROP_OPTIONS)
       </OnLoad>
       <OnShow>
@@ -3480,7 +3521,7 @@
     <Scripts>
       <OnLoad>
         self:SetHeight(SmartDebuffOF:GetHeight());
-        if (wowtocversion > 90000) then Mixin(self, BackdropTemplateMixin) end
+        if (BackdropTemplateMixin) then Mixin(self, BackdropTemplateMixin) end
         self:SetBackdrop(SMARTDEBUFF_BACKDROP_OPTIONS)
       </OnLoad>
       <OnShow>
@@ -3545,7 +3586,7 @@
     <Scripts>
       <OnLoad>
         self:SetHeight(SmartDebuffOF:GetHeight());
-        if (wowtocversion > 90000) then Mixin(self, BackdropTemplateMixin) end
+        if (BackdropTemplateMixin) then Mixin(self, BackdropTemplateMixin) end
         self:SetBackdrop(SMARTDEBUFF_BACKDROP_OPTIONS)
       </OnLoad>
       <OnShow>
@@ -3553,6 +3594,7 @@
         SmartDebuffAOFKeys_OnShow(self);
       </OnShow>
       <OnHide>
+        SMARTDEBUFF_AddMsgD("-- On hide, set buttons --");
         SMARTDEBUFF_SetButtons();
       </OnHide>
     </Scripts>
@@ -4071,7 +4113,7 @@
     <Scripts>
       <OnLoad>
         self:SetHeight(SmartDebuffOF:GetHeight());
-        if (wowtocversion > 90000) then Mixin(self, BackdropTemplateMixin) end
+        if (BackdropTemplateMixin) then Mixin(self, BackdropTemplateMixin) end
         self:SetBackdrop(SMARTDEBUFF_BACKDROP_OPTIONS)
       </OnLoad>
       <OnShow>
@@ -4146,7 +4188,7 @@
     <Scripts>
       <OnLoad>
         self:SetHeight(SmartDebuffOF:GetHeight());
-        if (wowtocversion > 90000) then Mixin(self, BackdropTemplateMixin) end
+        if (BackdropTemplateMixin) then Mixin(self, BackdropTemplateMixin) end
         self:SetBackdrop(SMARTDEBUFF_BACKDROP_OPTIONS)
       </OnLoad>
       <OnShow>
