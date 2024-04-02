@@ -121,13 +121,13 @@ SMARTDEBUFF_TT_AUTOHIDE        = "自動隱藏單位按鈕\n在非戰斗狀態 \
 -- Tooltip text key bindings
 SMARTDEBUFF_TT_DROP            = "釋放";
 SMARTDEBUFF_TT_DROPINFO        = "釋放書和背包中的法術/物品/宏\n\n|cff00ff00左點擊設置目標功能";
-SMARTDEBUFF_TT_DROPSPELL       = "法術點擊:\n左 拾取\nShift-左 復制\n右 刪除";
-SMARTDEBUFF_TT_DROPITEM        = "物品點擊:\n左 拾取\nShift-左 復制\n右 刪除";
-SMARTDEBUFF_TT_DROPMACRO       = "宏 點擊:\n左 拾取\nShift-左 復制\n右 刪除";
+SMARTDEBUFF_TT_SPELLACTIONS    = "法術點擊:\n左 拾取\nShift-左 復制\n右 刪除";
+SMARTDEBUFF_TT_ITEMACTIONS     = "物品點擊:\n左 拾取\nShift-左 復制\n右 刪除";
+SMARTDEBUFF_TT_MACROACTIONS    = "宏 點擊:\n左 拾取\nShift-左 復制\n右 刪除";
 SMARTDEBUFF_TT_TARGET          = "目標";
 SMARTDEBUFF_TT_TARGETINFO      = "選擇指定單位\n作為當前目標.";
-SMARTDEBUFF_TT_DROPTARGET      = "單位點擊:\n刪除";
-SMARTDEBUFF_TT_DROPACTION      = "寵物行動:\n不能刪除!";
+SMARTDEBUFF_TT_TARGETACTIONS   = "單位點擊:\n刪除";
+SMARTDEBUFF_TT_PETACTIONS      = "寵物行動:\n不能刪除!";
 
 --Tooltips added by Semi#1287
 SMARTDEBUFF_TT_OPTIONS		   		= "Left click: Open options\n|cff20d2ff- O button -|r";

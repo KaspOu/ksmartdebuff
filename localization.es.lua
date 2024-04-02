@@ -142,13 +142,13 @@ SMARTDEBUFF_TT_SHOWRAIDICON    = "Muestra el icono de raid\nde la unidad.";
 -- -- Tooltip text key bindings
 -- SMARTDEBUFF_TT_DROP            = "Drop";
 -- SMARTDEBUFF_TT_DROPINFO        = "Drop a spell/item/macro\nof your book/inventory.\n|cff00ff00Left click set target function.";
--- SMARTDEBUFF_TT_DROPSPELL       = "Spell click:\nLeft to pickup\nShift-Left to clone\nRight to remove";
--- SMARTDEBUFF_TT_DROPITEM        = "Item click:\nLeft to pickup\nShift-Left to clone\nRight to remove";
--- SMARTDEBUFF_TT_DROPMACRO       = "Macro click:\nLeft to pickup\nShift-Left to clone\nRight to remove";
+-- SMARTDEBUFF_TT_SPELLACTIONS    = "Spell click:\nLeft to pickup\nShift-Left to clone\nRight to remove";
+-- SMARTDEBUFF_TT_ITEMACTIONS     = "Item click:\nLeft to pickup\nShift-Left to clone\nRight to remove";
+-- SMARTDEBUFF_TT_MACROACTIONS    = "Macro click:\nLeft to pickup\nShift-Left to clone\nRight to remove";
 -- SMARTDEBUFF_TT_TARGET          = "Target";
 -- SMARTDEBUFF_TT_TARGETINFO      = "Selects the specified unit\nas the current target.";
--- SMARTDEBUFF_TT_DROPTARGET      = "Unit click:\nRemove";
--- SMARTDEBUFF_TT_DROPACTION      = "Pet action:\nRemove not possible!";
+-- SMARTDEBUFF_TT_TARGETACTIONS   = "Unit click:\nRemove";
+-- SMARTDEBUFF_TT_PETACTIONS      = "Pet action:\nRemove not possible!";
 
 -- --Tooltips added by Semi#1287
 -- SMARTDEBUFF_TT_OPTIONS		   		= "Left click: Open options\n|cff20d2ff- O button -|r";

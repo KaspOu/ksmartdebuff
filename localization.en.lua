@@ -5,10 +5,11 @@
 SMARTDEBUFF_UPGRADED = "SmartDebuff upgraded to "..SMARTDEBUFF_VERSION;
 -- Whats new info
 SMARTDEBUFF_WHATSNEW = "|cffffffffWhats new:|r\n\n"
-  .."- Mouse shortcuts enhanced:|cffff0000 Reset recommended!|r\n\n"
-  .."- Added Druid's Grove guardians.|r\n\n"
-  .."- Added Shaman's Earth shield.|r\n\n"
-  .."- Update compatibility with 10.2.6\n\n"
+  .."- |cffff1111Wow Classic|r & |cff87CEEBWrath|r versions !\n\n\n"
+  .."- Spells detection reworked:\n|cffff1111 Reset keys recommended!|r\n\n"
+  .."- Spells visibility reworked.\n\n"
+  .."- Inactive spells may be moved.\n\n"
+  .."- Default spells revised for all classes.\n\n"
   ;
 
 --@do-not-package@
@@ -122,7 +123,7 @@ SMARTDEBUFF_OFT_TESTMODE       = "Test Mode";
 SMARTDEBUFF_OFT_STOPCAST       = "Stop Casting";
 SMARTDEBUFF_OFT_IGNOREDEBUFF   = "Ignore Debuffs";
 SMARTDEBUFF_OFT_CHATNOTIF        = "Chat notification";
-SMARTDEBUFF_OFT_RESET_KEYS     = "Reset the SmartDebuff spell bindings to default?\nThis action is only necessary, if you have the feeling\nthat not all debuffs are correctly detected.";
+SMARTDEBUFF_OFT_RESET_KEYS     = "Reset the SmartDebuff spell bindings to default?\n\nThis action is necessary if you have the feeling that not all debuffs are correctly detected.";
 
 SMARTDEBUFF_AOFT_SORTBYCLASS   = "Sort by class order";
 SMARTDEBUFF_NRDT_TITLE         = "Unremovable Debuffs";
@@ -179,18 +180,24 @@ SMARTDEBUFF_TT_CHATNOTIF         = "Displays chat messages on load";
 -- Tooltip text key bindings
 SMARTDEBUFF_TT_DROP            = "Drop";
 SMARTDEBUFF_TT_DROPINFO        = "Drop a spell/item/macro\nof your book/inventory.\n|cff00ff00Left click set target function.\nShift-Left set menu function";
-SMARTDEBUFF_TT_DROPSPELL       = "Spell click:\nLeft to pickup\nShift-Left to clone\nRight to remove";
-SMARTDEBUFF_TT_DROPITEM        = "Item click:\nLeft to pickup\nShift-Left to clone\nRight to remove";
-SMARTDEBUFF_TT_DROPMACRO       = "Macro click:\nLeft to pickup\nShift-Left to clone\nRight to remove";
+SMARTDEBUFF_TT_SPELLACTIONS    = "Spell click:\nLeft to pickup\nShift-Left to clone\nRight to remove";
+SMARTDEBUFF_TT_ITEMACTIONS     = "Item click:\nLeft to pickup\nShift-Left to clone\nRight to remove";
+SMARTDEBUFF_TT_MACROACTIONS    = "Macro click:\nLeft to pickup\nShift-Left to clone\nRight to remove";
 SMARTDEBUFF_TT_TARGET          = "Target";
 SMARTDEBUFF_TT_TARGETINFO      = "Selects the specified unit\nas the current target.";
 SMARTDEBUFF_TT_PETACTION       = "Pet spell";
-SMARTDEBUFF_TT_MISSINGINFO     = "Spell temporarily inactive with current\nSpecialization / Talents / Pet.";
-SMARTDEBUFF_TT_DROPTARGET      = "Mouse click:\nRight to remove";
-SMARTDEBUFF_TT_DROPACTION      = "Pet action:\nRemove not possible!";
+SMARTDEBUFF_TT_NOTFOUND        = "Error: Spell not found";
+SMARTDEBUFF_TT_MISSINGINFO     = "Check your Specialization / Talent / Pet.";
+SMARTDEBUFF_TT_NOTMOVABLE      = "Impossible to move with your specialization";
+SMARTDEBUFF_TT_TARGETACTIONS   = "Mouse click:\nRight to remove";
+SMARTDEBUFF_TT_PETACTIONS      = "Pet action:\nRemove not possible!";
 SMARTDEBUFF_TT_MENU            = "Menu";
 SMARTDEBUFF_TT_MENUINFO        = "Opens the unit options menu.";
-SMARTDEBUFF_TT_DROPMENU        = "Mouse click:\nRight to remove";
+SMARTDEBUFF_TT_PICKMENU        = "Mouse click:\nRight to remove";
+SMARTDEBUFF_TT_DROPABBLE       = "Mouse click:\nLeft to drop\nRight to release";
+SMARTDEBUFF_TT_DROPREPLACE     = "Mouse click:\nLeft to replace\nRight to release";
+SMARTDEBUFF_TT_DROPEXCHANGE    = "Mouse click:\nLeft to exchange\nRight to release";
+SMARTDEBUFF_TT_CANTDROP        = "Mouse click:\nRight to release";
 
 --Tooltips added by Semi#1287
 SMARTDEBUFF_TT_OPTIONS		   		= "|cff20d2ff- O button -|r\nLeft click: Open options";
@@ -198,7 +205,7 @@ SMARTDEBUFF_OFT_CLASSSORT       = "Sorted list of classes";
 SMARTDEBUFF_TT_CLASSSORT        = "Click to modify the class order";
 SMARTDEBUFF_OFT_NOTREMOVABLE_LIST 	= "Debuff Guard List";
 SMARTDEBUFF_TT_NOTREMOVABLE_LIST 	= "Click to Edit List";
-SMARTDEBUFF_OFT_SKILLS 				= "Mouse shortcuts";
+SMARTDEBUFF_OFT_SKILLS 				= "Mouse keys";
 SMARTDEBUFF_TT_SKILLS				= "Click to edit mouse shortcuts\n(L/R/M clicks with Alt/Shift/Ctrl)";
 SMARTDEBUFF_TT_RESET_SKILLS = "Reset mouse shortcuts for your class";
 SMARTDEBUFF_OFT_SHOWDEBUFFGUARD 	= "Spell Guard List";

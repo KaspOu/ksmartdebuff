@@ -1,3 +1,12 @@
+v10.2.602
+- Wow Classic & Wrath !
+- Major fixes: Spells detection reworked
+> Reset keys recommended
+- All spells are displayed (inactive ones or offspec talents are darkened)
+- Inactive spells may be moved
+- Default spells revised for all classes
+- Fixed Clicks: only on mousedown
+
 v10.2.601
 - Many Mouse shortcuts enhancements and fixes
 - Spells detection reworked for 10.2.6
