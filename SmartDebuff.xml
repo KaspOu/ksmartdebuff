@@ -3175,6 +3175,9 @@
             self:SetAutoFocus(false);
             self:EnableMouse(false);
             self:EnableKeyboard(false);
+            self.Left:SetAlpha(.4);
+            self.Middle:SetAlpha(.4);
+            self.Right:SetAlpha(.4);
           </OnLoad>
 				</Scripts>
 			</EditBox>

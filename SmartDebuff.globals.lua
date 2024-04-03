@@ -213,3 +213,6 @@ SMARTDEBUFF_SOUNDS = {
   {"Wham", 566946, "PVP_Lordaeron_Door_Open.ogg"},
   {"Whisper Ping", 567421, "iTellMessage.ogg"}
 };
+SMARTDEBUFF_DISABLED_SOUNDS = nil;
+
+SMARTDEBUFF_SOUNDS_DEFAULT = 10; -- Tribal

@@ -1,7 +1,7 @@
 ## Interface: 30403
 ## Title: Smart|cffffffffDebuff|r Reloaded by |cff00ff00Kallye|r
 ## Title-frFR: Smart|cffffffffDebuff|r Reloaded, par |cff00ff00Kallye|r
-## Version: 10.2.602
+## Version: 10.2.603
 ## Author: |cff00ff00Kallye|r (EU-Elune)
 ## Notes: Use << |cff00ff00/sdb|r >> for debuff frame.
 ## Notes-deDE: Benutze << |cff00ff00/sdb|r >> um das Debuff-Fenster zu offnen
@@ -14,7 +14,7 @@
 
 ## X-Credits: Aeldra, Semi#1287
 ## X-Category: Buffs & Debuffs
-## X-License: All Rights Reserved: You are free to fork and modify on GitHub, please ask us about anything else.
+## X-License: All Rights Reserved: You are free to fork and modify on Bitbucket, please ask about anything else.
 ## X-Website: https://bitbucket.org/KaspOu/smartdebuff/
 ## X-Curse-Project-ID: 699994
 

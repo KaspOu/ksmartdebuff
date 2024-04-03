@@ -106,3 +106,26 @@ SMARTDEBUFF_CLASS_SKILLS_LIST_ID = {
 }
 
 SMARTDEBUFF_OVERRIDE_PICKUP_LIST_ID = {}
+
+SMARTDEBUFF_DISABLED_SOUNDS = "\
+Bell Karazhan\
+Cartoon FX\
+Cheer\
+Diiing\
+Explosion\
+Fel Nova\
+Fel Portal\
+Follower Level Up\
+Humm\
+Lightning\
+Lightning 2\
+Lightning 3\
+Pet Level Up\
+Rubber Ducky\
+Shing\
+Short Circuit\
+Simon Chime\
+Simon Tick\
+War Drums\
+Wham\
+";

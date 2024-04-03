@@ -1,6 +1,6 @@
 ***********************************************************************
 SmartDebuff
-Created by Aeldra (EU-Proudmoore)
+Developed by Kallye (EU-Elune)  (cloned from Aeldra)
 ***********************************************************************
 
 SmartDebuff is an addon to support you in cast debuff spells.
