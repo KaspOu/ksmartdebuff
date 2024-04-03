@@ -1,3 +1,9 @@
+v10.2.603
+ - Keys UI: Items are fixed, and item count is displayed (grayed if none).
+ - Keys UI: Macro name displayed.
+ - Sound selection UI: highlight for selected sound.
+ - Classic : Unavailable sounds in red.
+
 v10.2.602
 - Wow Classic & Wrath !
 - Major fixes: Spells detection reworked

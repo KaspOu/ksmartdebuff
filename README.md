@@ -53,6 +53,6 @@ Q5: I use the "Auto hide" feature, but now SmartDebuff is hidden till combat, ho
 A5: Type in the chat "/sdbo" or "/sdbm" the options menu will displayed and the unit buttons also.
 
 ## Credits
-Fork by Kallye (EU-Elune)
-Created by Aeldra (EU-Proudmoore)
+Developed by Kallye (EU-Elune)
+Cloned from Aeldra (EU-Proudmoore)
 https://www.curseforge.com/members/kaspou/projects

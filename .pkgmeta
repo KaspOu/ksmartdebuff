@@ -3,3 +3,6 @@ package-as: SmartDebuff
 manual-changelog: ChangeLog.txt
 
 license-output: License.txt
+
+ignore:
+    - .vscode

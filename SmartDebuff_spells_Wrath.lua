@@ -115,3 +115,12 @@ SMARTDEBUFF_CLASS_SKILLS_LIST_ID = {
 }
 
 SMARTDEBUFF_OVERRIDE_PICKUP_LIST_ID = {}
+
+SMARTDEBUFF_DISABLED_SOUNDS = "\
+Diiing\
+Follower Level Up\
+Lightning\
+Lightning 2\
+Lightning 3\
+Pet Level Up\
+";
