@@ -1,5 +1,9 @@
 v10.2.604
  - Keys UI: Macro buttons update according to macro changes after editing / deleting
+ - Classic / Wrath : dispels added
+   / Druid Cure & Abolish Poison / Priest Abolish Disease
+   / Paladin Purify / Warlock (Wotlk Felhunter) Devour Magic
+   / Mage (SoD) Remove Greater Curse
 
 v10.2.603
  - Keys UI: Items are fixed, and item count is displayed (grayed if none).

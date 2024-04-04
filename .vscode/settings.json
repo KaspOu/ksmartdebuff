@@ -105,6 +105,7 @@
         "LOOKING_FOR_RAID",
         "MACRO",
         "math",
+        "MAX_CHARACTER_MACROS",
         "Mixin",
         "NO",
         "NORMAL_FONT_COLOR",
@@ -130,8 +131,6 @@
         "ShowUIPanel",
         "SlashCmdList",
         "SmartBuffOptionsFrame_cbSmartDebuff",
-        "SMARTDEBUFF_BROKER_UpdateIcon",
-        "SMARTDEBUFF_Fu_UpdateIcon",
         "SmartDebuff_lblInfoRow",
         "SmartDebuffAOFKeys",
         "SmartDebuffClassOrder_ScrollFrame",
@@ -250,8 +249,7 @@
         "WEEKDAY_TUESDAY",
         "WEEKDAY_WEDNESDAY",
         "WORLD_PVP",
-        "YES",
-        "MAX_CHARACTER_MACROS"
+        "YES"
     ],
     "Lua.diagnostics.disable": [
         "need-check-nil",

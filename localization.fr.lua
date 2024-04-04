@@ -9,6 +9,7 @@ SMARTDEBUFF_UPGRADED = "SmartDebuff mis \195\160 jour : "..SMARTDEBUFF_VERSION;
 SMARTDEBUFF_WHATSNEW = "|cffffffffNouveaut\195\169s :|r\n\n"
   .."- Versions |cffff1111Wow Classic|r & |cff87CEEBWrath|r !\n\n\n"
   .."- Touches : D\195\169tecte toutes les \195\169ditions/effacements de Macros\n\n"
+  .."- Classic / Wrath : dispels corrig\195\169s (Druide, Pr\195\170tre, Mage SoD, D\195\169moniste)\n\n"
   ;
 
 --@do-not-package@

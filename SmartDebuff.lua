@@ -1013,7 +1013,7 @@ function SMARTDEBUFF_SetSpells()
 
   SMARTDEBUFF_AddMsgD("--- Smart Debuff Set spells --- "..sPlayerClass);
   -- Add Dispels abilities to L
-  if (sPlayerClass and SMARTDEBUFF_CLASS_DISPELS_LIST_ID[sPlayerClass]) then
+  if (sPlayerClass and SMARTDEBUFF_CLASS_DISPELS_LIST_ID[sPlayerClass] and #SMARTDEBUFF_CLASS_DISPELS_LIST_ID[sPlayerClass] > 0) then
       sName = nil;
       SMARTDEBUFF_AddMsgD("Checking for class dispels...");
       -- 1. Check for useable dispel, and enhancement
@@ -1052,9 +1052,15 @@ function SMARTDEBUFF_SetSpells()
             break;
           end
         end
-        -- 3. Fallback: first class dispel in the list
+        -- 3. Fallback: first class dispel in the list (avoid OnlyIfUsable is possible)
         if sName == nil then
           local val = SMARTDEBUFF_CLASS_DISPELS_LIST_ID[sPlayerClass][1];
+          for _, searchForUsableVal in ipairs(SMARTDEBUFF_CLASS_DISPELS_LIST_ID[sPlayerClass]) do
+            if not searchForUsableVal.OnlyIfUsable then
+              val = searchForUsableVal;
+              break;
+            end
+          end
           sSpellInfo = SDB_GetSpellInfo(val.Spell_ID);
           if (sSpellInfo) then
             cSpellDefault["L"] = {_, val.Spell_Type or "spell", sSpellInfo.name, sSpellInfo.spellID};
@@ -1839,28 +1845,6 @@ function SMARTDEBUFF_CheckSF()
     SMARTDEBUFF_SetUnits();
   end
   SMARTDEBUFF_CheckIF();
-
-  if (C_AddOns.IsAddOnLoaded) then
-    -- C_AddOns, Since DragonFlight (9)
-    -- Update the FuBar icon
-    if (C_AddOns.IsAddOnLoaded("FuBar") and C_AddOns.IsAddOnLoaded("FuBar_SmartDebuffFu")) then
-      SMARTDEBUFF_Fu_UpdateIcon();
-    end
-    -- Update the Broker icon
-    if (C_AddOns.IsAddOnLoaded("Broker_SmartDebuff")) then
-      SMARTDEBUFF_BROKER_UpdateIcon();
-    end
-  else
-    -- Classic
-    -- Update the FuBar icon
-    if (IsAddOnLoaded("FuBar") and IsAddOnLoaded("FuBar_SmartDebuffFu")) then
-      SMARTDEBUFF_Fu_UpdateIcon();
-    end
-    -- Update the Broker icon
-    if (IsAddOnLoaded("Broker_SmartDebuff")) then
-      SMARTDEBUFF_BROKER_UpdateIcon();
-    end
-  end
 end
 
 function SMARTDEBUFF_CheckSFButtons(hide)
@@ -4538,6 +4522,8 @@ function SMARTDEBUFF_ShowWhatsNew()
   ShowF(SmartDebuffAOFKeys);
   SmartDebuffWNF_lblText:SetText(SMARTDEBUFF_WHATSNEW);
   ShowF(SmartDebuffWNF);
+  isSetSpells = true;
+  isSetMacros = true;
 end
 
 

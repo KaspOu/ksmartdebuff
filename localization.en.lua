@@ -7,6 +7,7 @@ SMARTDEBUFF_UPGRADED = "SmartDebuff upgraded to "..SMARTDEBUFF_VERSION;
 SMARTDEBUFF_WHATSNEW = "|cffffffffWhats new:|r\n\n"
   .."- |cffff1111Wow Classic|r & |cff87CEEBWrath|r versions\n\n\n"
   .."- Key UI: Macro buttons update according to macro changes after editing / deleting\n\n"
+  .."- Classic / Wrath : dispels added (Druide, Priest, Mage SoD, Warlock)\n\n"
   ;
 
 --@do-not-package@

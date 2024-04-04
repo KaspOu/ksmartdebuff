@@ -1,7 +1,7 @@
 --@do-not-package@
 --[[
 List dispels: https://warcraft.wiki.gg/wiki/Magic_(dispel_type)
-ALL Dispels : https://www.wowhead.com/classic/spells?filter=109;38;0
+Class Dispels : https://www.wowhead.com/classic/spells/abilities/druid?filter=109;38;0
 Talents dispels: https://www.wowhead.com/classic/spells/talents?filter=109;38;0
 https://wago.tools/db2/SpellDispelType
 
@@ -10,7 +10,7 @@ https://www.wowhead.com/spell=526
 https://www.wowhead.com/classic/spell=51886
 
 SMARTDEBUFF_CLASS_DISPELS_LIST_ID
-  Format: [ClassName] = { { Spell_ID, Spell_List, Spell_CheckIsUsable?, Improved_Talent?, Improved_Spell_List?, } }
+  Format: [ClassName] = { { Spell_ID, Spell_List, OnlyIfUsable?, Improved_Talent?, Improved_Spell_List?, } }
   Priority: first active spell > first inactive talent > first item
 
 SMARTDEBUFF_CLASS_SKILLS_LIST_ID
@@ -38,21 +38,25 @@ SMARTDEBUFF_CLASS_DISPELS_LIST_ID = {
       Spell_ID = 4987,
       Spell_List = {SMARTDEBUFF_MAGIC, SMARTDEBUFF_DISEASE, SMARTDEBUFF_POISON},
     },
+    { -- Purify (1-3)
+      Spell_ID = 1152,
+      Spell_List = {SMARTDEBUFF_DISEASE, SMARTDEBUFF_POISON},
+    },
   },
 
   ["PRIEST"] = {
-    { -- Purify (1+)
+    { -- Dispel Magic, will be named Purify (1-4)
       Spell_ID = 527,
       Spell_List = {SMARTDEBUFF_MAGIC},
     },
-    -- { -- Cure Disease (1-3)
+    -- { -- Cure Disease, will be changed to Dispel Magic (1-4)
     --   Spell_ID = 528,
     --   Spell_List = {SMARTDEBUFF_DISEASE},
     -- },
   },
 
   ["SHAMAN"] = {
-    { -- Cure Poison (1+)
+    { -- Cure Poison, will be changed to Cure Toxins wotk (1-2)
       Spell_ID = 526,
       Spell_List = {SMARTDEBUFF_POISON},
     },
@@ -63,6 +67,11 @@ SMARTDEBUFF_CLASS_DISPELS_LIST_ID = {
   },
 
   ["MAGE"] = {
+    { -- Remove Greater Curse (SoD)
+      Spell_ID = 412113,
+      Spell_List = {SMARTDEBUFF_CURSE, SMARTDEBUFF_MAGIC},
+      OnlyIfUsable = true,
+    },
     { -- Remove Curse
       Spell_ID = 475,
       Spell_List = {SMARTDEBUFF_CURSE},
@@ -72,6 +81,8 @@ SMARTDEBUFF_CLASS_DISPELS_LIST_ID = {
 -- Possible buttons : R, M, AL
 SMARTDEBUFF_CLASS_SKILLS_LIST_ID = {
   ["DRUID"]  = {
+    { Spell_ID = 8946,   Button = "R", Types = {SMARTDEBUFF_POISON} }, -- Cure Poison (1-3)
+    { Spell_ID = 2893,   Button = "R", Types = {SMARTDEBUFF_POISON} }, -- Abolish Poison (1-3)
     { Spell_ID = 774,   Button = "AL", Types = {SMARTDEBUFF_HEAL} }, -- Rejuvenation (1+)
   },
   ["PALADIN"]  = {
@@ -80,9 +91,12 @@ SMARTDEBUFF_CLASS_SKILLS_LIST_ID = {
     { Spell_ID = 19750, Button = "AL", Types = {SMARTDEBUFF_HEAL} }, --  Flash of light (1+)
   },
   ["PRIEST"]  = {
-    { Spell_ID = 528,   Button = "R", Types = {SMARTDEBUFF_DISEASE} }, -- Cure Disease (1-3)
+    { Spell_ID = 528,   Button = "R", Types = {SMARTDEBUFF_DISEASE} }, -- Cure Disease, will be changed to Dispel Magic (1-4)
+    { Spell_ID = 552,   Button = "R", Types = {SMARTDEBUFF_DISEASE} }, -- Abolish Disease (1-3)
     { Spell_ID = 17,    Button = "M", Types = {SMARTDEBUFF_UTIL} }, -- Power word shield (1+)
     { Spell_ID = 139,   Button = "AL", Types = {SMARTDEBUFF_HEAL} }, -- Renew (1+)
+    -- 23859 - NPC Dispel Magic
+    -- 28133 - NPC Cure Disease
   },
   ["SHAMAN"]  = {
     { Spell_ID = 2870,   Button = "R", Types = {SMARTDEBUFF_DISEASE} }, -- Cure Disease (1-2)
@@ -99,6 +113,7 @@ SMARTDEBUFF_CLASS_SKILLS_LIST_ID = {
   },
   ["WARLOCK"]  = {
     { Spell_ID = 20707,  Button = "R", Types = {SMARTDEBUFF_UTIL} }, -- Soulstone (1+)
+    -- 19476 - NPC Dispel Magic
   },
   ["WARRIOR"]  = {
     { Spell_ID = 3411,  Button = "R", Types = {SMARTDEBUFF_UTIL} }, -- Intervene (1+)

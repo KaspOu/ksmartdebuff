@@ -7,7 +7,7 @@ Talents dispels: https://www.wowhead.com/spells/talents?filter=109;38;0
 https://wago.tools/db2/SpellDispelType
 
 SMARTDEBUFF_CLASS_DISPELS_LIST_ID
-  Format: [ClassName] = { { Spell_ID, Spell_List, Spell_CheckIsUsable?, Improved_Talent?, Improved_Spell_List?, } }
+  Format: [ClassName] = { { Spell_ID, Spell_List, OnlyIfUsable?, Improved_Talent?, Improved_Spell_List?, } }
   Priority: first active spell > first inactive talent > first item
 
 SMARTDEBUFF_CLASS_SKILLS_LIST_ID
@@ -98,7 +98,7 @@ SMARTDEBUFF_CLASS_DISPELS_LIST_ID = {
   },
 
   ["PRIEST"] = {
-    { -- Purify (1+)
+    { -- Purify, was named Dispel Magic (4+)
       Spell_ID = 527,
       Spell_List = {SMARTDEBUFF_MAGIC},
       Improved_Talent = 390632,
@@ -108,7 +108,7 @@ SMARTDEBUFF_CLASS_DISPELS_LIST_ID = {
       Spell_ID = 213634,
       Spell_List = {SMARTDEBUFF_DISEASE},
     },
-    -- Dispel Magic (528) only enemies, replace Cure Disease (4+)
+    -- Dispel Magic (528) only enemies, was a Cure Disease (4+)
   },
 
   ["SHAMAN"] = {
@@ -137,6 +137,7 @@ SMARTDEBUFF_CLASS_DISPELS_LIST_ID = {
       Spell_List = {SMARTDEBUFF_MAGIC},
       Spell_Type = "petaction",
     },
+    -- 27277 - Devour Magic, pet Felhunter (2-3)
   },
 
   -- ["DEMONHUNTER"] = {
@@ -150,6 +151,8 @@ SMARTDEBUFF_CLASS_SKILLS_LIST_ID = {
     { Spell_ID = 102401, Button = "R", Types = {SMARTDEBUFF_UTIL} }, -- Wild charge (5+)
     { Spell_ID = 102693, Button = "M", Types = {SMARTDEBUFF_HEAL} }, -- Grove Guardians (10+)
     { Spell_ID = 774,   Button = "AL", Types = {SMARTDEBUFF_HEAL} }, -- Rejuvenation (1+)
+    -- 8946 - Cure Poison (1-3)
+    -- 2893 - Abolish Poison (1-3)
   },
   ["EVOKER"]  = {
     { Spell_ID = 374251, Button = "R", Types = {SMARTDEBUFF_CURSE, SMARTDEBUFF_POISON, SMARTDEBUFF_DISEASE} }, -- Cauterizing flame (10+)
@@ -171,7 +174,8 @@ SMARTDEBUFF_CLASS_SKILLS_LIST_ID = {
     { Spell_ID = 73325, Button = "R", Types = {SMARTDEBUFF_UTIL} }, -- Leap of Faith (4+)
     { Spell_ID = 17,    Button = "M", Types = {SMARTDEBUFF_UTIL} }, -- Power word shield (1+)
     { Spell_ID = 139,   Button = "AL", Types = {SMARTDEBUFF_HEAL} }, -- Renew (1+)
-    -- 528 - Cure Disease (1-3)
+    -- 528 - Cure Disease (1-4)
+    -- 552 - Abolish Disease (1-3)
     -- 2061 - Flash heal (1+)
     -- 64044 -- Psychic horror? (3+)
   },
