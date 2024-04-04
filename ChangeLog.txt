@@ -1,3 +1,6 @@
+v10.2.604
+ - Keys UI: Macro buttons update according to macro changes after editing / deleting
+
 v10.2.603
  - Keys UI: Items are fixed, and item count is displayed (grayed if none).
  - Keys UI: Macro name displayed.

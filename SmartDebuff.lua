@@ -32,6 +32,11 @@ ou   DoesSpellExist(spellID)    :  pour tous les sorts du jeu
     mais true avec un pet inactif ?
 
   C_SpellBook.IsSpellDisabled(spellID) : Ne fonctionne pas (renvoie toujours false?)
+
+  GetMacroInfo:
+    toujours utiliser l'ID (souci si le nom de macro est "111")
+    y compris pour l'action sur un bouton type macro
+
 ]]--
 --@end-do-not-package@
 
@@ -54,6 +59,7 @@ local isSetPets = false;
 local isSetPlayerPet = false;
 local isSetSpells = false;
 local isSetTalents = false;
+local isSetMacros = false;
 local isSoundPlayed = false;
 local isSpellActive = true;
 local isLeader = false;
@@ -266,11 +272,9 @@ local function GetSpellCD(spell)
 end
 
 -- Get normal/target mode by button index
-local function GetActionMode(i)
-  local m = 1;
-  if (i <= 12) then
-    m = 1;
-  else
+local function GetActionMode(iAction)
+  local m, i = 1, iAction;
+  if (i > 12) then
     m = 2;
     i = i - 12;
   end
@@ -280,12 +284,13 @@ end
 --- Get action info on an specific button
 --- @param mode number Column to get
 --- @param i number Row index of the button
+--- @param extractDataOnly? boolean true if you want raw data
 --- @return string type
 --- @return string name
 --- @return string rank
 --- @return number spellID
 --- @return string link
-local function GetActionKeyInfo(mode, i)
+local function GetActionKeyInfo(mode, i, extractDataOnly)
   local aType, aName, aRank, aId, aLink = nil, nil, nil, nil, nil;
   if (O.Keys[mode] and SMARTDEBUFF_ORDER_KEYS[i] and O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]]) then
     aType = O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][1];
@@ -295,6 +300,10 @@ local function GetActionKeyInfo(mode, i)
         aRank = O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][3];
         aId   = O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][4];
         aLink = O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][5];
+        if (extractDataOnly) then
+          return aType, aName, aRank, aId, aLink;
+        end
+
         SMARTDEBUFF_AddMsgD("ActionKeyInfo"..i.." "..aType.." = "..ChkS(aId)..",  Name = "..ChkS(aName) ); -- ..", Link = "..ChkS(aLink));
 
         if (aType == "spell" or aType == "petaction") then
@@ -309,12 +318,16 @@ local function GetActionKeyInfo(mode, i)
             _, aLink = C_Item.GetItemInfo(aName);
           end
         elseif (aType == "macro") then
-          aId = GetMacroIndexByName(aName);
-          -- Macros are sorted by name: id = index!
+          -- Macros: rewrite Name, Index, and Icon(aLink) on every check
+          local aId = SDB_GetMacroIndex(aName, aId, aLink);
           if (aId > 0) then
+            -- Macro found
+            aName, aLink = GetMacroInfo(aId);
+            O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][2] = aName;
             O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][4] = aId;
+            O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][5] = aLink;
           else
-            aType, aName, aRank, aId, aLink = nil, nil, nil, nil, nil;
+            -- Deleted macro
             O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]] = { };
           end
         elseif (aType == "action") then
@@ -459,7 +472,11 @@ function SMARTDEBUFF_OnEvent(self, event, ...)
     SMARTDEBUFF_Ticker(true);
     SMARTDEBUFF_CheckIF();
 
-  elseif (event == "SPELLS_CHANGED" or event == "UPDATE_MACROS") then
+  elseif (event == "UPDATE_MACROS") then
+    SMARTDEBUFF_AddMsgD(OR.."Event: "..event);
+    isSetMacros = true;
+
+  elseif (event == "SPELLS_CHANGED") then
     SMARTDEBUFF_AddMsgD(OR.."Event: "..event);
     isSetSpells = true;
     SMARTDEBUFF_Ticker(false);
@@ -529,6 +546,13 @@ function SMARTDEBUFF_Ticker(force)
     if (isSetUnits and not InCombatLockdown()) then
       isSetUnits = false;
       SMARTDEBUFF_SetUnits();
+    end
+
+    if (isSetMacros and not InCombatLockdown()) then
+      isSetMacros = false;
+      SMARTDEBUFF_RebuildMacrosInfo();
+      SMARTDEBUFF_SetButtons();
+      SMARTDEBUFF_RefreshAOFKeys();
     end
 
     if (isSetTalents and not InCombatLockdown()) then
@@ -1497,9 +1521,9 @@ function SMARTDEBUFF_SetDefaultKeys(bReload)
 
   local i, j;
   if (bReload) then
-    for i = 1, 24, 1 do
-      local mode, j = GetActionMode(i);
-      GetActionKeyInfo(mode, j);
+    for iAction = 1, 24, 1 do
+      local mode, i = GetActionMode(iAction);
+      GetActionKeyInfo(mode, i);
     end
     SMARTDEBUFF_RefreshAOFKeys();
     -- What's new: delay to avoid errors with early display on initial install
@@ -1507,6 +1531,81 @@ function SMARTDEBUFF_SetDefaultKeys(bReload)
   end
 
   SMARTDEBUFF_SetButtons();
+end
+
+function SMARTDEBUFF_RebuildMacrosInfo()
+  for iAction = 1, 24, 1 do
+    local mode, i = GetActionMode(iAction);
+    GetActionKeyInfo(mode, i);
+  end
+end
+
+local function SDB_Hook_EditMacro(index, name, icon)
+  if (not index or not name) then
+    return;
+  end;
+  for iAction = 1, 24, 1 do
+    local mode, i = GetActionMode(iAction);
+    local aType, aName, aRank, aId, aLink = GetActionKeyInfo(mode, i, true);
+    if (aType == "macro" and aId == index) then
+      -- update name & icon
+      aName = name;
+      aLink = icon or aLink;
+      SetActionInfo(mode, i, aType, aName, aRank, aId, aLink);
+      SMARTDEBUFF_AddMsgD(mode.."-"..i.."-Update macro #"..index..", new name: "..aName);
+      isSetMacros = true;
+    end
+  end
+end
+hooksecurefunc("EditMacro", SDB_Hook_EditMacro);
+
+local function SDB_Hook_DeleteMacro(indexOrName)
+  if (type(indexOrName) == "number") then
+    for iAction = 1, 24, 1 do
+      local mode, i = GetActionMode(iAction);
+      local aType, aName, aRank, aId, aLink = GetActionKeyInfo(mode, i, true);
+      if (aType == "macro" and aId == indexOrName) then
+        SetActionInfo(mode, i);
+      end
+    end
+  end
+end
+hooksecurefunc("DeleteMacro", SDB_Hook_DeleteMacro);
+
+--- Find Macro, by Name > Index & Icon > Icon > Index
+--- @return number MacroIndex Found macro index
+function SDB_GetMacroIndex(Name, Id, Icon)
+  Name = Name or "";
+  local newIndex = GetMacroIndexByName(Name);
+  if newIndex > 0 then
+    return newIndex;
+  end
+
+  if Icon then
+    if Id and select(2, GetMacroInfo(Id)) == Icon then
+      -- Then By Index & Icon pair
+      SMARTDEBUFF_AddMsgD(Name.." Macro name has changed, at same index #"..Id)
+      return Id;
+    else
+      -- Then Find By Icon (restrict search on same page)
+      local pageFirstMacroId, pageNumMacros = 1, GetNumMacros();
+      if (Id and Id > MAX_CHARACTER_MACROS) then
+        pageFirstMacroId = MAX_CHARACTER_MACROS+1;
+        _, pageNumMacros = GetNumMacros();
+      end
+      for i = pageFirstMacroId, pageFirstMacroId+pageNumMacros do
+          local _, findMacroIcon = GetMacroInfo(i);
+          if findMacroIcon == Icon then
+              SMARTDEBUFF_AddMsgD(Name.." Macro name & index have changed, new index #"..i);
+              return i;
+          end
+      end
+    end
+  end
+  -- fallback, keep Index (or 0 if no macro at this index)
+  newIndex = GetMacroIndexByName(GetMacroInfo(Id) or "");
+  SMARTDEBUFF_AddMsgD(Name.." Macro name & icon have changed, or macro has been removed, keep index #"..newIndex);
+  return newIndex;
 end
 
 --- Check if a default spell was changed (different name, or same name different id)
@@ -2283,7 +2382,7 @@ local function DebugButtonAttributes(self)
 
         if (getAttr and getType) then
           if (attr ~= "type" or getAttr == "target") then
-            if (type(getAttr) ~= "string") then getAttr = type(getAttr) end;
+            if (type(getAttr) ~= "string" and type(getAttr) ~= "number") then getAttr = type(getAttr) end;
             SMARTDEBUFF_AddMsgD("@"..self:GetAttribute("unit").." "..getType.." ["..pre..attr..suf.."] ("..key..") = "..getAttr);
           end
         end
@@ -2347,7 +2446,7 @@ function SMARTDEBUFF_SetButton(unit, idx, pet)
       if (unit) then
         btn:SetAttribute(pre.."type"..suf, v[1]);
         --SMARTDEBUFF_AddMsgD(idx.." set: "..pre.."type"..suf..":"..v[1]);
-        if ((v[1] == "spell" or v[1] == "item" or v[1] == "macro") and v[2]) then
+        if ((v[1] == "spell" or v[1] == "item") and v[2]) then
           if (O.StopCast and (v[1] == "spell") and cSpellList[v[2]]) then
             local s = format("/stopcasting\n/cast [@%s] %s", unit, v[2]);
             btn:SetAttribute(pre.."type"..suf, "macro");
@@ -2362,6 +2461,8 @@ function SMARTDEBUFF_SetButton(unit, idx, pet)
           btn:SetAttribute(pre.."type"..suf, "spell");
           btn:SetAttribute(pre.."spell"..suf, v[2]);
           -- SMARTDEBUFF_AddMsgD(idx.." set: "..pre..v[1]..suf..":"..v[2]);
+        elseif ((v[1] == "macro") and v[2]) then
+          btn:SetAttribute(pre..v[1]..suf, GetMacroIndexByName(v[2]) or v[2]);
         elseif ((v[1] == "target") and v[2]) then
           -- Do nothing
         elseif ((v[1] == "menu") and v[2]) then
@@ -4381,18 +4482,18 @@ function SmartDebuffAOFKeys_OnShow(self)
 
   local aName, aType, aRank, aId, aLink, aTexture, aStackCount;
   local mode = 1;
-  local j;
+  local i;
   local btn;
-  for i = 1, 24, 1 do
-    btn = _G["SmartDebuff_btnAction"..i];
+  for iAction = 1, 24, 1 do
+    btn = _G["SmartDebuff_btnAction"..iAction];
     if not btn._label then
       btn._label = btn:CreateFontString(nil, "OVERLAY", "SmartDebuff_GameFontNormalMicro")
       btn._label:SetPoint("BOTTOMRIGHT", -4, 2);
     end
     btn._label:SetText("");
 
-    mode, j = GetActionMode(i);
-    aType, aName, aRank, aId, aLink = GetActionKeyInfo(mode, j);
+    mode, i = GetActionMode(iAction);
+    aType, aName, aRank, aId, aLink = GetActionKeyInfo(mode, i);
 
     --SMARTDEBUFF_AddMsgD("Show: "..ChkS(aType)..", "..ChkS(aName)..", "..ChkS(aRank)..", "..ChkS(aId)..", "..ChkS(aLink));
     local isMovable = true;
@@ -4414,7 +4515,7 @@ function SmartDebuffAOFKeys_OnShow(self)
       btn._label:SetText((aStackCount ~= 1) and itemCount or "");
       isEnabled = itemCount > 0;
     elseif (aType == "macro") then
-      _, aTexture = GetMacroInfo(aName);
+      _, aTexture = GetMacroInfo(GetMacroIndexByName(aName));
       SetATexture(btn, aTexture or imgMissing);
       btn._label:SetText(strsub(aName, 0, 4));
     elseif (aType == "target") then
@@ -4464,10 +4565,11 @@ end
 
 
 function SMARTDEBUFF_PickAction(self, button)
-  local i = self:GetID();
+  local iAction = self:GetID();
   local mode = 1;
+  local i;
 
-  mode, i = GetActionMode(i);
+  mode, i = GetActionMode(iAction);
   local aType, aName, aRank, aId, aLink = GetActionKeyInfo(mode, i);
   SMARTDEBUFF_AddMsgD("Pickup: "..ChkS(aType)..", "..ChkS(aName)..", "..ChkS(aRank)..", "..ChkS(aId));
   local resetVertexColor = false;
@@ -4557,8 +4659,9 @@ function SMARTDEBUFF_DropAction(self, button)
 
   local infoType, infoId, info2, spellId, baseSpellId = GetCursorInfo();
   local aSpellInfo, aName, aRank, aTexture, aStackCount;
-  local i = self:GetID();
+  local iAction = self:GetID();
   local mode = 1;
+  local i;
   local bDroped = false;
 
   if infoType == nil then
@@ -4573,7 +4676,7 @@ function SMARTDEBUFF_DropAction(self, button)
   end
   infoType, spellId = SDB_GetPickupOverride(infoType, spellId);
 
-  mode, i = GetActionMode(i);
+  mode, i = GetActionMode(iAction);
   if (button == "LeftButton" and infoType) then
     local aTypeOld, aNameOld, aRankOld, aIdOld, aLinkOld = GetActionKeyInfo(mode, i);
 
@@ -4613,7 +4716,7 @@ function SMARTDEBUFF_DropAction(self, button)
         -- Error, macro deleted before drop?
         return
       end
-      SetActionInfo(mode, i, infoType, aName, nil, infoId, nil);
+      SetActionInfo(mode, i, infoType, aName, nil, infoId, aTexture);
       labelText = strsub(aName, 0, 4);
       bDroped = true;
     end
@@ -4705,9 +4808,10 @@ function SMARTDEBUFF_GameTooltipDisable(skipLines, avoidLast)
 end
 ---@param self button
 function SMARTDEBUFF_BtnActionOnEnter(self, motion)
-  local i = self:GetID();
+  local iAction = self:GetID();
   local mode = 1;
-  mode, i = GetActionMode(i);
+  local i;
+  mode, i = GetActionMode(iAction);
   local aType, aName, aRank, aId, aLink = GetActionKeyInfo(mode, i);
   self:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square","ADD",0)
   self:SetPushedTexture("Interface\\Buttons\\UI-Quickslot-Depress","ADD");
@@ -4750,6 +4854,7 @@ function SMARTDEBUFF_BtnActionOnEnter(self, motion)
     tooltipActions = SMARTDEBUFF_TT_ITEMACTIONS;
   elseif (aType == "macro") then
     GameTooltip:SetText(WH..aName);
+    GameTooltip:AddLine(BLL..(GetMacroBody(GetMacroIndexByName(aName)) or ""));
     GameTooltip:AddLine(MACRO.."\n\n");
     tooltipActions = SMARTDEBUFF_TT_MACROACTIONS;
   elseif (aType == "target") then
