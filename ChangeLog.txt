@@ -1,3 +1,10 @@
+v10.2.605
+ - Priest: Psychic horror added on Middle button (and sdb will detect charmed friends)
+ - Cata: removed old dispels, and added new
+   / Druid, Paladin, Priest, Shaman spells and talents reviewed
+   / Warlock (Imp) Singe Magic
+ - Caution: Talents may not be detected accordingly
+
 v10.2.604
  - Keys UI: Macro buttons update according to macro changes after editing / deleting
  - Classic / Wrath : dispels added

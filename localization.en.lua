@@ -5,9 +5,10 @@
 SMARTDEBUFF_UPGRADED = "SmartDebuff upgraded to "..SMARTDEBUFF_VERSION;
 -- Whats new info
 SMARTDEBUFF_WHATSNEW = "|cffffffffWhats new:|r\n\n"
-  .."- |cffff1111Wow Classic|r & |cff87CEEBWrath|r versions\n\n\n"
+  .."- |cffff1111Wow Classic|r, |cff87CEEBWrath|r & |cffc16600Cata|r versions\n\n\n"
+  .."- Priest: Psychic horror added on Middle button (sdb detects charmed friends)\n\n"
+  .."- Cata : dispels updated (Druid, Paladin, Priest, Shaman, Warlock)\n\n"
   .."- Key UI: Macro buttons update according to macro changes after editing / deleting\n\n"
-  .."- Classic / Wrath : dispels added (Druide, Priest, Mage SoD, Warlock)\n\n"
   ;
 
 --@do-not-package@

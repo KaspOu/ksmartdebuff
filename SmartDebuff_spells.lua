@@ -46,7 +46,7 @@ Vérifier :
 -- Debuff spell IDs (for L button)
 SMARTDEBUFF_CLASS_DISPELS_LIST_ID = {
   ["DRUID"]  = {
-    { -- Nature's Cure (10+)
+    { -- Nature's Cure, was talent for Remove Corruption (10+)
       Spell_ID = 88423,
       Spell_List = {SMARTDEBUFF_MAGIC},
       Improved_Talent = 392378,
@@ -112,7 +112,7 @@ SMARTDEBUFF_CLASS_DISPELS_LIST_ID = {
   },
 
   ["SHAMAN"] = {
-    { -- Purify Spirit (4+)
+    { -- Purify Spirit, was talent for Cleanse Spirit (10+)
       Spell_ID = 77130,
       Spell_List = {SMARTDEBUFF_MAGIC},
       Improved_Talent = 383016,
@@ -137,7 +137,7 @@ SMARTDEBUFF_CLASS_DISPELS_LIST_ID = {
       Spell_List = {SMARTDEBUFF_MAGIC},
       Spell_Type = "petaction",
     },
-    -- 27277 - Devour Magic, pet Felhunter (2-3)
+    -- 19505 - Devour Magic, pet Felhunter (2-3), only enemies since
   },
 
   -- ["DEMONHUNTER"] = {
