@@ -49,18 +49,14 @@ SMARTDEBUFF_CLASS_DISPELS_LIST_ID = {
       Spell_ID = 527,
       Spell_List = {SMARTDEBUFF_MAGIC},
     },
-    -- { -- Cure Disease, will be changed to Dispel Magic (1-4)
-    --   Spell_ID = 528,
-    --   Spell_List = {SMARTDEBUFF_DISEASE},
-    -- },
   },
 
   ["SHAMAN"] = {
     { -- Cleanse Spirit (3+)
       Spell_ID = 51886,
-      Spell_List = {SMARTDEBUFF_MAGIC, SMARTDEBUFF_CURSE},
-      -- Improved_Talent = 77130, -- Improved Cleanse Spirit, will be changed to spell in DF (4-9)
-      -- Improved_Spell_List = {SMARTDEBUFF_MAGIC, SMARTDEBUFF_CURSE},
+      Spell_List = {SMARTDEBUFF_CURSE},
+      Improved_Talent = 77130, -- Improved Cleanse Spirit, will be changed to spell in DF (4-9)
+      Improved_Spell_List = {SMARTDEBUFF_MAGIC, SMARTDEBUFF_CURSE},
     },
   },
 
@@ -96,10 +92,11 @@ SMARTDEBUFF_CLASS_SKILLS_LIST_ID = {
   ["PRIEST"]  = {
     { Spell_ID = 528,   Button = "R", Types = {SMARTDEBUFF_DISEASE} }, -- Cure Disease, will be changed to Dispel Magic (1-4)
     { Spell_ID = 64044,   Button = "M", Types = {SMARTDEBUFF_CHARMED} }, -- Psychic horror (3+)
+    { Spell_ID = 2061,   Button = "AL", Types = {SMARTDEBUFF_HEAL} }, -- Flash heal (1+)
     { Spell_ID = 139,   Button = "AL", Types = {SMARTDEBUFF_HEAL} }, -- Renew (1+)
     { Spell_ID = 17,    Button = "AM", Types = {SMARTDEBUFF_UTIL} }, -- Power word shield (1+)
+    { Spell_ID = 73325, Button = "AR", Types = {SMARTDEBUFF_UTIL} }, -- Leap of Faith (4+)
     -- 552 - Abolish Disease (1-3)
-    -- 2061 - Flash heal (1+)
   },
   ["SHAMAN"]  = {
     { Spell_ID = 51514, Button = "R", Types = {SMARTDEBUFF_CHARMED} }, -- Hex (3+)

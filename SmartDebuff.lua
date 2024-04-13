@@ -27,6 +27,8 @@ ou   DoesSpellExist(spellID)    :  pour tous les sorts du jeu
     ne fonctionne pas si Spell override (Dispel avec talent...)
     Purifier 527, avec le talent, se surcharge en 440006, et IsSpellKnown(527) renvoie false..
 
+  >>> IsSpellKnownOrOverridesKnown(spellID, isPet) ?
+
   IsUsableSpell(spellName) :
     false avec un talent inactif (true si actif)
     mais true avec un pet inactif ?
@@ -69,10 +71,7 @@ local tTicker = 0;
 local tDebuff = 0;
 local tSound = 0;
 
-local sRealmName = nil;
-local sPlayerName = nil;
-local sID = nil;
-local sPlayerClass = nil;
+SDB_cachePlayerClass = nil;
 local sAggroList = nil;
 local iGroupSetup = -1;
 
@@ -87,8 +86,10 @@ local cSpellList = nil;
 local cSpellDefault = { };
 --- string Global: Cache name of spell used for range check
 SDB_cacheRangeCheckSpell = nil;
---- table<number, boolean> Global: Computed cached list of current spec talents (format: {[spellID] = true|false, ..})
-SDB_cachePlayerSpellsTalentList = {};
+--- table<number, string> Computed cached restricted list of talents id / name (format: {[spellID] = spellName, ..})
+local SDB_cacheConfigSpellNames = nil;
+--- table<number, boolean> Computed cached list of spec talents status (format: {[spellID] = true|false, ..})
+local SDB_cachePlayerTalentsList = {};
 
 local cScrollButtons = nil;
 local cRaidicons = {};
@@ -402,6 +403,7 @@ function SMARTDEBUFF_OnLoad(self)
   self:RegisterEvent("UPDATE_MACROS");
   self:RegisterEvent("TRAIT_CONFIG_UPDATED"); -- ! Changement d'un talent / de config sauvée
   self:RegisterEvent("PLAYER_TALENT_UPDATE"); -- ! Changement de spécialisation -- Ne marche pas avec le pretre sacré?
+  self:RegisterEvent("CHARACTER_POINTS_CHANGED"); -- Classic version of PLAYER_TALENT_UPDATE
 
   --One of them allows SmartDebuff to be closed with the Escape key
   tinsert(UISpecialFrames, "SmartDebuffOF");
@@ -481,7 +483,7 @@ function SMARTDEBUFF_OnEvent(self, event, ...)
     isSetSpells = true;
     SMARTDEBUFF_Ticker(false);
 
-  elseif (event == "TRAIT_CONFIG_UPDATED" or event == "PLAYER_TALENT_UPDATE") then
+  elseif (event == "TRAIT_CONFIG_UPDATED" or event == "PLAYER_TALENT_UPDATE" or event == "CHARACTER_POINTS_CHANGED") then
     -- Talent changed
     SMARTDEBUFF_AddMsgD(RD.."Event: "..event);
     isSetTalents = true;
@@ -509,7 +511,7 @@ function SMARTDEBUFF_OnUpdate(self, elapsed)
         end
       else
         -- Classic
-        local _, tName = GetTalentInfo(1, 1, 1);
+        local tName = GetTalentInfo(1, 1); -- Since 6.0 : _, tName = GetTalentInfo(1, 1, 1);  // GetTalentInfoByID?
         if (tName) then
           SMARTDEBUFF_AddMsgD("Talent tree ready ("..ou_time.."sec) -> Init SDB");
           isTTreeLoaded = true;
@@ -557,7 +559,7 @@ function SMARTDEBUFF_Ticker(force)
 
     if (isSetTalents and not InCombatLockdown()) then
       isSetTalents = false;
-      SDB_cachePlayerSpellsTalentList = SDB_GetSpellIDList();
+      SDB_cachePlayerTalentsList = SDB_GetTalentsList();
       isSetSpells = true;
     end
 
@@ -619,7 +621,7 @@ function SMARTDEBUFF_AddMsgD(msg, r, g, b)
 end
 
 function SMARTDEBUFF_CheckWarlockPet()
-  if (sPlayerClass == "WARLOCK") then
+  if (SDB_cachePlayerClass == "WARLOCK") then
     isSpellActive = false;
     if (UnitExists("pet")) then
       local ucf = UnitCreatureFamily("pet");
@@ -699,7 +701,7 @@ function SMARTDEBUFF_SetUnits()
 
   -- Party Setup
   elseif (iGroupSetup == 2) then
-    SMARTDEBUFF_AddUnit("player", 0, 1, sPlayerClass);
+    SMARTDEBUFF_AddUnit("player", 0, 1, SDB_cachePlayerClass);
     for j = 1, 4, 1 do
       SMARTDEBUFF_AddUnit("party", j, 1);
       --SmartBuff_AddToUnitList(1, "party"..j, 1);
@@ -709,7 +711,7 @@ function SMARTDEBUFF_SetUnits()
 
   -- Solo Setup
   else
-    SMARTDEBUFF_AddUnit("player", 0, 1, sPlayerClass);
+    SMARTDEBUFF_AddUnit("player", 0, 1, SDB_cachePlayerClass);
     SMARTDEBUFF_AddMsgD("Solo Unit-Setup finished");
   end
 
@@ -1011,13 +1013,13 @@ function SMARTDEBUFF_SetSpells()
   cSpellDefault["AL"] = { };
   SDB_cacheRangeCheckSpell = nil; -- reset: range detection requires readable spell/talent
 
-  SMARTDEBUFF_AddMsgD("--- Smart Debuff Set spells --- "..sPlayerClass);
+  SMARTDEBUFF_AddMsgD("--- Smart Debuff Set spells --- "..SDB_cachePlayerClass);
   -- Add Dispels abilities to L
-  if (sPlayerClass and SMARTDEBUFF_CLASS_DISPELS_LIST_ID[sPlayerClass] and #SMARTDEBUFF_CLASS_DISPELS_LIST_ID[sPlayerClass] > 0) then
+  if (SDB_cachePlayerClass and SMARTDEBUFF_CLASS_DISPELS_LIST_ID[SDB_cachePlayerClass] and #SMARTDEBUFF_CLASS_DISPELS_LIST_ID[SDB_cachePlayerClass] > 0) then
       sName = nil;
       SMARTDEBUFF_AddMsgD("Checking for class dispels...");
       -- 1. Check for useable dispel, and enhancement
-      for _, val in ipairs(SMARTDEBUFF_CLASS_DISPELS_LIST_ID[sPlayerClass]) do
+      for _, val in ipairs(SMARTDEBUFF_CLASS_DISPELS_LIST_ID[SDB_cachePlayerClass]) do
         sSpellInfo = SDB_GetSpellInfo(val.Spell_ID);
         if (sSpellInfo) then
           -- Cache range detection dispel if possible (use base spell to ensure detection)
@@ -1042,7 +1044,7 @@ function SMARTDEBUFF_SetSpells()
       -- 2. No usable dispel found:
       if sName == nil then
         -- 2a. select first (inactive) talent for current spec
-        for _, val in ipairs(SMARTDEBUFF_CLASS_DISPELS_LIST_ID[sPlayerClass]) do
+        for _, val in ipairs(SMARTDEBUFF_CLASS_DISPELS_LIST_ID[SDB_cachePlayerClass]) do
           if SDB_IsSpellTalentExists(val.Spell_ID) then
             sSpellInfo = SDB_GetSpellInfo(val.Spell_ID);
             sName = sSpellInfo.name;
@@ -1052,10 +1054,10 @@ function SMARTDEBUFF_SetSpells()
             break;
           end
         end
-        -- 3. Fallback: first class dispel in the list (avoid OnlyIfUsable is possible)
+        -- 3. Fallback: first class dispel in the list (avoid OnlyIfUsable if possible)
         if sName == nil then
-          local val = SMARTDEBUFF_CLASS_DISPELS_LIST_ID[sPlayerClass][1];
-          for _, searchForUsableVal in ipairs(SMARTDEBUFF_CLASS_DISPELS_LIST_ID[sPlayerClass]) do
+          local val = SMARTDEBUFF_CLASS_DISPELS_LIST_ID[SDB_cachePlayerClass][1];
+          for _, searchForUsableVal in ipairs(SMARTDEBUFF_CLASS_DISPELS_LIST_ID[SDB_cachePlayerClass]) do
             if not searchForUsableVal.OnlyIfUsable then
               val = searchForUsableVal;
               break;
@@ -1073,9 +1075,9 @@ function SMARTDEBUFF_SetSpells()
 
   -- Then Add other skills to other buttons
   --  If multiple lines for same button, first spell will only be overloaded if the following spell exists
-  if (sPlayerClass and SMARTDEBUFF_CLASS_SKILLS_LIST_ID[sPlayerClass]) then
+  if (SDB_cachePlayerClass and SMARTDEBUFF_CLASS_SKILLS_LIST_ID[SDB_cachePlayerClass]) then
     SMARTDEBUFF_AddMsgD("Checking for other class spells...");
-    for _, val in ipairs(SMARTDEBUFF_CLASS_SKILLS_LIST_ID[sPlayerClass]) do
+    for _, val in ipairs(SMARTDEBUFF_CLASS_SKILLS_LIST_ID[SDB_cachePlayerClass]) do
       sSpellInfo = SDB_GetSpellInfo(val.Spell_ID);
 
       if (sSpellInfo) then
@@ -1100,29 +1102,80 @@ end
 --- @param spellID number Id of the spell or talent to check
 --- @return boolean isSpellTalented returns true if talent is available and talented
 function SDB_IsSpellTalented(spellID)
-    return not not SDB_cachePlayerSpellsTalentList[spellID];
+  return not not SDB_cachePlayerTalentsList[spellID];
 end
 
 --- @param spellID number Id of the spell or talent to check
 --- @return boolean isSpellTalentExists returns true if talent is available in current spec (even if not talented)
 function SDB_IsSpellTalentExists(spellID)
-  return SDB_cachePlayerSpellsTalentList[spellID] ~= nil;
+  return SDB_cachePlayerTalentsList[spellID] ~= nil;
 end
 
---- @return table<number, boolean> spellList List of current talents spells ID, with activation state { [spellID]: true|false }
-function SDB_GetSpellIDList()
+--- Get the list of spells/talents id/name to check for dispel
+--- @return table<number, string>|nil spellsIdNames table containing list of spells/talents id/name to check for dispel { [spellId]: spellName,.. }, or nil if none found
+function SDB_GetConfigSpellNames()
+  local list = {};
+  if (not SDB_cachePlayerClass) then
+    return nil;
+  end
+  SMARTDEBUFF_AddMsgD("Caching talents/spells id/name filter...");
+  if (SMARTDEBUFF_CLASS_DISPELS_LIST_ID[SDB_cachePlayerClass]) then
+    for _, val in ipairs(SMARTDEBUFF_CLASS_DISPELS_LIST_ID[SDB_cachePlayerClass]) do
+      list[val.Spell_ID] = GetSpellInfo(val.Spell_ID);
+      SMARTDEBUFF_AddMsgD(" - Spell added to filter: "..val.Spell_ID.. ": "..list[val.Spell_ID]);
+      if (val.Improved_Talent ~= nil) then
+        list[val.Improved_Talent] = GetSpellInfo(val.Improved_Talent);
+        SMARTDEBUFF_AddMsgD(" - Talent added to filter: "..val.Improved_Talent.. ": "..list[val.Improved_Talent]);
+      end
+    end
+  end
+  if (SMARTDEBUFF_CLASS_SKILLS_LIST_ID[SDB_cachePlayerClass]) then
+    for _, val in ipairs(SMARTDEBUFF_CLASS_SKILLS_LIST_ID[SDB_cachePlayerClass]) do
+      list[val.Spell_ID] = GetSpellInfo(val.Spell_ID);
+      SMARTDEBUFF_AddMsgD(" - Spell added to filter: "..val.Spell_ID.. ": "..list[val.Spell_ID]);
+    end
+  end
+  return list;
+end
+
+--- @return table<number, boolean> talentsList List of current talents ID, with activation state { [spellID]: true|false, .. }
+function SDB_GetTalentsList()
   local list = {}
+
+  if (not isTTreeLoaded) then
+    return {};
+  end
 
   -- C_ClassTalents, Since DragonFlight (10)
   if not C_ClassTalents then
+    -- Classic
+    local tName = GetTalentInfo(1,1);
+    if (not tName) then isTTreeLoaded = false; return {}; end
+    -- ! Trick to detect at least configured talents/spells ids
+    SDB_cacheConfigSpellNames = SDB_cacheConfigSpellNames or SDB_GetConfigSpellNames();
+    if (not SDB_cacheConfigSpellNames) then return {}; end
+
+    local numTabs = GetNumTalentTabs();
+    for t = 1, numTabs do
+      local numTalents = GetNumTalents(t);
+      for i = 1, numTalents do
+        local tName, _, _, _, tPoints = GetTalentInfo(t, i);
+        for talId, talName in pairs(SDB_cacheConfigSpellNames) do
+          if (tName == talName) then
+            list[talId] = (tPoints > 0) or false;
+          end
+        end
+      end
+    end
     return list;
   end
 
+  -- Retail
   local configID = C_ClassTalents.GetActiveConfigID()
-  if configID == nil then return list; end
+  if configID == nil then isTTreeLoaded = false; return {}; end
 
   local configInfo = C_Traits.GetConfigInfo(configID)
-  if configInfo == nil then return list; end
+  if configInfo == nil then isTTreeLoaded = false; return {}; end
 
   for _, treeID in ipairs(configInfo.treeIDs) do -- in the context of talent trees, there is only 1 treeID
       local nodes = C_Traits.GetTreeNodes(treeID)
@@ -1192,13 +1245,10 @@ function SMARTDEBUFF_Options_Init()
 
   local b = false;
   local s, t;
-  _, sPlayerClass = UnitClass("player");
-  sRealmName = GetRealmName();
-  sPlayerName = UnitName("player");
-  sID = sRealmName .. ":" .. sPlayerName;
+  _, SDB_cachePlayerClass = UnitClass("player");
 
   -- Cache SpellID List for current spec
-  SDB_cachePlayerSpellsTalentList = SDB_GetSpellIDList();
+  SDB_cachePlayerTalentsList = SDB_GetTalentsList();
 
   SMARTDEBUFF_SetSpells();
 
@@ -2482,7 +2532,7 @@ function SMARTDEBUFF_SetButton(unit, idx, pet)
   end
 
   --[[
-    if (sPlayerClass == "WARLOCK") then
+    if (SDB_cachePlayerClass == "WARLOCK") then
       btn:SetAttribute("alt-type1", "pet");
       btn:SetAttribute("alt-action1", spell1);
     end

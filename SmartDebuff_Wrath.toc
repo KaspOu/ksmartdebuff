@@ -1,11 +1,11 @@
 ## Interface: 30403
 ## Title: Smart|cffffffffDebuff|r Reloaded by |cff00ff00Kallye|r
 ## Title-frFR: Smart|cffffffffDebuff|r Reloaded, par |cff00ff00Kallye|r
-## Version: 10.2.604
+## Version: 10.2.605
 ## Author: |cff00ff00Kallye|r (EU-Elune)
-## Notes: Use << |cff00ff00/sdb|r >> for debuff frame.
+## Notes: Show party buttons with debuffs easy tracking and dispel actions. Use << |cff00ff00/sdb|r >> for debuff frame.
 ## Notes-deDE: Benutze << |cff00ff00/sdb|r >> um das Debuff-Fenster zu offnen
-## Notes-frFR: Écrivez << |cff00ff00/sdb|r >> pour avoir la fenêtre de débuff.
+## Notes-frFR: Affiche des boutons pour tracker les debuffs avec des actions de dispel. Écrivez << |cff00ff00/sdb|r >> pour avoir la fenêtre de débuff.
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: SMARTDEBUFF_OptionsGlobal

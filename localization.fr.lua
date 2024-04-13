@@ -7,9 +7,9 @@ if (GetLocale() == "frFR") then
 SMARTDEBUFF_UPGRADED = "SmartDebuff mis \195\160 jour : "..SMARTDEBUFF_VERSION;
 
 SMARTDEBUFF_WHATSNEW = "|cffffffffNouveaut\195\169s :|r\n\n"
-  .."- Versions |cffff1111Wow Classic|r, |cff87CEEBWrath|r & |cffc16600Cata|r !\n\n\n"
+  .."- Versions |cffff1111Wow Classic|r, |cff87CEEBWrath|r & |cffc16600Cataclysm|r !\n\n\n"
   .."- Pr\195\170tre: Horreur psychique ajout\195\169e sur le bouton du milieu (sdb d\195\169tecte les amis charm\195\169s)\n\n"
-  .."- Cata : dispels \195\160 jour (Druide, Paladin, Pr\195\170tre, Chaman, D\195\169moniste)\n\n"
+  .."- Cataclysm : dispels \195\160 jour (Druide, Paladin, Pr\195\170tre, Chaman, D\195\169moniste)\n\n"
   .."- Touches : D\195\169tecte toutes les \195\169ditions/effacements de Macros\n\n"
   ;
 
