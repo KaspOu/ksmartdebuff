@@ -7,11 +7,10 @@ if (GetLocale() == "frFR") then
 SMARTDEBUFF_UPGRADED = "SmartDebuff mis \195\160 jour : "..SMARTDEBUFF_VERSION;
 
 SMARTDEBUFF_WHATSNEW = "|cffffffffNouveaut\195\169s :|r\n\n"
-  .."- Versions |cffff1111Wow Classic|r & |cff87CEEBWrath|r !\n\n\n"
-  .."- D\195\169tection des sorts r\195\169\195\169crite :\n|cffff1111 Reset des touches recommand\195\169 !|r\n\n"
-  .."- Visibilit\195\169 des sorts revue.\n\n"
-  .."- Les sorts inactifs sont bien d\195\169pla\195\167ables.\n\n"
-  .."- Sorts par d\195\169faut revus pour toutes les classes\n\n"
+  .."- Versions |cffff1111Wow Classic|r, |cff87CEEBWrath|r & |cffc16600Cataclysm|r !\n\n\n"
+  .."- Pr\195\170tre: Horreur psychique ajout\195\169e sur le bouton du milieu (sdb d\195\169tecte les amis charm\195\169s)\n\n"
+  .."- Cataclysm : dispels \195\160 jour (Druide, Paladin, Pr\195\170tre, Chaman, D\195\169moniste)\n\n"
+  .."- Touches : D\195\169tecte toutes les \195\169ditions/effacements de Macros\n\n"
   ;
 
 --@do-not-package@

@@ -1,7 +1,7 @@
 --@do-not-package@
 --[[
 List dispels: https://warcraft.wiki.gg/wiki/Magic_(dispel_type)
-ALL Dispels : https://www.wowhead.com/wotlk/spells?filter=109;38;0
+Class Dispels : https://www.wowhead.com/wotlk/spells/abilities/druid?filter=109;38;0
 Talents dispels: https://www.wowhead.com/wotlk/spells/talents?filter=109;38;0
 https://wago.tools/db2/SpellDispelType
 
@@ -10,7 +10,7 @@ https://www.wowhead.com/spell=526
 https://www.wowhead.com/wotlk/spell=2870
 
 SMARTDEBUFF_CLASS_DISPELS_LIST_ID
-  Format: [ClassName] = { { Spell_ID, Spell_List, Spell_CheckIsUsable?, Improved_Talent?, Improved_Spell_List?, } }
+  Format: [ClassName] = { { Spell_ID, Spell_List, OnlyIfUsable?, Improved_Talent?, Improved_Spell_List?, } }
   Priority: first active spell > first inactive talent > first item
 
 SMARTDEBUFF_CLASS_SKILLS_LIST_ID
@@ -38,14 +38,18 @@ SMARTDEBUFF_CLASS_DISPELS_LIST_ID = {
       Spell_ID = 4987,
       Spell_List = {SMARTDEBUFF_MAGIC, SMARTDEBUFF_DISEASE, SMARTDEBUFF_POISON},
     },
+    { -- Purify, under level 40? (1-3)
+      Spell_ID = 1152,
+      Spell_List = {SMARTDEBUFF_DISEASE, SMARTDEBUFF_POISON},
+    },
   },
 
   ["PRIEST"] = {
-    { -- Purify (1+)
+    { -- Dispel Magic, will be named Purify (1-4)
       Spell_ID = 527,
       Spell_List = {SMARTDEBUFF_MAGIC},
     },
-    -- { -- Cure Disease (1-3)
+    -- { -- Cure Disease, will be changed to Dispel Magic (1-4)
     --   Spell_ID = 528,
     --   Spell_List = {SMARTDEBUFF_DISEASE},
     -- },
@@ -54,11 +58,11 @@ SMARTDEBUFF_CLASS_DISPELS_LIST_ID = {
   ["SHAMAN"] = {
     { -- Cleanse Spirit (3+)
       Spell_ID = 51886,
-      Spell_List = {SMARTDEBUFF_CURSE, SMARTDEBUFF_POISON, SMARTDEBUFF_DISEASE},
+      Spell_List = {SMARTDEBUFF_CURSE, SMARTDEBUFF_DISEASE, SMARTDEBUFF_POISON},
     },
-    { -- Cure Toxins, under level 40 (1+)
+    { -- Cure Toxins, under level 40, was Cure Poison (3)
       Spell_ID = 526,
-      Spell_List = {SMARTDEBUFF_POISON, SMARTDEBUFF_DISEASE},
+      Spell_List = {SMARTDEBUFF_DISEASE, SMARTDEBUFF_POISON},
     },
   },
 
@@ -68,22 +72,38 @@ SMARTDEBUFF_CLASS_DISPELS_LIST_ID = {
       Spell_List = {SMARTDEBUFF_CURSE},
     },
   },
+
+  ["WARLOCK"] = {
+    -- Devour Magic, pet Felhunter All ranks from 7 to 1 (2-3)
+    { Spell_ID = 67518, Spell_List = {SMARTDEBUFF_MAGIC}, Spell_Type = "petaction", },
+    { Spell_ID = 48011, Spell_List = {SMARTDEBUFF_MAGIC}, Spell_Type = "petaction", },
+    { Spell_ID = 27277, Spell_List = {SMARTDEBUFF_MAGIC}, Spell_Type = "petaction", },
+    { Spell_ID = 27276, Spell_List = {SMARTDEBUFF_MAGIC}, Spell_Type = "petaction", },
+    { Spell_ID = 19736, Spell_List = {SMARTDEBUFF_MAGIC}, Spell_Type = "petaction", },
+    { Spell_ID = 19734, Spell_List = {SMARTDEBUFF_MAGIC}, Spell_Type = "petaction", },
+    { Spell_ID = 19731, Spell_List = {SMARTDEBUFF_MAGIC}, Spell_Type = "petaction", },
+    { Spell_ID = 19505, Spell_List = {SMARTDEBUFF_MAGIC}, Spell_Type = "petaction", },
+  },
 }
 
 -- Possible buttons : R, M, AL
 SMARTDEBUFF_CLASS_SKILLS_LIST_ID = {
   ["DRUID"]  = {
+    { Spell_ID = 8946,   Button = "R", Types = {SMARTDEBUFF_POISON} }, -- Cure Poison (1-3)
+    { Spell_ID = 2893,   Button = "R", Types = {SMARTDEBUFF_POISON} }, -- Abolish Poison (1-3)
     { Spell_ID = 774,   Button = "AL", Types = {SMARTDEBUFF_HEAL} }, -- Rejuvenation (1+)
   },
   ["PALADIN"]  = {
-    { Spell_ID = 20066, Button = "R", Types = {SMARTDEBUFF_CHARMED} }, -- Repentance (1?)
+    { Spell_ID = 20066, Button = "R", Types = {SMARTDEBUFF_CHARMED} }, -- Repentance (1+)
     { Spell_ID = 1022,  Button = "M", Types = {SMARTDEBUFF_UTIL} }, --  Blessing of protection (1+)
     { Spell_ID = 19750, Button = "AL", Types = {SMARTDEBUFF_HEAL} }, --  Flash of light (1+)
   },
   ["PRIEST"]  = {
-    { Spell_ID = 528,   Button = "R", Types = {SMARTDEBUFF_DISEASE} }, -- Cure Disease (1-3)
-    { Spell_ID = 17,    Button = "M", Types = {SMARTDEBUFF_UTIL} }, -- Power word shield (1+)
+    { Spell_ID = 528,   Button = "R", Types = {SMARTDEBUFF_DISEASE} }, -- Cure Disease, will be changed to Dispel Magic (1-4)
+    { Spell_ID = 552,   Button = "R", Types = {SMARTDEBUFF_DISEASE} }, -- Abolish Disease (1-3)
+    { Spell_ID = 64044,   Button = "M", Types = {SMARTDEBUFF_CHARMED} }, -- Psychic horror (3+)
     { Spell_ID = 139,   Button = "AL", Types = {SMARTDEBUFF_HEAL} }, -- Renew (1+)
+    { Spell_ID = 17,    Button = "AM", Types = {SMARTDEBUFF_UTIL} }, -- Power word shield (1+)
   },
   ["SHAMAN"]  = {
     { Spell_ID = 51514, Button = "R", Types = {SMARTDEBUFF_CHARMED} }, -- Hex (3+)

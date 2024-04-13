@@ -27,11 +27,18 @@ ou   DoesSpellExist(spellID)    :  pour tous les sorts du jeu
     ne fonctionne pas si Spell override (Dispel avec talent...)
     Purifier 527, avec le talent, se surcharge en 440006, et IsSpellKnown(527) renvoie false..
 
+  >>> IsSpellKnownOrOverridesKnown(spellID, isPet) ?
+
   IsUsableSpell(spellName) :
     false avec un talent inactif (true si actif)
     mais true avec un pet inactif ?
 
   C_SpellBook.IsSpellDisabled(spellID) : Ne fonctionne pas (renvoie toujours false?)
+
+  GetMacroInfo:
+    toujours utiliser l'ID (souci si le nom de macro est "111")
+    y compris pour l'action sur un bouton type macro
+
 ]]--
 --@end-do-not-package@
 
@@ -54,6 +61,7 @@ local isSetPets = false;
 local isSetPlayerPet = false;
 local isSetSpells = false;
 local isSetTalents = false;
+local isSetMacros = false;
 local isSoundPlayed = false;
 local isSpellActive = true;
 local isLeader = false;
@@ -63,10 +71,7 @@ local tTicker = 0;
 local tDebuff = 0;
 local tSound = 0;
 
-local sRealmName = nil;
-local sPlayerName = nil;
-local sID = nil;
-local sPlayerClass = nil;
+SDB_cachePlayerClass = nil;
 local sAggroList = nil;
 local iGroupSetup = -1;
 
@@ -81,8 +86,10 @@ local cSpellList = nil;
 local cSpellDefault = { };
 --- string Global: Cache name of spell used for range check
 SDB_cacheRangeCheckSpell = nil;
---- table<number, boolean> Global: Computed cached list of current spec talents (format: {[spellID] = true|false, ..})
-SDB_cachePlayerSpellsTalentList = {};
+--- table<number, string> Computed cached restricted list of talents id / name (format: {[spellID] = spellName, ..})
+local SDB_cacheConfigSpellNames = nil;
+--- table<number, boolean> Computed cached list of spec talents status (format: {[spellID] = true|false, ..})
+local SDB_cachePlayerTalentsList = {};
 
 local cScrollButtons = nil;
 local cRaidicons = {};
@@ -266,11 +273,9 @@ local function GetSpellCD(spell)
 end
 
 -- Get normal/target mode by button index
-local function GetActionMode(i)
-  local m = 1;
-  if (i <= 12) then
-    m = 1;
-  else
+local function GetActionMode(iAction)
+  local m, i = 1, iAction;
+  if (i > 12) then
     m = 2;
     i = i - 12;
   end
@@ -280,12 +285,13 @@ end
 --- Get action info on an specific button
 --- @param mode number Column to get
 --- @param i number Row index of the button
+--- @param extractDataOnly? boolean true if you want raw data
 --- @return string type
 --- @return string name
 --- @return string rank
 --- @return number spellID
 --- @return string link
-local function GetActionKeyInfo(mode, i)
+local function GetActionKeyInfo(mode, i, extractDataOnly)
   local aType, aName, aRank, aId, aLink = nil, nil, nil, nil, nil;
   if (O.Keys[mode] and SMARTDEBUFF_ORDER_KEYS[i] and O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]]) then
     aType = O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][1];
@@ -295,6 +301,10 @@ local function GetActionKeyInfo(mode, i)
         aRank = O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][3];
         aId   = O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][4];
         aLink = O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][5];
+        if (extractDataOnly) then
+          return aType, aName, aRank, aId, aLink;
+        end
+
         SMARTDEBUFF_AddMsgD("ActionKeyInfo"..i.." "..aType.." = "..ChkS(aId)..",  Name = "..ChkS(aName) ); -- ..", Link = "..ChkS(aLink));
 
         if (aType == "spell" or aType == "petaction") then
@@ -309,12 +319,16 @@ local function GetActionKeyInfo(mode, i)
             _, aLink = C_Item.GetItemInfo(aName);
           end
         elseif (aType == "macro") then
-          aId = GetMacroIndexByName(aName);
-          -- Macros are sorted by name: id = index!
+          -- Macros: rewrite Name, Index, and Icon(aLink) on every check
+          local aId = SDB_GetMacroIndex(aName, aId, aLink);
           if (aId > 0) then
+            -- Macro found
+            aName, aLink = GetMacroInfo(aId);
+            O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][2] = aName;
             O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][4] = aId;
+            O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][5] = aLink;
           else
-            aType, aName, aRank, aId, aLink = nil, nil, nil, nil, nil;
+            -- Deleted macro
             O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]] = { };
           end
         elseif (aType == "action") then
@@ -389,6 +403,7 @@ function SMARTDEBUFF_OnLoad(self)
   self:RegisterEvent("UPDATE_MACROS");
   self:RegisterEvent("TRAIT_CONFIG_UPDATED"); -- ! Changement d'un talent / de config sauvée
   self:RegisterEvent("PLAYER_TALENT_UPDATE"); -- ! Changement de spécialisation -- Ne marche pas avec le pretre sacré?
+  self:RegisterEvent("CHARACTER_POINTS_CHANGED"); -- Classic version of PLAYER_TALENT_UPDATE
 
   --One of them allows SmartDebuff to be closed with the Escape key
   tinsert(UISpecialFrames, "SmartDebuffOF");
@@ -459,12 +474,16 @@ function SMARTDEBUFF_OnEvent(self, event, ...)
     SMARTDEBUFF_Ticker(true);
     SMARTDEBUFF_CheckIF();
 
-  elseif (event == "SPELLS_CHANGED" or event == "UPDATE_MACROS") then
+  elseif (event == "UPDATE_MACROS") then
+    SMARTDEBUFF_AddMsgD(OR.."Event: "..event);
+    isSetMacros = true;
+
+  elseif (event == "SPELLS_CHANGED") then
     SMARTDEBUFF_AddMsgD(OR.."Event: "..event);
     isSetSpells = true;
     SMARTDEBUFF_Ticker(false);
 
-  elseif (event == "TRAIT_CONFIG_UPDATED" or event == "PLAYER_TALENT_UPDATE") then
+  elseif (event == "TRAIT_CONFIG_UPDATED" or event == "PLAYER_TALENT_UPDATE" or event == "CHARACTER_POINTS_CHANGED") then
     -- Talent changed
     SMARTDEBUFF_AddMsgD(RD.."Event: "..event);
     isSetTalents = true;
@@ -492,7 +511,7 @@ function SMARTDEBUFF_OnUpdate(self, elapsed)
         end
       else
         -- Classic
-        local _, tName = GetTalentInfo(1, 1, 1);
+        local tName = GetTalentInfo(1, 1); -- Since 6.0 : _, tName = GetTalentInfo(1, 1, 1);  // GetTalentInfoByID?
         if (tName) then
           SMARTDEBUFF_AddMsgD("Talent tree ready ("..ou_time.."sec) -> Init SDB");
           isTTreeLoaded = true;
@@ -531,9 +550,16 @@ function SMARTDEBUFF_Ticker(force)
       SMARTDEBUFF_SetUnits();
     end
 
+    if (isSetMacros and not InCombatLockdown()) then
+      isSetMacros = false;
+      SMARTDEBUFF_RebuildMacrosInfo();
+      SMARTDEBUFF_SetButtons();
+      SMARTDEBUFF_RefreshAOFKeys();
+    end
+
     if (isSetTalents and not InCombatLockdown()) then
       isSetTalents = false;
-      SDB_cachePlayerSpellsTalentList = SDB_GetSpellIDList();
+      SDB_cachePlayerTalentsList = SDB_GetTalentsList();
       isSetSpells = true;
     end
 
@@ -595,7 +621,7 @@ function SMARTDEBUFF_AddMsgD(msg, r, g, b)
 end
 
 function SMARTDEBUFF_CheckWarlockPet()
-  if (sPlayerClass == "WARLOCK") then
+  if (SDB_cachePlayerClass == "WARLOCK") then
     isSpellActive = false;
     if (UnitExists("pet")) then
       local ucf = UnitCreatureFamily("pet");
@@ -675,7 +701,7 @@ function SMARTDEBUFF_SetUnits()
 
   -- Party Setup
   elseif (iGroupSetup == 2) then
-    SMARTDEBUFF_AddUnit("player", 0, 1, sPlayerClass);
+    SMARTDEBUFF_AddUnit("player", 0, 1, SDB_cachePlayerClass);
     for j = 1, 4, 1 do
       SMARTDEBUFF_AddUnit("party", j, 1);
       --SmartBuff_AddToUnitList(1, "party"..j, 1);
@@ -685,7 +711,7 @@ function SMARTDEBUFF_SetUnits()
 
   -- Solo Setup
   else
-    SMARTDEBUFF_AddUnit("player", 0, 1, sPlayerClass);
+    SMARTDEBUFF_AddUnit("player", 0, 1, SDB_cachePlayerClass);
     SMARTDEBUFF_AddMsgD("Solo Unit-Setup finished");
   end
 
@@ -987,13 +1013,13 @@ function SMARTDEBUFF_SetSpells()
   cSpellDefault["AL"] = { };
   SDB_cacheRangeCheckSpell = nil; -- reset: range detection requires readable spell/talent
 
-  SMARTDEBUFF_AddMsgD("--- Smart Debuff Set spells --- "..sPlayerClass);
+  SMARTDEBUFF_AddMsgD("--- Smart Debuff Set spells --- "..SDB_cachePlayerClass);
   -- Add Dispels abilities to L
-  if (sPlayerClass and SMARTDEBUFF_CLASS_DISPELS_LIST_ID[sPlayerClass]) then
+  if (SDB_cachePlayerClass and SMARTDEBUFF_CLASS_DISPELS_LIST_ID[SDB_cachePlayerClass] and #SMARTDEBUFF_CLASS_DISPELS_LIST_ID[SDB_cachePlayerClass] > 0) then
       sName = nil;
       SMARTDEBUFF_AddMsgD("Checking for class dispels...");
       -- 1. Check for useable dispel, and enhancement
-      for _, val in ipairs(SMARTDEBUFF_CLASS_DISPELS_LIST_ID[sPlayerClass]) do
+      for _, val in ipairs(SMARTDEBUFF_CLASS_DISPELS_LIST_ID[SDB_cachePlayerClass]) do
         sSpellInfo = SDB_GetSpellInfo(val.Spell_ID);
         if (sSpellInfo) then
           -- Cache range detection dispel if possible (use base spell to ensure detection)
@@ -1018,7 +1044,7 @@ function SMARTDEBUFF_SetSpells()
       -- 2. No usable dispel found:
       if sName == nil then
         -- 2a. select first (inactive) talent for current spec
-        for _, val in ipairs(SMARTDEBUFF_CLASS_DISPELS_LIST_ID[sPlayerClass]) do
+        for _, val in ipairs(SMARTDEBUFF_CLASS_DISPELS_LIST_ID[SDB_cachePlayerClass]) do
           if SDB_IsSpellTalentExists(val.Spell_ID) then
             sSpellInfo = SDB_GetSpellInfo(val.Spell_ID);
             sName = sSpellInfo.name;
@@ -1028,9 +1054,15 @@ function SMARTDEBUFF_SetSpells()
             break;
           end
         end
-        -- 3. Fallback: first class dispel in the list
+        -- 3. Fallback: first class dispel in the list (avoid OnlyIfUsable if possible)
         if sName == nil then
-          local val = SMARTDEBUFF_CLASS_DISPELS_LIST_ID[sPlayerClass][1];
+          local val = SMARTDEBUFF_CLASS_DISPELS_LIST_ID[SDB_cachePlayerClass][1];
+          for _, searchForUsableVal in ipairs(SMARTDEBUFF_CLASS_DISPELS_LIST_ID[SDB_cachePlayerClass]) do
+            if not searchForUsableVal.OnlyIfUsable then
+              val = searchForUsableVal;
+              break;
+            end
+          end
           sSpellInfo = SDB_GetSpellInfo(val.Spell_ID);
           if (sSpellInfo) then
             cSpellDefault["L"] = {_, val.Spell_Type or "spell", sSpellInfo.name, sSpellInfo.spellID};
@@ -1043,9 +1075,9 @@ function SMARTDEBUFF_SetSpells()
 
   -- Then Add other skills to other buttons
   --  If multiple lines for same button, first spell will only be overloaded if the following spell exists
-  if (sPlayerClass and SMARTDEBUFF_CLASS_SKILLS_LIST_ID[sPlayerClass]) then
+  if (SDB_cachePlayerClass and SMARTDEBUFF_CLASS_SKILLS_LIST_ID[SDB_cachePlayerClass]) then
     SMARTDEBUFF_AddMsgD("Checking for other class spells...");
-    for _, val in ipairs(SMARTDEBUFF_CLASS_SKILLS_LIST_ID[sPlayerClass]) do
+    for _, val in ipairs(SMARTDEBUFF_CLASS_SKILLS_LIST_ID[SDB_cachePlayerClass]) do
       sSpellInfo = SDB_GetSpellInfo(val.Spell_ID);
 
       if (sSpellInfo) then
@@ -1070,29 +1102,80 @@ end
 --- @param spellID number Id of the spell or talent to check
 --- @return boolean isSpellTalented returns true if talent is available and talented
 function SDB_IsSpellTalented(spellID)
-    return not not SDB_cachePlayerSpellsTalentList[spellID];
+  return not not SDB_cachePlayerTalentsList[spellID];
 end
 
 --- @param spellID number Id of the spell or talent to check
 --- @return boolean isSpellTalentExists returns true if talent is available in current spec (even if not talented)
 function SDB_IsSpellTalentExists(spellID)
-  return SDB_cachePlayerSpellsTalentList[spellID] ~= nil;
+  return SDB_cachePlayerTalentsList[spellID] ~= nil;
 end
 
---- @return table<number, boolean> spellList List of current talents spells ID, with activation state { [spellID]: true|false }
-function SDB_GetSpellIDList()
+--- Get the list of spells/talents id/name to check for dispel
+--- @return table<number, string>|nil spellsIdNames table containing list of spells/talents id/name to check for dispel { [spellId]: spellName,.. }, or nil if none found
+function SDB_GetConfigSpellNames()
+  local list = {};
+  if (not SDB_cachePlayerClass) then
+    return nil;
+  end
+  SMARTDEBUFF_AddMsgD("Caching talents/spells id/name filter...");
+  if (SMARTDEBUFF_CLASS_DISPELS_LIST_ID[SDB_cachePlayerClass]) then
+    for _, val in ipairs(SMARTDEBUFF_CLASS_DISPELS_LIST_ID[SDB_cachePlayerClass]) do
+      list[val.Spell_ID] = GetSpellInfo(val.Spell_ID);
+      SMARTDEBUFF_AddMsgD(" - Spell added to filter: "..val.Spell_ID.. ": "..list[val.Spell_ID]);
+      if (val.Improved_Talent ~= nil) then
+        list[val.Improved_Talent] = GetSpellInfo(val.Improved_Talent);
+        SMARTDEBUFF_AddMsgD(" - Talent added to filter: "..val.Improved_Talent.. ": "..list[val.Improved_Talent]);
+      end
+    end
+  end
+  if (SMARTDEBUFF_CLASS_SKILLS_LIST_ID[SDB_cachePlayerClass]) then
+    for _, val in ipairs(SMARTDEBUFF_CLASS_SKILLS_LIST_ID[SDB_cachePlayerClass]) do
+      list[val.Spell_ID] = GetSpellInfo(val.Spell_ID);
+      SMARTDEBUFF_AddMsgD(" - Spell added to filter: "..val.Spell_ID.. ": "..list[val.Spell_ID]);
+    end
+  end
+  return list;
+end
+
+--- @return table<number, boolean> talentsList List of current talents ID, with activation state { [spellID]: true|false, .. }
+function SDB_GetTalentsList()
   local list = {}
+
+  if (not isTTreeLoaded) then
+    return {};
+  end
 
   -- C_ClassTalents, Since DragonFlight (10)
   if not C_ClassTalents then
+    -- Classic
+    local tName = GetTalentInfo(1,1);
+    if (not tName) then isTTreeLoaded = false; return {}; end
+    -- ! Trick to detect at least configured talents/spells ids
+    SDB_cacheConfigSpellNames = SDB_cacheConfigSpellNames or SDB_GetConfigSpellNames();
+    if (not SDB_cacheConfigSpellNames) then return {}; end
+
+    local numTabs = GetNumTalentTabs();
+    for t = 1, numTabs do
+      local numTalents = GetNumTalents(t);
+      for i = 1, numTalents do
+        local tName, _, _, _, tPoints = GetTalentInfo(t, i);
+        for talId, talName in pairs(SDB_cacheConfigSpellNames) do
+          if (tName == talName) then
+            list[talId] = (tPoints > 0) or false;
+          end
+        end
+      end
+    end
     return list;
   end
 
+  -- Retail
   local configID = C_ClassTalents.GetActiveConfigID()
-  if configID == nil then return list; end
+  if configID == nil then isTTreeLoaded = false; return {}; end
 
   local configInfo = C_Traits.GetConfigInfo(configID)
-  if configInfo == nil then return list; end
+  if configInfo == nil then isTTreeLoaded = false; return {}; end
 
   for _, treeID in ipairs(configInfo.treeIDs) do -- in the context of talent trees, there is only 1 treeID
       local nodes = C_Traits.GetTreeNodes(treeID)
@@ -1162,13 +1245,10 @@ function SMARTDEBUFF_Options_Init()
 
   local b = false;
   local s, t;
-  _, sPlayerClass = UnitClass("player");
-  sRealmName = GetRealmName();
-  sPlayerName = UnitName("player");
-  sID = sRealmName .. ":" .. sPlayerName;
+  _, SDB_cachePlayerClass = UnitClass("player");
 
   -- Cache SpellID List for current spec
-  SDB_cachePlayerSpellsTalentList = SDB_GetSpellIDList();
+  SDB_cachePlayerTalentsList = SDB_GetTalentsList();
 
   SMARTDEBUFF_SetSpells();
 
@@ -1497,9 +1577,9 @@ function SMARTDEBUFF_SetDefaultKeys(bReload)
 
   local i, j;
   if (bReload) then
-    for i = 1, 24, 1 do
-      local mode, j = GetActionMode(i);
-      GetActionKeyInfo(mode, j);
+    for iAction = 1, 24, 1 do
+      local mode, i = GetActionMode(iAction);
+      GetActionKeyInfo(mode, i);
     end
     SMARTDEBUFF_RefreshAOFKeys();
     -- What's new: delay to avoid errors with early display on initial install
@@ -1507,6 +1587,81 @@ function SMARTDEBUFF_SetDefaultKeys(bReload)
   end
 
   SMARTDEBUFF_SetButtons();
+end
+
+function SMARTDEBUFF_RebuildMacrosInfo()
+  for iAction = 1, 24, 1 do
+    local mode, i = GetActionMode(iAction);
+    GetActionKeyInfo(mode, i);
+  end
+end
+
+local function SDB_Hook_EditMacro(index, name, icon)
+  if (not index or not name) then
+    return;
+  end;
+  for iAction = 1, 24, 1 do
+    local mode, i = GetActionMode(iAction);
+    local aType, aName, aRank, aId, aLink = GetActionKeyInfo(mode, i, true);
+    if (aType == "macro" and aId == index) then
+      -- update name & icon
+      aName = name;
+      aLink = icon or aLink;
+      SetActionInfo(mode, i, aType, aName, aRank, aId, aLink);
+      SMARTDEBUFF_AddMsgD(mode.."-"..i.."-Update macro #"..index..", new name: "..aName);
+      isSetMacros = true;
+    end
+  end
+end
+hooksecurefunc("EditMacro", SDB_Hook_EditMacro);
+
+local function SDB_Hook_DeleteMacro(indexOrName)
+  if (type(indexOrName) == "number") then
+    for iAction = 1, 24, 1 do
+      local mode, i = GetActionMode(iAction);
+      local aType, aName, aRank, aId, aLink = GetActionKeyInfo(mode, i, true);
+      if (aType == "macro" and aId == indexOrName) then
+        SetActionInfo(mode, i);
+      end
+    end
+  end
+end
+hooksecurefunc("DeleteMacro", SDB_Hook_DeleteMacro);
+
+--- Find Macro, by Name > Index & Icon > Icon > Index
+--- @return number MacroIndex Found macro index
+function SDB_GetMacroIndex(Name, Id, Icon)
+  Name = Name or "";
+  local newIndex = GetMacroIndexByName(Name);
+  if newIndex > 0 then
+    return newIndex;
+  end
+
+  if Icon then
+    if Id and select(2, GetMacroInfo(Id)) == Icon then
+      -- Then By Index & Icon pair
+      SMARTDEBUFF_AddMsgD(Name.." Macro name has changed, at same index #"..Id)
+      return Id;
+    else
+      -- Then Find By Icon (restrict search on same page)
+      local pageFirstMacroId, pageNumMacros = 1, GetNumMacros();
+      if (Id and Id > MAX_CHARACTER_MACROS) then
+        pageFirstMacroId = MAX_CHARACTER_MACROS+1;
+        _, pageNumMacros = GetNumMacros();
+      end
+      for i = pageFirstMacroId, pageFirstMacroId+pageNumMacros do
+          local _, findMacroIcon = GetMacroInfo(i);
+          if findMacroIcon == Icon then
+              SMARTDEBUFF_AddMsgD(Name.." Macro name & index have changed, new index #"..i);
+              return i;
+          end
+      end
+    end
+  end
+  -- fallback, keep Index (or 0 if no macro at this index)
+  newIndex = GetMacroIndexByName(GetMacroInfo(Id) or "");
+  SMARTDEBUFF_AddMsgD(Name.." Macro name & icon have changed, or macro has been removed, keep index #"..newIndex);
+  return newIndex;
 end
 
 --- Check if a default spell was changed (different name, or same name different id)
@@ -1740,28 +1895,6 @@ function SMARTDEBUFF_CheckSF()
     SMARTDEBUFF_SetUnits();
   end
   SMARTDEBUFF_CheckIF();
-
-  if (C_AddOns.IsAddOnLoaded) then
-    -- C_AddOns, Since DragonFlight (9)
-    -- Update the FuBar icon
-    if (C_AddOns.IsAddOnLoaded("FuBar") and C_AddOns.IsAddOnLoaded("FuBar_SmartDebuffFu")) then
-      SMARTDEBUFF_Fu_UpdateIcon();
-    end
-    -- Update the Broker icon
-    if (C_AddOns.IsAddOnLoaded("Broker_SmartDebuff")) then
-      SMARTDEBUFF_BROKER_UpdateIcon();
-    end
-  else
-    -- Classic
-    -- Update the FuBar icon
-    if (IsAddOnLoaded("FuBar") and IsAddOnLoaded("FuBar_SmartDebuffFu")) then
-      SMARTDEBUFF_Fu_UpdateIcon();
-    end
-    -- Update the Broker icon
-    if (IsAddOnLoaded("Broker_SmartDebuff")) then
-      SMARTDEBUFF_BROKER_UpdateIcon();
-    end
-  end
 end
 
 function SMARTDEBUFF_CheckSFButtons(hide)
@@ -2283,7 +2416,7 @@ local function DebugButtonAttributes(self)
 
         if (getAttr and getType) then
           if (attr ~= "type" or getAttr == "target") then
-            if (type(getAttr) ~= "string") then getAttr = type(getAttr) end;
+            if (type(getAttr) ~= "string" and type(getAttr) ~= "number") then getAttr = type(getAttr) end;
             SMARTDEBUFF_AddMsgD("@"..self:GetAttribute("unit").." "..getType.." ["..pre..attr..suf.."] ("..key..") = "..getAttr);
           end
         end
@@ -2347,7 +2480,7 @@ function SMARTDEBUFF_SetButton(unit, idx, pet)
       if (unit) then
         btn:SetAttribute(pre.."type"..suf, v[1]);
         --SMARTDEBUFF_AddMsgD(idx.." set: "..pre.."type"..suf..":"..v[1]);
-        if ((v[1] == "spell" or v[1] == "item" or v[1] == "macro") and v[2]) then
+        if ((v[1] == "spell" or v[1] == "item") and v[2]) then
           if (O.StopCast and (v[1] == "spell") and cSpellList[v[2]]) then
             local s = format("/stopcasting\n/cast [@%s] %s", unit, v[2]);
             btn:SetAttribute(pre.."type"..suf, "macro");
@@ -2362,6 +2495,8 @@ function SMARTDEBUFF_SetButton(unit, idx, pet)
           btn:SetAttribute(pre.."type"..suf, "spell");
           btn:SetAttribute(pre.."spell"..suf, v[2]);
           -- SMARTDEBUFF_AddMsgD(idx.." set: "..pre..v[1]..suf..":"..v[2]);
+        elseif ((v[1] == "macro") and v[2]) then
+          btn:SetAttribute(pre..v[1]..suf, GetMacroIndexByName(v[2]) or v[2]);
         elseif ((v[1] == "target") and v[2]) then
           -- Do nothing
         elseif ((v[1] == "menu") and v[2]) then
@@ -2397,7 +2532,7 @@ function SMARTDEBUFF_SetButton(unit, idx, pet)
   end
 
   --[[
-    if (sPlayerClass == "WARLOCK") then
+    if (SDB_cachePlayerClass == "WARLOCK") then
       btn:SetAttribute("alt-type1", "pet");
       btn:SetAttribute("alt-action1", spell1);
     end
@@ -4381,18 +4516,18 @@ function SmartDebuffAOFKeys_OnShow(self)
 
   local aName, aType, aRank, aId, aLink, aTexture, aStackCount;
   local mode = 1;
-  local j;
+  local i;
   local btn;
-  for i = 1, 24, 1 do
-    btn = _G["SmartDebuff_btnAction"..i];
+  for iAction = 1, 24, 1 do
+    btn = _G["SmartDebuff_btnAction"..iAction];
     if not btn._label then
       btn._label = btn:CreateFontString(nil, "OVERLAY", "SmartDebuff_GameFontNormalMicro")
       btn._label:SetPoint("BOTTOMRIGHT", -4, 2);
     end
     btn._label:SetText("");
 
-    mode, j = GetActionMode(i);
-    aType, aName, aRank, aId, aLink = GetActionKeyInfo(mode, j);
+    mode, i = GetActionMode(iAction);
+    aType, aName, aRank, aId, aLink = GetActionKeyInfo(mode, i);
 
     --SMARTDEBUFF_AddMsgD("Show: "..ChkS(aType)..", "..ChkS(aName)..", "..ChkS(aRank)..", "..ChkS(aId)..", "..ChkS(aLink));
     local isMovable = true;
@@ -4414,7 +4549,7 @@ function SmartDebuffAOFKeys_OnShow(self)
       btn._label:SetText((aStackCount ~= 1) and itemCount or "");
       isEnabled = itemCount > 0;
     elseif (aType == "macro") then
-      _, aTexture = GetMacroInfo(aName);
+      _, aTexture = GetMacroInfo(GetMacroIndexByName(aName));
       SetATexture(btn, aTexture or imgMissing);
       btn._label:SetText(strsub(aName, 0, 4));
     elseif (aType == "target") then
@@ -4437,6 +4572,8 @@ function SMARTDEBUFF_ShowWhatsNew()
   ShowF(SmartDebuffAOFKeys);
   SmartDebuffWNF_lblText:SetText(SMARTDEBUFF_WHATSNEW);
   ShowF(SmartDebuffWNF);
+  isSetSpells = true;
+  isSetMacros = true;
 end
 
 
@@ -4464,10 +4601,11 @@ end
 
 
 function SMARTDEBUFF_PickAction(self, button)
-  local i = self:GetID();
+  local iAction = self:GetID();
   local mode = 1;
+  local i;
 
-  mode, i = GetActionMode(i);
+  mode, i = GetActionMode(iAction);
   local aType, aName, aRank, aId, aLink = GetActionKeyInfo(mode, i);
   SMARTDEBUFF_AddMsgD("Pickup: "..ChkS(aType)..", "..ChkS(aName)..", "..ChkS(aRank)..", "..ChkS(aId));
   local resetVertexColor = false;
@@ -4557,8 +4695,9 @@ function SMARTDEBUFF_DropAction(self, button)
 
   local infoType, infoId, info2, spellId, baseSpellId = GetCursorInfo();
   local aSpellInfo, aName, aRank, aTexture, aStackCount;
-  local i = self:GetID();
+  local iAction = self:GetID();
   local mode = 1;
+  local i;
   local bDroped = false;
 
   if infoType == nil then
@@ -4573,7 +4712,7 @@ function SMARTDEBUFF_DropAction(self, button)
   end
   infoType, spellId = SDB_GetPickupOverride(infoType, spellId);
 
-  mode, i = GetActionMode(i);
+  mode, i = GetActionMode(iAction);
   if (button == "LeftButton" and infoType) then
     local aTypeOld, aNameOld, aRankOld, aIdOld, aLinkOld = GetActionKeyInfo(mode, i);
 
@@ -4613,7 +4752,7 @@ function SMARTDEBUFF_DropAction(self, button)
         -- Error, macro deleted before drop?
         return
       end
-      SetActionInfo(mode, i, infoType, aName, nil, infoId, nil);
+      SetActionInfo(mode, i, infoType, aName, nil, infoId, aTexture);
       labelText = strsub(aName, 0, 4);
       bDroped = true;
     end
@@ -4705,9 +4844,10 @@ function SMARTDEBUFF_GameTooltipDisable(skipLines, avoidLast)
 end
 ---@param self button
 function SMARTDEBUFF_BtnActionOnEnter(self, motion)
-  local i = self:GetID();
+  local iAction = self:GetID();
   local mode = 1;
-  mode, i = GetActionMode(i);
+  local i;
+  mode, i = GetActionMode(iAction);
   local aType, aName, aRank, aId, aLink = GetActionKeyInfo(mode, i);
   self:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square","ADD",0)
   self:SetPushedTexture("Interface\\Buttons\\UI-Quickslot-Depress","ADD");
@@ -4750,6 +4890,7 @@ function SMARTDEBUFF_BtnActionOnEnter(self, motion)
     tooltipActions = SMARTDEBUFF_TT_ITEMACTIONS;
   elseif (aType == "macro") then
     GameTooltip:SetText(WH..aName);
+    GameTooltip:AddLine(BLL..(GetMacroBody(GetMacroIndexByName(aName)) or ""));
     GameTooltip:AddLine(MACRO.."\n\n");
     tooltipActions = SMARTDEBUFF_TT_MACROACTIONS;
   elseif (aType == "target") then
