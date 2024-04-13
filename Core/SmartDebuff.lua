@@ -215,6 +215,8 @@ local GY  = BCC(0.5, 0.5, 0.5);
 local GYD = BCC(0.35, 0.35, 0.35);
 local GYL = BCC(0.65, 0.65, 0.65);
 
+local SDB_ERROR_SOUND = 565853; -- BellTollHorde.ogg
+
 -- Global update: Sounds
 if SMARTDEBUFF_DISABLED_SOUNDS then
   for key=1, #SMARTDEBUFF_SOUNDS do
@@ -4604,6 +4606,9 @@ function SmartDebuffAOFKeys_OnShow(self)
     local vertexColor = isEnabled and vertexColors.Enabled or (isMovable and vertexColors.Disabled or vertexColors.NotFound);
     btn:GetNormalTexture():SetVertexColor(unpack(vertexColor));
     btn:GetNormalTexture():SetDesaturated(not isMovable);
+    if (not isMovable) then
+      btn:GetNormalTexture():SetGradient("VERTICAL", CreateColor(1,1,1,.05), CreateColor(1,1,1,.85));
+    end
   end
 end
 
@@ -4699,6 +4704,7 @@ function SMARTDEBUFF_PickAction(self, button)
         end
         if (not GetCursorInfo()) then
           -- Unexpected error: Spell not pickable
+          PlaySoundFile(SDB_ERROR_SOUND);
           SMARTDEBUFF_AddMsgErr(ChkS(aName).." #"..ChkS(aId)..", "..SMARTDEBUFF_TT_NOTMOVABLE, true)
           return;
         end
@@ -4828,6 +4834,7 @@ function SMARTDEBUFF_DropAction(self, button)
         end
         if (not GetCursorInfo()) then
           -- Unexpected: Spell not pickable
+          PlaySoundFile(SDB_ERROR_SOUND);
           SMARTDEBUFF_AddMsgErr(ChkS(aNameOld).." #"..ChkS(aIdOld)..", "..SMARTDEBUFF_TT_NOTMOVABLE, true)
           return;
         end
