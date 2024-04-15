@@ -1138,20 +1138,12 @@ function SDB_GetConfigSpellNames()
   return list;
 end
 
---- @return table<number, boolean> talentsList List of current talents ID, with activation state { [spellID]: true|false, .. }
-function SDB_GetTalentsList()
-  local list = {}
-
-  if (not isTTreeLoaded) then
-    return {};
-  end
-
-  -- C_ClassTalents, Since DragonFlight (10)
-  if not C_ClassTalents then
-    -- Classic
-    local tName = GetTalentInfo(1,1);
-    if (not tName) then isTTreeLoaded = false; return {}; end
-    -- ! Trick to detect at least configured talents/spells ids
+--- Fallback used by SDB_GetTalentsList, uses **GetTalentInfo** *(with no spell ID...)*
+--- ! No spellID in API: I will detect at least configured talents/spells, found in SDB_cacheConfigSpellNames
+local function SDB_GetTalentsList_Fallback_Vanilla()
+  local list = {};
+  local testTalentInfo = GetTalentInfo(1,1);
+    if (not testTalentInfo) then isTTreeLoaded = false; return {}; end
     SDB_cacheConfigSpellNames = SDB_cacheConfigSpellNames or SDB_GetConfigSpellNames();
     if (not SDB_cacheConfigSpellNames) then return {}; end
 
@@ -1168,6 +1160,40 @@ function SDB_GetTalentsList()
       end
     end
     return list;
+end
+
+--- Fallback used by SDB_GetTalentsList, uses **GetTalentInfoBySpecialization** *(since WoD, until DF)*
+local function SDB_GetTalentsList_Fallback_WoD()
+  local list = {}
+  for specIndex = 1, GetNumSpecializations() do
+    -- local specId = GetSpecializationInfo(specIndex)
+    for tier = 1, MAX_TALENT_TIERS do
+        for column = 1, NUM_TALENT_COLUMNS do
+            -- local talentID, name, texture, selected, available, spellID, unknown, row, column, known, grantedByAura = GetTalentInfoBySpecialization(specIndex, tier, column)
+            local _, _, _, _, _, spellID, _, _, _, known, _ = GetTalentInfoBySpecialization(specIndex, tier, column)
+            list[spellID] = known;
+        end
+    end
+  end
+  return list;
+end
+
+--- @return table<number, boolean> talentsList List of current talents ID (all Wow versions), with activation state { [spellID]: true|false, .. }
+function SDB_GetTalentsList()
+  local list = {}
+
+  if (not isTTreeLoaded) then
+    return {};
+  end
+
+  -- C_ClassTalents, Since DragonFlight (10)
+  if not C_ClassTalents then
+    -- Classic
+    if (GetTalentInfoBySpecialization) then
+      return SDB_GetTalentsList_Fallback_WoD();
+    else
+      return SDB_GetTalentsList_Fallback_Vanilla();
+    end
   end
 
   -- Retail
@@ -4823,7 +4849,7 @@ end
 function SMARTDEBUFF_IsSpellMovable(spellType, spellName, spellRank, spellID, spellLink)
   -- Not movable if spec not enabled, since Dragonflight (10)
   if C_ClassTalents then
-    return (not not FindSpellBookSlotBySpellID(spellID, spellType == "petaction")) or SDB_IsSpellTalentExists(spellID);
+    return SDB_IsSpellTalentExists(spellID) or (not not FindSpellBookSlotBySpellID(spellID, spellType == "petaction"));
   end
   return true;
 end

@@ -3,6 +3,7 @@
 List dispels: https://warcraft.wiki.gg/wiki/Magic_(dispel_type)
 Class Dispels : https://www.wowhead.com/cata/spells/abilities/druid?filter=109;38;0
 Talents dispels: https://www.wowhead.com/cata/spells/talents?filter=109;38;0
+Class Active Talents: https://www.wowhead.com/cata/fr/spells/talents/druid?filter=50;2;0
 https://wago.tools/db2/SpellDispelType
 
 Tests your spells:

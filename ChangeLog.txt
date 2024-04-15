@@ -1,3 +1,6 @@
+v10.2.606
+ - Test for GetTalentInfoBySpecialization API
+
 v10.2.605
  - Priest: Psychic horror added on Middle button (and sdb will detect charmed friends)
  - Cataclysm: dispels added
