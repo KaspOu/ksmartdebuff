@@ -1011,6 +1011,8 @@ function SMARTDEBUFF_SetSpells()
   cSpellDefault["M"] = { };
   cSpellDefault["R"] = { };
   cSpellDefault["AL"] = { };
+  cSpellDefault["AM"] = { };
+  cSpellDefault["AR"] = { };
   SDB_cacheRangeCheckSpell = nil; -- reset: range detection requires readable spell/talent
 
   SMARTDEBUFF_AddMsgD("--- Smart Debuff Set spells --- "..SDB_cachePlayerClass);
@@ -1093,6 +1095,15 @@ function SMARTDEBUFF_SetSpells()
           SDB_cacheRangeCheckSpell = SDB_GetBaseSpellInfo(sSpellInfo.spellID);
           SMARTDEBUFF_AddMsgD("Range detection fallback: "..SDB_cacheRangeCheckSpell);
         end
+      elseif (val.Spell_Type == "item") then
+        -- special: item (Warlock stone)
+        local itemName = GetItemInfo(val.Spell_ID);
+        SMARTDEBUFF_AddMsgD("Item added [" ..val.Button.. "]: ".. itemName .." - "..val.Spell_ID);
+        cSpellDefault[val.Button] = {_, val.Spell_Type, itemName, val.Spell_ID};
+      elseif ((val.Spell_Type or "spell") ~= "spell") then
+        -- special: other (?for further use?)
+        SMARTDEBUFF_AddMsgD("Other added [" ..val.Button.. "]: ".. val.Spell_ID .." - "..val.Spell_ID);
+        cSpellDefault[val.Button] = {_, val.Spell_Type, val.Spell_ID, val.Spell_ID};
       end
     end
   end
@@ -1132,7 +1143,7 @@ function SDB_GetConfigSpellNames()
   if (SMARTDEBUFF_CLASS_SKILLS_LIST_ID[SDB_cachePlayerClass]) then
     for _, val in ipairs(SMARTDEBUFF_CLASS_SKILLS_LIST_ID[SDB_cachePlayerClass]) do
       list[val.Spell_ID] = GetSpellInfo(val.Spell_ID);
-      SMARTDEBUFF_AddMsgD(" - Spell added to filter: "..val.Spell_ID.. ": "..list[val.Spell_ID]);
+      SMARTDEBUFF_AddMsgD(" - Spell added to filter: "..val.Spell_ID.. ": "..ChkS(list[val.Spell_ID]));
     end
   end
   return list;
@@ -1580,8 +1591,8 @@ function SMARTDEBUFF_SetDefaultKeys(bReload)
                   ["SR"] = { },
                   ["SM"] = { },
                   ["AL"] = {cSpellDefault["AL"][2], cSpellDefault["AL"][3], "", cSpellDefault["AL"][4]},
-                  ["AR"] = { },
-                  ["AM"] = { },
+                  ["AR"] = {cSpellDefault["AR"][2], cSpellDefault["AR"][3], "", cSpellDefault["AR"][4]},
+                  ["AM"] = {cSpellDefault["AM"][2], cSpellDefault["AM"][3], "", cSpellDefault["AM"][4]},
                   ["CL"] = {"menu", "menu"},
                   ["CR"] = { },
                   ["CM"] = { }
@@ -1589,8 +1600,8 @@ function SMARTDEBUFF_SetDefaultKeys(bReload)
   -- target mode
   O.Keys[2]    = {["L"]  = {"target", "target"},
                   ["R"]  = {cSpellDefault["AL"][2], cSpellDefault["AL"][3], "", cSpellDefault["AL"][4]},
-                  ["M"]  = { },
-                  ["SL"] = { },
+                  ["M"]  = {cSpellDefault["AM"][2], cSpellDefault["AM"][3], "", cSpellDefault["AM"][4]},
+                  ["SL"] = {cSpellDefault["AR"][2], cSpellDefault["AR"][3], "", cSpellDefault["AR"][4]},
                   ["SR"] = { },
                   ["SM"] = { },
                   ["AL"] = {cSpellDefault["L"][2], cSpellDefault["L"][3], "", cSpellDefault["L"][4]},
