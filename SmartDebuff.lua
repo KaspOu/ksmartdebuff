@@ -12,6 +12,7 @@ https://wowpedia.fandom.com/wiki/World_of_Warcraft_API
 Sort actif pour le joueur ou le pet :
   not not FindSpellBookSlotBySpellID(spellID)
   not not GetSpellInfo(spellName)  > uniqt avec le nom (sinon renvoie l'info de toute façon)
+  >> not not GetSpellInfo(GetSpellInfo(spellID))
 
 Sort actif uniquement pour le joueur :
   IsPlayerSpell(spellID)
@@ -56,12 +57,14 @@ local isLoaded = false;
 local isPlayer = false;
 local isInit = false;
 local isTTreeLoaded = false;
-local isSetUnits = false;
-local isSetPets = false;
-local isSetPlayerPet = false;
-local isSetSpells = false;
-local isSetTalents = false;
-local isSetMacros = false;
+local shouldCallSetUnits = false;
+local shouldCallSetPets = false;
+local shouldCallSetPlayerPet = false;
+local shouldCallSetSpells = false;
+local shouldCallSetTalents = false;
+local shouldCallSetMacros = false;
+local shouldCallSetButtons = false;
+local shouldCallRefreshUI = false;
 local isSoundPlayed = false;
 local isSpellActive = true;
 local isLeader = false;
@@ -315,8 +318,10 @@ local function GetActionKeyInfo(mode, i, extractDataOnly)
             O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][5] = GetSpellLink(aName);
           end
         elseif (aType == "item") then
+          -- Item, refresh missing link (once cached)
           if (not aLink) then
-            _, aLink = C_Item.GetItemInfo(aName);
+            _, aLink = C_Item.GetItemInfo(aId);
+            O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][5] = aLink;
           end
         elseif (aType == "macro") then
           -- Macros: rewrite Name, Index, and Icon(aLink) on every check
@@ -401,6 +406,7 @@ function SMARTDEBUFF_OnLoad(self)
 
   self:RegisterEvent("SPELLS_CHANGED");
   self:RegisterEvent("UPDATE_MACROS");
+  self:RegisterEvent("BAG_UPDATE");  
   self:RegisterEvent("TRAIT_CONFIG_UPDATED"); -- ! Changement d'un talent / de config sauvée
   self:RegisterEvent("PLAYER_TALENT_UPDATE"); -- ! Changement de spécialisation -- Ne marche pas avec le pretre sacré?
   self:RegisterEvent("CHARACTER_POINTS_CHANGED"); -- Classic version of PLAYER_TALENT_UPDATE
@@ -453,13 +459,16 @@ function SMARTDEBUFF_OnEvent(self, event, ...)
   end;
 
   if (event == "GROUP_ROSTER_UPDATE" or event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" or event == "PLAYER_ROLES_ASSIGNED") then
-    isSetUnits = true;
+    shouldCallSetUnits = true;
+    shouldCallSetButtons = true;
 
   elseif (event == "UNIT_PET") then
-    isSetPlayerPet = true;
+    shouldCallSetPlayerPet = true;
+    shouldCallSetButtons = true;
 
   elseif (event == "UNIT_NAME_UPDATE" and string.find(arg1, "pet")) then
-    isSetPets = true;
+    shouldCallSetPets = true;
+    shouldCallSetButtons = true;
 
   elseif (event == "PLAYER_REGEN_DISABLED") then
     SMARTDEBUFF_SetMoving(false);
@@ -474,20 +483,30 @@ function SMARTDEBUFF_OnEvent(self, event, ...)
     SMARTDEBUFF_Ticker(true);
     SMARTDEBUFF_CheckIF();
 
+  elseif (event == "BAG_UPDATE") then
+    SMARTDEBUFF_AddMsgD(OR.."Event: "..event);
+    shouldCallRefreshUI = true;
+
   elseif (event == "UPDATE_MACROS") then
     SMARTDEBUFF_AddMsgD(OR.."Event: "..event);
-    isSetMacros = true;
+    shouldCallSetMacros = true;
+    shouldCallSetButtons = true;
+    shouldCallRefreshUI = true;
 
   elseif (event == "SPELLS_CHANGED") then
     SMARTDEBUFF_AddMsgD(OR.."Event: "..event);
-    isSetSpells = true;
+    shouldCallSetSpells = true;
+    shouldCallSetButtons = true;
+    shouldCallRefreshUI = true;
     SMARTDEBUFF_Ticker(false);
 
   elseif (event == "TRAIT_CONFIG_UPDATED" or event == "PLAYER_TALENT_UPDATE" or event == "CHARACTER_POINTS_CHANGED") then
     -- Talent changed
     SMARTDEBUFF_AddMsgD(RD.."Event: "..event);
-    isSetTalents = true;
-    isSetSpells = true;
+    shouldCallSetTalents = true;
+    shouldCallSetSpells = true;
+    shouldCallSetButtons = true;
+    shouldCallRefreshUI = true;
     SMARTDEBUFF_Ticker(false);
   end
 
@@ -527,47 +546,52 @@ function SMARTDEBUFF_Ticker(force)
   if (force or GetTime() > tTicker + 1) then
     tTicker = GetTime();
 
-    if ((isSetPlayerPet or isSetPets) and not isSetUnits) then
+    if ((shouldCallSetPlayerPet or shouldCallSetPets) and not shouldCallSetUnits) then
       if (canDebuff and SMARTDEBUFF_IsVisible()) then
         if (InCombatLockdown()) then
-          isSetUnits = true;
+          shouldCallSetUnits = true;
         else
           SMARTDEBUFF_AddMsgD("Unit pet changed");
-          if (isSetPlayerPet) then
+          if (shouldCallSetPlayerPet) then
             SMARTDEBUFF_CheckWarlockPet();
-            isSetUnits = true;
+            shouldCallSetUnits = true;
           else
             SMARTDEBUFF_SetPetButtons(true);
           end
         end
       end
-      isSetPlayerPet = false;
-      isSetPets = false;
+      shouldCallSetPlayerPet = false;
+      shouldCallSetPets = false;
     end
 
-    if (isSetUnits and not InCombatLockdown()) then
-      isSetUnits = false;
+    if (shouldCallSetUnits and not InCombatLockdown()) then
+      shouldCallSetUnits = false;
       SMARTDEBUFF_SetUnits();
     end
 
-    if (isSetMacros and not InCombatLockdown()) then
-      isSetMacros = false;
+    if (shouldCallSetMacros and not InCombatLockdown()) then
+      shouldCallSetMacros = false;
       SMARTDEBUFF_RebuildMacrosInfo();
-      SMARTDEBUFF_SetButtons();
-      SMARTDEBUFF_RefreshAOFKeys();
     end
 
-    if (isSetTalents and not InCombatLockdown()) then
-      isSetTalents = false;
+    if (shouldCallSetTalents and not InCombatLockdown()) then
+      shouldCallSetTalents = false;
       SDB_cachePlayerTalentsList = SDB_GetTalentsList();
-      isSetSpells = true;
     end
 
-    if (isSetSpells and not InCombatLockdown()) then
-      isSetSpells = false;
+    if (shouldCallSetSpells and not InCombatLockdown()) then
+      shouldCallSetSpells = false;
       SMARTDEBUFF_SetSpells();
       SMARTDEBUFF_CheckForSpellUpgrade();
+    end
+
+    if (shouldCallSetButtons) then
+      shouldCallSetButtons = false;
       SMARTDEBUFF_SetButtons();
+    end
+
+    if (shouldCallRefreshUI) then
+      shouldCallRefreshUI = false;
       SMARTDEBUFF_RefreshAOFKeys();
     end
 
@@ -638,7 +662,7 @@ end
 -- Creates an array of units
 function SMARTDEBUFF_SetUnits()
   if (not isInit or InCombatLockdown()) then
-    isSetUnits = true;
+    shouldCallSetUnits = true;
     return;
   end
 
@@ -1011,6 +1035,8 @@ function SMARTDEBUFF_SetSpells()
   cSpellDefault["M"] = { };
   cSpellDefault["R"] = { };
   cSpellDefault["AL"] = { };
+  cSpellDefault["AM"] = { };
+  cSpellDefault["AR"] = { };
   SDB_cacheRangeCheckSpell = nil; -- reset: range detection requires readable spell/talent
 
   SMARTDEBUFF_AddMsgD("--- Smart Debuff Set spells --- "..SDB_cachePlayerClass);
@@ -1029,7 +1055,7 @@ function SMARTDEBUFF_SetSpells()
           end
 
           -- Dispel found and available for current spec
-          if FindSpellBookSlotBySpellID(val.Spell_ID) then
+          if IsSpellKnownOrOverridesKnown(val.Spell_ID, val.Spell_Type == "petaction" and "pet" or nil) then
             sName = sSpellInfo.name;
             cSpellList[sName] = val.Spell_List;
             SMARTDEBUFF_AddMsgD("Dispel found: " .. sName.." - "..strjoin(" ",unpack(cSpellList[sName])));
@@ -1093,6 +1119,15 @@ function SMARTDEBUFF_SetSpells()
           SDB_cacheRangeCheckSpell = SDB_GetBaseSpellInfo(sSpellInfo.spellID);
           SMARTDEBUFF_AddMsgD("Range detection fallback: "..SDB_cacheRangeCheckSpell);
         end
+      elseif (val.Spell_Type == "item") then
+        -- special: item (Warlock stone)
+        local itemName = GetItemInfo(val.Spell_ID);
+        SMARTDEBUFF_AddMsgD("Item added [" ..val.Button.. "]: ".. ChkS(itemName) .." - "..val.Spell_ID);
+        cSpellDefault[val.Button] = {_, val.Spell_Type, itemName, val.Spell_ID};
+      elseif ((val.Spell_Type or "spell") ~= "spell") then
+        -- special: other (?for further use?)
+        SMARTDEBUFF_AddMsgD("Other added [" ..val.Button.. "]: ".. val.Spell_ID .." - "..val.Spell_ID);
+        cSpellDefault[val.Button] = {_, val.Spell_Type, val.Spell_ID, val.Spell_ID};
       end
     end
   end
@@ -1132,26 +1167,18 @@ function SDB_GetConfigSpellNames()
   if (SMARTDEBUFF_CLASS_SKILLS_LIST_ID[SDB_cachePlayerClass]) then
     for _, val in ipairs(SMARTDEBUFF_CLASS_SKILLS_LIST_ID[SDB_cachePlayerClass]) do
       list[val.Spell_ID] = GetSpellInfo(val.Spell_ID);
-      SMARTDEBUFF_AddMsgD(" - Spell added to filter: "..val.Spell_ID.. ": "..list[val.Spell_ID]);
+      SMARTDEBUFF_AddMsgD(" - Spell added to filter: "..val.Spell_ID.. ": "..ChkS(list[val.Spell_ID]));
     end
   end
   return list;
 end
 
---- @return table<number, boolean> talentsList List of current talents ID, with activation state { [spellID]: true|false, .. }
-function SDB_GetTalentsList()
-  local list = {}
-
-  if (not isTTreeLoaded) then
-    return {};
-  end
-
-  -- C_ClassTalents, Since DragonFlight (10)
-  if not C_ClassTalents then
-    -- Classic
-    local tName = GetTalentInfo(1,1);
-    if (not tName) then isTTreeLoaded = false; return {}; end
-    -- ! Trick to detect at least configured talents/spells ids
+--- Fallback used by SDB_GetTalentsList, uses **GetTalentInfo** *(with no spell ID...)*
+--- ! No spellID in API: I will detect at least configured talents/spells, found in SDB_cacheConfigSpellNames
+local function SDB_GetTalentsList_Fallback_Vanilla()
+  local list = {};
+  local testTalentInfo = GetTalentInfo(1,1);
+    if (not testTalentInfo) then isTTreeLoaded = false; return {}; end
     SDB_cacheConfigSpellNames = SDB_cacheConfigSpellNames or SDB_GetConfigSpellNames();
     if (not SDB_cacheConfigSpellNames) then return {}; end
 
@@ -1168,6 +1195,40 @@ function SDB_GetTalentsList()
       end
     end
     return list;
+end
+
+--- Fallback used by SDB_GetTalentsList, uses **GetTalentInfoBySpecialization** *(since WoD, until DF)*
+local function SDB_GetTalentsList_Fallback_WoD()
+  local list = {}
+  for specIndex = 1, GetNumSpecializations() do
+    -- local specId = GetSpecializationInfo(specIndex)
+    for tier = 1, MAX_TALENT_TIERS do
+        for column = 1, NUM_TALENT_COLUMNS do
+            -- local talentID, name, texture, selected, available, spellID, unknown, row, column, known, grantedByAura = GetTalentInfoBySpecialization(specIndex, tier, column)
+            local _, _, _, _, _, spellID, _, _, _, known, _ = GetTalentInfoBySpecialization(specIndex, tier, column)
+            list[spellID] = known;
+        end
+    end
+  end
+  return list;
+end
+
+--- @return table<number, boolean> talentsList List of current talents ID (all Wow versions), with activation state { [spellID]: true|false, .. }
+function SDB_GetTalentsList()
+  local list = {}
+
+  if (not isTTreeLoaded) then
+    return {};
+  end
+
+  -- C_ClassTalents, Since DragonFlight (10)
+  if not C_ClassTalents then
+    -- Classic
+    if (GetTalentInfoBySpecialization) then
+      return SDB_GetTalentsList_Fallback_WoD();
+    else
+      return SDB_GetTalentsList_Fallback_Vanilla();
+    end
   end
 
   -- Retail
@@ -1446,7 +1507,7 @@ function SMARTDEBUFF_Options_Init()
     end
   end
 
-  imgTarget = SDB_GetSpellInfo(1130).iconID;  -- Hunter's Mark
+  imgTarget = SMARTDEBUFF_HUNTERSMARK_ICONID;
   imgMenu = "Interface\\ICONS\\Trade_Engineering";
   imgMissing = "Interface\\ICONS\\inv_misc_questionmark";
 
@@ -1554,8 +1615,8 @@ function SMARTDEBUFF_SetDefaultKeys(bReload)
                   ["SR"] = { },
                   ["SM"] = { },
                   ["AL"] = {cSpellDefault["AL"][2], cSpellDefault["AL"][3], "", cSpellDefault["AL"][4]},
-                  ["AR"] = { },
-                  ["AM"] = { },
+                  ["AR"] = {cSpellDefault["AR"][2], cSpellDefault["AR"][3], "", cSpellDefault["AR"][4]},
+                  ["AM"] = {cSpellDefault["AM"][2], cSpellDefault["AM"][3], "", cSpellDefault["AM"][4]},
                   ["CL"] = {"menu", "menu"},
                   ["CR"] = { },
                   ["CM"] = { }
@@ -1563,8 +1624,8 @@ function SMARTDEBUFF_SetDefaultKeys(bReload)
   -- target mode
   O.Keys[2]    = {["L"]  = {"target", "target"},
                   ["R"]  = {cSpellDefault["AL"][2], cSpellDefault["AL"][3], "", cSpellDefault["AL"][4]},
-                  ["M"]  = { },
-                  ["SL"] = { },
+                  ["M"]  = {cSpellDefault["AM"][2], cSpellDefault["AM"][3], "", cSpellDefault["AM"][4]},
+                  ["SL"] = {cSpellDefault["AR"][2], cSpellDefault["AR"][3], "", cSpellDefault["AR"][4]},
                   ["SR"] = { },
                   ["SM"] = { },
                   ["AL"] = {cSpellDefault["L"][2], cSpellDefault["L"][3], "", cSpellDefault["L"][4]},
@@ -1609,7 +1670,7 @@ local function SDB_Hook_EditMacro(index, name, icon)
       aLink = icon or aLink;
       SetActionInfo(mode, i, aType, aName, aRank, aId, aLink);
       SMARTDEBUFF_AddMsgD(mode.."-"..i.."-Update macro #"..index..", new name: "..aName);
-      isSetMacros = true;
+      shouldCallSetMacros = true;
     end
   end
 end
@@ -3831,7 +3892,7 @@ end
 
 function SMARTDEBUFF_OFToggleGrp(i)
   O.DebuffGrp[i] = not O.DebuffGrp[i];
-  isSetUnits = true;
+  shouldCallSetUnits = true;
 end
 
 function SMARTDEBUFF_OFOnShow()
@@ -4534,7 +4595,8 @@ function SmartDebuffAOFKeys_OnShow(self)
     local isEnabled = true;
     if ((aType == "spell" or aType == "petaction") and aName) then
       if (aId) then
-        SetATexture(btn, SDB_GetSpellInfo(aId).iconID or imgMissing);
+        local getSpellInfo = SDB_GetSpellInfo(aId);
+        SetATexture(btn, getSpellInfo and getSpellInfo.iconID or imgMissing);
         isMovable = SMARTDEBUFF_IsSpellMovable(aType, aName, aRank, aId, aLink);
         isEnabled = isMovable and not not GetSpellInfo(aName);
       else
@@ -4572,8 +4634,8 @@ function SMARTDEBUFF_ShowWhatsNew()
   ShowF(SmartDebuffAOFKeys);
   SmartDebuffWNF_lblText:SetText(SMARTDEBUFF_WHATSNEW);
   ShowF(SmartDebuffWNF);
-  isSetSpells = true;
-  isSetMacros = true;
+  shouldCallSetSpells = true;
+  shouldCallSetMacros = true;
 end
 
 
@@ -4823,7 +4885,7 @@ end
 function SMARTDEBUFF_IsSpellMovable(spellType, spellName, spellRank, spellID, spellLink)
   -- Not movable if spec not enabled, since Dragonflight (10)
   if C_ClassTalents then
-    return (not not FindSpellBookSlotBySpellID(spellID, spellType == "petaction")) or SDB_IsSpellTalentExists(spellID);
+    return SDB_IsSpellTalentExists(spellID) or (not not FindSpellBookSlotBySpellID(spellID, spellType == "petaction"));
   end
   return true;
 end
@@ -4885,7 +4947,11 @@ function SMARTDEBUFF_BtnActionOnEnter(self, motion)
       tooltipActionsReplace = SMARTDEBUFF_TT_CANTDROP;
     end
   elseif (aType == "item") then
-    GameTooltip:SetHyperlink(aLink);
+    if (aLink) then
+      GameTooltip:SetHyperlink(aLink);
+    else
+      GameTooltip:SetText(WH..aName);
+    end
     GameTooltip:AddLine("\n"..USE_ITEM.."\n\n");
     tooltipActions = SMARTDEBUFF_TT_ITEMACTIONS;
   elseif (aType == "macro") then

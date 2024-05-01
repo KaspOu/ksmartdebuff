@@ -1,3 +1,10 @@
+v10.2.606
+ - Test for GetTalentInfoBySpecialization API
+ - Cataclysm spells tested
+ - > Priest AM / AR buttons added (Power word shield / Leap of Faith)
+ - > Warlock Soul stone added as item
+ - Added defaults keys AM / AR support
+
 v10.2.605
  - Priest: Psychic horror added on Middle button (and sdb will detect charmed friends)
  - Cataclysm: dispels added
