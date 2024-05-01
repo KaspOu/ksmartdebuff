@@ -12,6 +12,7 @@ https://wowpedia.fandom.com/wiki/World_of_Warcraft_API
 Sort actif pour le joueur ou le pet :
   not not FindSpellBookSlotBySpellID(spellID)
   not not GetSpellInfo(spellName)  > uniqt avec le nom (sinon renvoie l'info de toute façon)
+  >> not not GetSpellInfo(GetSpellInfo(spellID))
 
 Sort actif uniquement pour le joueur :
   IsPlayerSpell(spellID)
@@ -1054,7 +1055,7 @@ function SMARTDEBUFF_SetSpells()
           end
 
           -- Dispel found and available for current spec
-          if FindSpellBookSlotBySpellID(val.Spell_ID) then
+          if IsSpellKnownOrOverridesKnown(val.Spell_ID, val.Spell_Type == "petaction" and "pet" or nil) then
             sName = sSpellInfo.name;
             cSpellList[sName] = val.Spell_List;
             SMARTDEBUFF_AddMsgD("Dispel found: " .. sName.." - "..strjoin(" ",unpack(cSpellList[sName])));
