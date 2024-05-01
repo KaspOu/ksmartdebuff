@@ -317,8 +317,10 @@ local function GetActionKeyInfo(mode, i, extractDataOnly)
             O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][5] = GetSpellLink(aName);
           end
         elseif (aType == "item") then
+          -- Item, refresh missing link (once cached)
           if (not aLink) then
-            _, aLink = C_Item.GetItemInfo(aName);
+            _, aLink = C_Item.GetItemInfo(aId);
+            O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][5] = aLink;
           end
         elseif (aType == "macro") then
           -- Macros: rewrite Name, Index, and Icon(aLink) on every check
@@ -4946,8 +4948,8 @@ function SMARTDEBUFF_BtnActionOnEnter(self, motion)
   elseif (aType == "item") then
     if (aLink) then
       GameTooltip:SetHyperlink(aLink);
-    else      
-      GameTooltip:AddLine(aName);
+    else
+      GameTooltip:SetText(WH..aName);
     end
     GameTooltip:AddLine("\n"..USE_ITEM.."\n\n");
     tooltipActions = SMARTDEBUFF_TT_ITEMACTIONS;
