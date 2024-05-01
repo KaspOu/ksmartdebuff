@@ -1119,7 +1119,7 @@ function SMARTDEBUFF_SetSpells()
       elseif (val.Spell_Type == "item") then
         -- special: item (Warlock stone)
         local itemName = GetItemInfo(val.Spell_ID);
-        SMARTDEBUFF_AddMsgD("Item added [" ..val.Button.. "]: ".. itemName .." - "..val.Spell_ID);
+        SMARTDEBUFF_AddMsgD("Item added [" ..val.Button.. "]: ".. ChkS(itemName) .." - "..val.Spell_ID);
         cSpellDefault[val.Button] = {_, val.Spell_Type, itemName, val.Spell_ID};
       elseif ((val.Spell_Type or "spell") ~= "spell") then
         -- special: other (?for further use?)
@@ -1504,7 +1504,7 @@ function SMARTDEBUFF_Options_Init()
     end
   end
 
-  imgTarget = SDB_GetSpellInfo(1130).iconID;  -- Hunter's Mark
+  imgTarget = SMARTDEBUFF_HUNTERSMARK_ICONID;
   imgMenu = "Interface\\ICONS\\Trade_Engineering";
   imgMissing = "Interface\\ICONS\\inv_misc_questionmark";
 
@@ -4592,7 +4592,8 @@ function SmartDebuffAOFKeys_OnShow(self)
     local isEnabled = true;
     if ((aType == "spell" or aType == "petaction") and aName) then
       if (aId) then
-        SetATexture(btn, SDB_GetSpellInfo(aId).iconID or imgMissing);
+        local getSpellInfo = SDB_GetSpellInfo(aId);
+        SetATexture(btn, getSpellInfo and getSpellInfo.iconID or imgMissing);
         isMovable = SMARTDEBUFF_IsSpellMovable(aType, aName, aRank, aId, aLink);
         isEnabled = isMovable and not not GetSpellInfo(aName);
       else
@@ -4943,7 +4944,11 @@ function SMARTDEBUFF_BtnActionOnEnter(self, motion)
       tooltipActionsReplace = SMARTDEBUFF_TT_CANTDROP;
     end
   elseif (aType == "item") then
-    GameTooltip:SetHyperlink(aLink);
+    if (aLink) then
+      GameTooltip:SetHyperlink(aLink);
+    else      
+      GameTooltip:AddLine(aName);
+    end
     GameTooltip:AddLine("\n"..USE_ITEM.."\n\n");
     tooltipActions = SMARTDEBUFF_TT_ITEMACTIONS;
   elseif (aType == "macro") then
