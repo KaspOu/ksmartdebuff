@@ -1,7 +1,7 @@
 ## Interface: 20504
 ## Title: Smart|cffffffffDebuff|r Reloaded by |cff00ff00Kallye|r
 ## Title-frFR: Smart|cffffffffDebuff|r Reloaded, par |cff00ff00Kallye|r
-## Version: 10.2.606
+## Version: 10.2.607
 ## Author: |cff00ff00Kallye|r (EU-Elune)
 ## Notes: Show party buttons with debuffs easy tracking and dispel actions. Use << |cff00ff00/sdb|r >> for debuff frame.
 ## Notes-deDE: Benutze << |cff00ff00/sdb|r >> um das Debuff-Fenster zu offnen

@@ -1,3 +1,6 @@
+v10.2.607
+ - Minor fix (Expiration calculation issue while leaving instance)
+
 v10.2.606
  - Test for GetTalentInfoBySpecialization API
  - Cataclysm spells tested

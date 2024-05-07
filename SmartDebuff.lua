@@ -3117,18 +3117,8 @@ function SmartDebuff_SetButtonBars(btn, unit, unitclass)
           btn.raidicon:SetTexCoord(0, 1, 0, 1);
         else
           sbb_s = IconCoords[sbb_gr];
-          --btn.raidicon:SetTexture("Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES");
           btn.raidicon:SetTexture(Icons["ROLE"]);
           btn.raidicon:SetTexCoord(sbb_s[1], sbb_s[2], sbb_s[3], sbb_s[4]);
-          --[[
-          if (sbb_gr == "TANK") then
-            btn.raidicon:SetTexCoord(0, 19/64, 22/64, 41/64);
-          elseif (sbb_gr == "HEALER") then
-            btn.raidicon:SetTexCoord(20/64, 39/64, 1/64, 20/64);
-          else -- "DAMAGER"
-            btn.raidicon:SetTexCoord(20/64, 39/64, 22/64, 41/64);
-          end
-          ]]--
           if (sbb_gr == "DAMAGER") then
             btn.raidicon:Hide();
             return;
@@ -3151,32 +3141,20 @@ function SmartDebuff_SetButtonBars(btn, unit, unitclass)
     if (O.ShowSpellIcon) then
       for loop2 = 1, math.min(#O.SpellGuard, maxSpellIcons), 1 do
         local name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[loop2], unit);
-        if name == nil then
-          name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[loop2], unit, "HARMFUL");
-        end
-        if name == nil then
-          name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[loop2], unit, "NOT_CANCELABLE");
-        end
-        if name == nil then
-          name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[loop2], unit, "CANCELABLE");
-        end
-        if name == nil then
-          name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[loop2], unit, "RAID");
-        end
-        if name == nil then
-          name, texture, count, debuffType, duration, expirationTime, source, _, _, spellID = AuraUtil.FindAuraByName(O.SpellGuard[loop2], unit, "PLAYER");
+        for _, target in ipairs({"HARMFUL", "NOT_CANCELABLE","CANCELABLE","RAID","PLAYER"}) do
+          if name ~= nil then
+            break;
+          end
+          name, texture, _, _, _, expirationTime, _, _, _, _ = AuraUtil.FindAuraByName(O.SpellGuard[loop2], unit, target);
         end
         if name ~= nil then
             sbb_s = texture;
-            sbb_exp = tonumber(expirationTime) or 0;
+            sbb_exp = math.max(0, tonumber(expirationTime) or 0);
             if sbb_exp > 0 then
               sbb_exp = (sbb_exp - GetTime()) / 10 + 0.1;
-              if (sbb_exp > 0.9) then
-                sbb_exp = 0.9;
-              end
-            else -- Happened.. while leaving instance?
-              sbb_exp = 0;
             end
+            sbb_exp = math.max(0, math.min(sbb_exp, 0.9)); -- 0 <= alpha expiration <= 0.9
+
             btn.spellicon[loop2]:SetTexture(sbb_s);
             sbb_n = btn:GetHeight() / 3;
             --sbb_n = O.RaidIconSize;
