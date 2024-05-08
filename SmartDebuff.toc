@@ -1,4 +1,4 @@
-## Interface: 100206
+## Interface: 100207
 ## Title: Smart|cffffffffDebuff|r Reloaded by |cff00ff00Kallye|r
 ## Title-frFR: Smart|cffffffffDebuff|r Reloaded, par |cff00ff00Kallye|r
 ## Version: 10.2.607
