@@ -1121,7 +1121,7 @@ function SMARTDEBUFF_SetSpells()
         end
       elseif (val.Spell_Type == "item") then
         -- special: item (Warlock stone)
-        local itemName = GetItemInfo(val.Spell_ID);
+        local itemName = C_Item.GetItemInfo(val.Spell_ID);
         SMARTDEBUFF_AddMsgD("Item added [" ..val.Button.. "]: ".. ChkS(itemName) .." - "..val.Spell_ID);
         cSpellDefault[val.Button] = {_, val.Spell_Type, itemName, val.Spell_ID};
       elseif ((val.Spell_Type or "spell") ~= "spell") then
@@ -4583,9 +4583,9 @@ function SmartDebuffAOFKeys_OnShow(self)
         SetATexture(btn, imgMissing);
       end
     elseif (aType == "item") then
-      aName, _, _, _, _, _, _, aStackCount, _, aTexture = GetItemInfo(aId or aName);
+      aName, _, _, _, _, _, _, aStackCount, _, aTexture = C_Item.GetItemInfo(aId or aName);
       SetATexture(btn, aTexture or imgMissing);
-      local itemCount = GetItemCount(aName);
+      local itemCount = C_Item.GetItemCount(aId or aName);
       btn._label:SetText((aStackCount ~= 1) and itemCount or "");
       isEnabled = itemCount > 0;
     elseif (aType == "macro") then
@@ -4780,9 +4780,9 @@ function SMARTDEBUFF_DropAction(self, button)
       end
     elseif (infoType == "item") then
       --itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture = C_Item.GetItemInfo(itemID)
-      aName, _, _, _, _, _, _, aStackCount, _, aTexture = GetItemInfo(infoId);
+      aName, _, _, _, _, _, _, aStackCount, _, aTexture = C_Item.GetItemInfo(infoId);
       SetActionInfo(mode, i, infoType, aName, nil, infoId, info2);
-      local itemCount = GetItemCount(aName);
+      local itemCount = C_Item.GetItemCount(infoId);
       labelText = (aStackCount ~= 1) and itemCount or "";
       isEnabled = itemCount > 0;
       bDroped = true;
@@ -4808,7 +4808,6 @@ function SMARTDEBUFF_DropAction(self, button)
       ClearCursor();
       GameTooltip:Hide();
       SMARTDEBUFF_SetButtons();
-      SMARTDEBUFF_BtnActionOnEnter(self); -- update tooltip
       if (aTypeOld) then
         if (aTypeOld == "spell") then
           PickupSpell(aIdOld);
@@ -4832,7 +4831,23 @@ function SMARTDEBUFF_DropAction(self, button)
           SMARTDEBUFF_AddMsgErr(ChkS(aNameOld).." #"..ChkS(aIdOld)..", "..SMARTDEBUFF_TT_NOTMOVABLE, true)
           return;
         end
+      else
+        if (IsModifierKeyDown()) then
+          -- reclone after drop
+          if (infoType == "spell") then
+            PickupSpell(spellId);
+          elseif (infoType == "petaction") then
+            PickupPetSpell(spellId);
+          elseif (infoType == "item") then
+            PickupItem(infoId);
+          elseif (infoType == "macro") then
+            PickupMacro(infoId);
+          elseif (infoType == "action") then
+            PickupSpellBookItem(spellId, GetSpellLink(aName), BOOKTYPE_PET);
+          end
+        end
       end
+      SMARTDEBUFF_BtnActionOnEnter(self); -- update tooltip
     end
   end
 end
