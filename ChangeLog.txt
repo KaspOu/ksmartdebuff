@@ -1,3 +1,8 @@
+v10.2.701
+- Fixes itemCount issue if visible on load
+- Drop on empty slot will re-clone if a modifier key is down
+- Wow DF 10.2.7
+
 v10.2.607
  - Minor fix (Expiration calculation issue while leaving instance)
 
