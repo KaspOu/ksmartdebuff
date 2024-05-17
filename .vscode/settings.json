@@ -255,7 +255,10 @@
         "message",
         "CHARACTER_POINTS_CHANGED",
         "GetNumTalentTabs",
-        "GetNumTalents"
+        "GetNumTalents",
+        "InterfaceOptions_AddCategory",
+        "Settings",
+        "GameMenuFrame"
     ],
     "Lua.diagnostics.disable": [
         "need-check-nil",

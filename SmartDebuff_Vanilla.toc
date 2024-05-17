@@ -1,7 +1,7 @@
 ## Interface: 11502
 ## Title: Smart|cffffffffDebuff|r Reloaded by |cff00ff00Kallye|r
 ## Title-frFR: Smart|cffffffffDebuff|r Reloaded, par |cff00ff00Kallye|r
-## Version: 10.2.607
+## Version: 10.2.702
 ## Author: |cff00ff00Kallye|r (EU-Elune)
 ## Notes: Show party buttons with debuffs easy tracking and dispel actions. Use << |cff00ff00/sdb|r >> for debuff frame.
 ## Notes-deDE: Benutze << |cff00ff00/sdb|r >> um das Debuff-Fenster zu offnen
@@ -11,6 +11,7 @@
 ## SavedVariables: SMARTDEBUFF_OptionsGlobal
 ## SavedVariablesPerCharacter: SMARTDEBUFF_Options
 ## IconTexture: Interface\Icons\ability_shaman_cleansespirit
+## AddonCompartmentFunc: SMARTDEBUFF_ToggleOF
 
 ## X-Credits: Aeldra, Semi#1287
 ## X-Category: Buffs & Debuffs
