@@ -21,8 +21,8 @@
 
 UTF8\utf8data.lua
 UTF8\utf8.lua
-SmartDebuff.globals.lua
-SmartDebuff_spells_Wrath.lua
-locales.xml
-SmartDebuff.lua
-SmartDebuff.xml
+Core\SmartDebuff.globals.lua
+Core\SmartDebuff_spells_Wrath.lua
+Core\locales.xml
+Core\SmartDebuff.lua
+Core\SmartDebuff.xml

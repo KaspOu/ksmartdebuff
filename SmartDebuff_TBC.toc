@@ -21,12 +21,8 @@
 
 UTF8\utf8data.lua
 UTF8\utf8.lua
-SmartDebuff.globals.lua
-SmartDebuff_spells_Vanilla.lua
-localization.en.lua
-localization.de.lua
-localization.fr.lua
-localization.es.lua
-localization.tw.lua
-SmartDebuff.lua
-SmartDebuff.xml
+Core\SmartDebuff.globals.lua
+Core\SmartDebuff_spells_Vanilla.lua
+Core\locales.xml
+Core\SmartDebuff.lua
+Core\SmartDebuff.xml
