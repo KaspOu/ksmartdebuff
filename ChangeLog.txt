@@ -1,5 +1,10 @@
+v10.2.703
+- Binding display fixed
+- Code cleaning
+
 v10.2.702
 - Added to Wow Add-ons list (AddOn Compartment Filter)
+- Wow Cataclysm
 
 v10.2.701
 - Fixes itemCount issue if visible on load
@@ -7,34 +12,34 @@ v10.2.701
 - Wow DF 10.2.7
 
 v10.2.607
- - Minor fix (Expiration calculation issue while leaving instance)
+- Minor fix (Expiration calculation issue while leaving instance)
 
 v10.2.606
- - Test for GetTalentInfoBySpecialization API
- - Cataclysm spells tested
- - > Priest AM / AR buttons added (Power word shield / Leap of Faith)
- - > Warlock Soul stone added as item
- - Added defaults keys AM / AR support
+- Test for GetTalentInfoBySpecialization API
+- Cataclysm spells tested
+- > Priest AM / AR buttons added (Power word shield / Leap of Faith)
+- > Warlock Soul stone added as item
+- Added defaults keys AM / AR support
 
 v10.2.605
- - Priest: Psychic horror added on Middle button (and sdb will detect charmed friends)
- - Cataclysm: dispels added
-   / Druid, Paladin, Priest, Shaman spells and talents reviewed
-   / Warlock (Imp) Singe Magic
- - Caution: Cata Talents may not be detected accordingly
+- Priest: Psychic horror added on Middle button (and sdb will detect charmed friends)
+- Cataclysm: dispels added
+  / Druid, Paladin, Priest, Shaman spells and talents reviewed
+  / Warlock (Imp) Singe Magic
+- Caution: Cata Talents may not be detected accordingly
 
 v10.2.604
- - Keys UI: Macro buttons update according to macro changes after editing / deleting
- - Classic / Wrath : dispels added
-   / Druid Cure & Abolish Poison / Priest Abolish Disease
-   / Paladin Purify / Warlock (Wotlk Felhunter) Devour Magic
-   / Mage (SoD) Remove Greater Curse
+- Keys UI: Macro buttons update according to macro changes after editing / deleting
+- Classic / Wrath : dispels added
+  / Druid Cure & Abolish Poison / Priest Abolish Disease
+  / Paladin Purify / Warlock (Wotlk Felhunter) Devour Magic
+  / Mage (SoD) Remove Greater Curse
 
 v10.2.603
- - Keys UI: Items are fixed, and item count is displayed (grayed if none).
- - Keys UI: Macro name displayed.
- - Sound selection UI: highlight for selected sound.
- - Classic : Unavailable sounds in red.
+- Keys UI: Items are fixed, and item count is displayed (grayed if none).
+- Keys UI: Macro name displayed.
+- Sound selection UI: highlight for selected sound.
+- Classic : Unavailable sounds in red.
 
 v10.2.602
 - Wow Classic & Wrath !
@@ -73,27 +78,27 @@ v10.1.001
 - Wow DF 10.1.0
 
 v10.0.701
- - Wow DF 10.0.7
- 
- v10.0.207
- - Fixed Pet buttons
+- Wow DF 10.0.7
+
+v10.0.207
+- Fixed Pet buttons
 
 v10.0.206
- - Wow DF 10.0.5
+- Wow DF 10.0.5
 
 v10.0.205
- - Sound uses master channel instead of SFX (is played even if SFX are off).
- - Initial chat notification is now optional.
+- Sound uses master channel instead of SFX (is played even if SFX are off).
+- Initial chat notification is now optional.
 
 v10.0.204
- - Fix UI visibility (mana / hp bars)
+- Fix UI visibility (mana / hp bars)
 
 v10.0.203
- - Spellguard reworked (thanks to Semi#1287)
+- Spellguard reworked (thanks to Semi#1287)
 
 v10.0.202
- - Sounds are back
- - Minor Bugfixes
+- Sounds are back
+- Minor Bugfixes
 
 v10.0.201
 - Ready for DragonFlight prepatch phase 2, 10.0.2
