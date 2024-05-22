@@ -258,7 +258,8 @@
         "GetNumTalents",
         "InterfaceOptions_AddCategory",
         "Settings",
-        "GameMenuFrame"
+        "GameMenuFrame",
+        "SmartDebuffOF_Title"
     ],
     "Lua.diagnostics.disable": [
         "need-check-nil",

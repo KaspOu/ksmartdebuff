@@ -74,7 +74,7 @@ local tTicker = 0;
 local tDebuff = 0;
 local tSound = 0;
 
-SDB_cachePlayerClass = nil;
+local SDB_cachePlayerClass = nil;
 local sAggroList = nil;
 local iGroupSetup = -1;
 
@@ -87,8 +87,8 @@ local cSpells = { };
 local cSpellName = { };
 local cSpellList = nil;
 local cSpellDefault = { };
---- string Global: Cache name of spell used for range check
-SDB_cacheRangeCheckSpell = nil;
+--- Cache name of spell used for range check
+local SDB_cacheRangeCheckSpell = nil;
 --- table<number, string> Computed cached restricted list of talents id / name (format: {[spellID] = spellName, ..})
 local SDB_cacheConfigSpellNames = nil;
 --- table<number, boolean> Computed cached list of spec talents status (format: {[spellID] = true|false, ..})
@@ -218,7 +218,7 @@ local GYL = BCC(0.65, 0.65, 0.65);
 local SDB_ERROR_SOUND = 565853; -- BellTollHorde.ogg
 
 -- Global update: Sounds
-if SMARTDEBUFF_DISABLED_SOUNDS then
+if SMARTDEBUFF_DISABLED_SOUNDS ~= "" then
   for key=1, #SMARTDEBUFF_SOUNDS do
     if string.find(SMARTDEBUFF_DISABLED_SOUNDS, "\n"..SMARTDEBUFF_SOUNDS[key][1].."\n") then
       SMARTDEBUFF_SOUNDS[key][1] = RD..SMARTDEBUFF_SOUNDS[key][1].."|r"
@@ -1300,6 +1300,16 @@ function SDB_IsBaseSpellInRange(spellNameOrId, unit)
   end
 end
 
+local function CleanMem()
+  for _, class in ipairs(CLASS_SORT_ORDER) do
+    if (class ~= SDB_cachePlayerClass) then
+      SMARTDEBUFF_CLASS_DISPELS_LIST_ID[class] = nil;
+      SMARTDEBUFF_CLASS_SKILLS_LIST_ID[class] = nil;
+    end;
+  end;
+  
+end
+
 -- Init the SmartDebuff variables ---------------------------------------------------------------------------------------
 function SMARTDEBUFF_Options_Init()
   if (isInit or InCombatLockdown()) then return; end
@@ -1309,6 +1319,7 @@ function SMARTDEBUFF_Options_Init()
   local b = false;
   local s, t;
   _, SDB_cachePlayerClass = UnitClass("player");
+  CleanMem()
 
   -- Cache SpellID List for current spec
   SDB_cachePlayerTalentsList = SDB_GetTalentsList();
@@ -1324,14 +1335,8 @@ function SMARTDEBUFF_Options_Init()
 
   if (O.OrderClass == nil) then SMARTDEBUFF_SetDefaultClassOrder(); end
   for _, s in ipairs(cOrderClass) do
-    b = false;
-    for _, t in ipairs(O.OrderClass) do
-      if (s == t) then
-        b = true;
-      end
-    end
-    if (not b) then
-      table.insert(O.OrderClass, s);
+    if not tContains(O.OrderClass, s) then
+      table.insert(O.OrderClass, s)
     end
   end
 
@@ -1522,7 +1527,7 @@ function SMARTDEBUFF_Options_Init()
   cRaidicons[11] = "Interface\\RAIDFRAME\\ReadyCheck-Waiting";
 
   if (O.ChatNotif) then
-    SMARTDEBUFF_AddMsg(SMARTDEBUFF_VERS_TITLE .. " " .. SMARTDEBUFF_MSG_LOADED, true);
+    SMARTDEBUFF_AddMsg(format("%s %s %s(%s)", SMARTDEBUFF_VERS_TITLE, SMARTDEBUFF_MSG_LOADED, YLD, SMARTDEBUFF_SPELLS_VERSION), true);
     SMARTDEBUFF_AddMsg("/sdb - " .. SMARTDEBUFF_MSG_SDB, true);
   end
   isInit = true;
@@ -3879,6 +3884,7 @@ function SMARTDEBUFF_OFOnShow()
   SMARTDEBUFF_HideAllButThis();
   SMARTDEBUFF_CheckAutoHide();
   SMARTDEBUFF_CheckAnchorPos();
+  SmartDebuffOF_Title:SetText(format("%s %s- %s", SMARTDEBUFF_OPTIONS_TITLE, YLD, SMARTDEBUFF_SPELLS_VERSION));
   if O.Debug then
     ShowF(SmartDebuffOF_btnReload);
   end

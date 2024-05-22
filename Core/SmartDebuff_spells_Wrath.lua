@@ -24,6 +24,8 @@ Format: [pickupType] = { [pickupID] = {overridenPickupType, overridenPickupID },
 ]]--
 --@end-do-not-package@
 
+SMARTDEBUFF_SPELLS_VERSION = "WotLK";
+
 -- Debuff spell IDs (for L button)
 SMARTDEBUFF_CLASS_DISPELS_LIST_ID = {
   ["DRUID"]  = {

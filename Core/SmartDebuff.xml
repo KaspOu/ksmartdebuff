@@ -339,7 +339,7 @@
       <!-- GameFontHighlightSmall, GameFontNormalSmall -->
       <EditBox name="$parent_Title" letters="200" multiLine="true" autoFocus="false">
         <Size>
-          <AbsDimension x="200" y="20"/>
+          <AbsDimension x="300" y="20"/>
         </Size>
         <Anchors>
           <Anchor point="TOPLEFT">
@@ -352,7 +352,7 @@
         <Scripts>
           <OnLoad>
             self:SetAutoFocus(false);
-            self:SetText(SMARTDEBUFF_OPTIONS_TITLE);
+            self:SetText(format("%s - %s", SMARTDEBUFF_OPTIONS_TITLE, SMARTDEBUFF_SPELLS_VERSION)); -- overriden in lua
             self:EnableMouse(false);
             self:EnableKeyboard(false);
           </OnLoad>

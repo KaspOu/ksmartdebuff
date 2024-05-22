@@ -42,6 +42,7 @@ Vérifier :
 ]]--
 --@end-do-not-package@
 
+SMARTDEBUFF_SPELLS_VERSION = "Dragonflight";
 
 -- Debuff spell IDs (for L button)
 SMARTDEBUFF_CLASS_DISPELS_LIST_ID = {
