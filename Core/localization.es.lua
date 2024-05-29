@@ -31,7 +31,7 @@ SMARTDEBUFF_CLASSES = { ["HPET"] = "Mascota de cazador", ["WPET"] = "Mascota de 
 for _, class in ipairs(CLASS_SORT_ORDER) do SMARTDEBUFF_CLASSES[class] = LOCALIZED_CLASS_NAMES_MALE[class] end;
 
 -- Bindings
-BINDING_NAME_SMARTDEBUFF_BIND_OPTIONS = "Marco de opciones";
+BINDING_NAME_SMARTDEBUFF =  SMARTDEBUFF_TITLE.." Opciones";
 
 SMARTDEBUFF_KEYS = {["L"]  = "Left",
                     ["R"]  = "Right",

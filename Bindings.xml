@@ -1,5 +1,5 @@
 <Bindings>
-  <Binding name="SMARTDEBUFF">
+  <Binding name="SMARTDEBUFF" header="SMARTDEBUFF" category="ADDONS">
     SMARTDEBUFF_ToggleOF();
   </Binding>
 </Bindings>

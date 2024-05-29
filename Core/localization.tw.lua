@@ -18,7 +18,7 @@ SMARTDEBUFF_CLASSES = { ["HPET"] = "獵人寵物", ["WPET"] = "法師寵物", ["
 for _, class in ipairs(CLASS_SORT_ORDER) do SMARTDEBUFF_CLASSES[class] = LOCALIZED_CLASS_NAMES_MALE[class] end;
 
 -- Bindings
-BINDING_NAME_SMARTDEBUFF_BIND_OPTIONS = "選項";
+BINDING_NAME_SMARTDEBUFF =  SMARTDEBUFF_TITLE.." 選項";
 
 SMARTDEBUFF_KEYS = {["L"]  = "左",
                     ["R"]  = "右",
