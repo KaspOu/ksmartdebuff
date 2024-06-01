@@ -147,3 +147,5 @@ Simon Tick\
 War Drums\
 Wham\
 ";
+
+SMARTDEBUFF_SOUNDS_DEFAULT = 566027; -- Bell Tribal

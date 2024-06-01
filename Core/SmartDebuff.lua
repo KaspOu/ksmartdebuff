@@ -941,6 +941,8 @@ end
 
 --@do-not-package@
 --[[
+  https://github.com/Gethe/wow-ui-source/blob/beta/Interface/AddOns/Blizzard_Deprecated/Deprecated_11_0_0.lua
+
 -- Search Spell in spellbook : returns spellId, bookIndex, book
 --- @param spellNameOrID string|number
 --- @param rank string
@@ -1310,6 +1312,13 @@ local function CleanMem()
   
 end
 
+local function ReplaceDeprecatedOptions(options)
+  if options then
+    if options.Sound and options.Sound < 50 then
+      options.Sound = SMARTDEBUFF_SOUNDS[options.Sound][2]
+    end
+  end
+end
 -- Init the SmartDebuff variables ---------------------------------------------------------------------------------------
 function SMARTDEBUFF_Options_Init()
   if (isInit or InCombatLockdown()) then return; end
@@ -1327,6 +1336,7 @@ function SMARTDEBUFF_Options_Init()
   SMARTDEBUFF_SetSpells();
 
   if (not SMARTDEBUFF_Options) then SMARTDEBUFF_Options = { }; end
+  ReplaceDeprecatedOptions(SMARTDEBUFF_Options)
   O = SMARTDEBUFF_Options;
   if (O.SFPosX == nil) then O.SFPosX = 400; end
   if (O.SFPosY == nil) then O.SFPosY = -300; end
@@ -1548,7 +1558,8 @@ function SMARTDEBUFF_Options_Init()
     SMARTDEBUFF_AddMsg(SMARTDEBUFF_UPGRADED);
   end
 
-  if (SMARTDEBUFF_OptionsGlobal == nil) then SMARTDEBUFF_OptionsGlobal = { }; end
+  if (SMARTDEBUFF_OptionsGlobal == nil) then SMARTDEBUFF_OptionsGlobal = { }; end  
+  ReplaceDeprecatedOptions(SMARTDEBUFF_OptionsGlobal)
   OG = SMARTDEBUFF_OptionsGlobal;
   if (OG.FirstStart == nil) then OG.FirstStart = "V0";  end
   if (OG.FirstStart ~= SMARTDEBUFF_VERSION) then
@@ -3846,7 +3857,7 @@ end
 
 function SMARTDEBUFF_PlaySound()
   if (O.UseSound and not isSoundPlayed) then
-    PlaySoundFile(SMARTDEBUFF_SOUNDS[O.Sound][2], "master");
+    PlaySoundFile(O.Sound, "master");
     isSoundPlayed = true;
     --SMARTDEBUFF_AddMsgD("Play sound");
   end
@@ -4407,13 +4418,16 @@ function SMARTDEBUFF_SoundsOnScroll(self, arg1)
 
   local t = { };
   for i, v in ipairs(SMARTDEBUFF_SOUNDS) do
-    if (v and v[1]) then
-      local soundName = (i == O.Sound) and (GR.."> "..v[1].." <") or v[1];
+    if (v and #v > 1) then
+      local soundName = v[1];
+      if (v[2] == O.Sound) then
+        soundName = GR.."> "..v[1].." <"
+        SmartDebuffSounds_txtIn:SetText(GR..v[1]);
+      end
       table.insert(t, soundName);
     end
   end
   OnScroll(self, t, name);
-  SmartDebuffSounds_txtIn:SetText(GR..SMARTDEBUFF_SOUNDS[O.Sound][1]);
 end
 
 function SMARTDEBUFF_SoundsOnShow(self)
@@ -4435,7 +4449,7 @@ end
 function SmartDebuff_SoundsBtnOnClick(self, button)
   local n = self:GetID() + FauxScrollFrame_GetOffset(self:GetParent());
   if (button == "LeftButton") then
-    O.Sound = n;
+    O.Sound = SMARTDEBUFF_SOUNDS[n][2];
     -- SmartDebuffSounds_txtIn:SetText(SMARTDEBUFF_SOUNDS[n][1]);
     SMARTDEBUFF_SoundsOnScroll(); -- set selection and highlight
   end

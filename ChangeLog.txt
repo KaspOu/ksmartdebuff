@@ -1,5 +1,9 @@
+v10.2.706
+- SoundID is stored (more sounds to come)
+
 v10.2.705
 - Displays Spells file version
+- Bindings Localized
 
 v10.2.704
 - Classic: Priest fallback on FlashHeal
