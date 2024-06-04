@@ -6,3 +6,5 @@ license-output: License.txt
 
 ignore:
     - .vscode
+    - .release*
+    - .git*
