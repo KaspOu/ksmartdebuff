@@ -1,3 +1,7 @@
+v10.2.704
+- Classic: Priest fallback on FlashHeal
+- Unmovable spells: gradient display / Error sound
+
 v10.2.703
 - Binding display fixed
 - Code cleaning
