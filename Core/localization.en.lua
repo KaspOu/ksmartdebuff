@@ -5,11 +5,8 @@
 SMARTDEBUFF_UPGRADED = "SmartDebuff upgraded to "..SMARTDEBUFF_VERSION;
 -- Whats new info
 SMARTDEBUFF_WHATSNEW = "|cffffffffWhats new:|r\n\n"
-  .."- |cffff1111Wow Classic|r, |cff87CEEBWrath|r & |cffc16600Cata|r versions\n\n\n"
-  .."- Cataclysm : dispels tested\n\n"
-  .."  > Priest: Alt Middle & Alt Right buttons added (Power word shield / Leap of Faith)\n\n"
-  .."  > Warlock Soulstone fixed (uses item)\n\n"
-  .."- Key UI: Macro buttons update according to macro changes after editing / deleting\n\n"
+  .."- Spells list version displayed\n\n"
+  .."- |cffff1111Wow Classic|r, |cff87CEEBWrath|r & |cffc16600Cata|r versions\n"
   ;
 
 --@do-not-package@
