@@ -7,11 +7,8 @@ if (GetLocale() == "frFR") then
 SMARTDEBUFF_UPGRADED = "SmartDebuff mis \195\160 jour : "..SMARTDEBUFF_VERSION;
 
 SMARTDEBUFF_WHATSNEW = "|cffffffffNouveaut\195\169s :|r\n\n"
-  .."- Versions |cffff1111Wow Classic|r, |cff87CEEBWrath|r & |cffc16600Cataclysm|r !\n\n\n"
-  .."- Cataclsym : dispels et sorts test\195\169s\n\n"
-  .."  > Pr\195\170tre : Ajout de Alt Milieu & Alt Droit (Mot de pouvoir bouclier / Saut de foi)\n\n"
-  .."  > D\195\169moniste : Pierre d'\195\162me corrig\195\169e (utilise l'objet)\n\n"
-  .."- Touches : D\195\169tecte toutes les \195\169ditions/effacements de Macros\n\n"
+  .."- Affichage de la liste de sorts utilis\195\169e\n\n"
+  .."- Versions |cffff1111Wow Classic|r, |cff87CEEBWrath|r & |cffc16600Cataclysm|r !\n\n"
   ;
 
 --@do-not-package@
