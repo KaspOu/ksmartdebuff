@@ -2397,7 +2397,7 @@
         </Scripts>
       </CheckButton>
 
-      <CheckButton name="$parent_cbStopCast" inherits="InterfaceOptionsCheckButtonTemplate" hidden="false">
+      <CheckButton name="$parent_cbIgnoreDebuff" inherits="InterfaceOptionsCheckButtonTemplate" hidden="false">
         <HitRectInsets>
           <AbsInset left="0" right="0" top="0" bottom="0"/>
         </HitRectInsets>
@@ -2413,21 +2413,20 @@
         </Anchors>
         <Scripts>
           <OnLoad>
-            _G[self:GetName().."Text"]:SetText(SMARTDEBUFF_OFT_STOPCAST);
+            _G[self:GetName().."Text"]:SetText(SMARTDEBUFF_OFT_IGNOREDEBUFF);
           </OnLoad>
           <OnShow>
             if (SMARTDEBUFF_Options) then
-              self:SetChecked(SMARTDEBUFF_Options.StopCast);
+              self:SetChecked(SMARTDEBUFF_Options.IgnoreDebuff);
             end
           </OnShow>
           <OnClick>
             if (SMARTDEBUFF_Options) then
-              SMARTDEBUFF_Options.StopCast = not SMARTDEBUFF_Options.StopCast;
-              SMARTDEBUFF_SetButtons();
+              SMARTDEBUFF_Options.IgnoreDebuff = not SMARTDEBUFF_Options.IgnoreDebuff;
             end
           </OnClick>
           <OnEnter>
-            SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_STOPCAST, SMARTDEBUFF_TT_STOPCAST);
+            SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_IGNOREDEBUFF, SMARTDEBUFF_TT_IGNOREDEBUFF);
           </OnEnter>
           <OnLeave>
             GameTooltip:Hide();
@@ -2472,7 +2471,7 @@
         </Scripts>
       </CheckButton>
 
-      <CheckButton name="$parent_cbIgnoreDebuff" inherits="InterfaceOptionsCheckButtonTemplate" hidden="false">
+      <CheckButton name="$parent_cbStopCast" inherits="InterfaceOptionsCheckButtonTemplate" hidden="false">
         <HitRectInsets>
           <AbsInset left="0" right="0" top="0" bottom="0"/>
         </HitRectInsets>
@@ -2488,20 +2487,27 @@
         </Anchors>
         <Scripts>
           <OnLoad>
-            _G[self:GetName().."Text"]:SetText(SMARTDEBUFF_OFT_IGNOREDEBUFF);
+            _G[self:GetName().."Text"]:SetText(SMARTDEBUFF_OFT_STOPCAST);
           </OnLoad>
           <OnShow>
+            if (not SMARTDEBUFF_MACROTEXT) then
+              self:Disable()
+              self:SetAlpha(.5)
+              _G[self:GetName().."Text"]:SetVertexColor(1, 0, 0);
+              return
+            end
             if (SMARTDEBUFF_Options) then
-              self:SetChecked(SMARTDEBUFF_Options.IgnoreDebuff);
+              self:SetChecked(SMARTDEBUFF_Options.StopCast);
             end
           </OnShow>
           <OnClick>
             if (SMARTDEBUFF_Options) then
-              SMARTDEBUFF_Options.IgnoreDebuff = not SMARTDEBUFF_Options.IgnoreDebuff;
+              SMARTDEBUFF_Options.StopCast = not SMARTDEBUFF_Options.StopCast;
+              SMARTDEBUFF_SetButtons();
             end
           </OnClick>
           <OnEnter>
-            SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_IGNOREDEBUFF, SMARTDEBUFF_TT_IGNOREDEBUFF);
+            SMARTDEBUFF_SetGameTooltip(self, SMARTDEBUFF_OFT_STOPCAST, SMARTDEBUFF_TT_STOPCAST);
           </OnEnter>
           <OnLeave>
             GameTooltip:Hide();
@@ -3692,7 +3698,7 @@
             self:SetNormalFontObject("GameFontHighlight");
             self:SetHighlightFontObject("GameFontHighlight");
             self.texture = self:CreateTexture(nil, "BORDER");
-            self.texture:SetTexture(0.39, 0.42, 0.64, 1.0);
+            self.texture:SetColorTexture(0.39, 0.42, 0.64, 1.0);
             self.texture:SetAllPoints(self);
             self.texture:SetBlendMode("BLEND");
             self.texture:SetAllPoints(self);
@@ -3753,7 +3759,7 @@
             self:SetNormalFontObject("GameFontHighlight");
             self:SetHighlightFontObject("GameFontHighlight");
             self.texture = self:CreateTexture(nil, "BORDER");
-            self.texture:SetTexture(0.39, 0.42, 0.64, 1.0);
+            self.texture:SetColorTexture(0.39, 0.42, 0.64, 1.0);
             self.texture:SetAllPoints(self);
             self.texture:SetBlendMode("BLEND");
             self.texture:SetAllPoints(self);
@@ -3814,7 +3820,7 @@
             self:SetNormalFontObject("GameFontHighlight");
             self:SetHighlightFontObject("GameFontHighlight");
             self.texture = self:CreateTexture(nil, "BORDER");
-            self.texture:SetTexture(0.39, 0.42, 0.64, 1.0);
+            self.texture:SetColorTexture(0.39, 0.42, 0.64, 1.0);
             self.texture:SetAllPoints(self);
             self.texture:SetBlendMode("BLEND");
             self.texture:SetAllPoints(self);
@@ -3875,7 +3881,7 @@
             self:SetNormalFontObject("GameFontHighlight");
             self:SetHighlightFontObject("GameFontHighlight");
             self.texture = self:CreateTexture(nil, "BORDER");
-            self.texture:SetTexture(0.39, 0.42, 0.64, 1.0);
+            self.texture:SetColorTexture(0.39, 0.42, 0.64, 1.0);
             self.texture:SetAllPoints(self);
             self.texture:SetBlendMode("BLEND");
             self.texture:SetAllPoints(self);
@@ -3936,7 +3942,7 @@
             self:SetNormalFontObject("GameFontHighlight");
             self:SetHighlightFontObject("GameFontHighlight");
             self.texture = self:CreateTexture(nil, "BORDER");
-            self.texture:SetTexture(0.39, 0.42, 0.64, 1.0);
+            self.texture:SetColorTexture(0.39, 0.42, 0.64, 1.0);
             self.texture:SetAllPoints(self);
             self.texture:SetBlendMode("BLEND");
             self.texture:SetAllPoints(self);
@@ -4075,7 +4081,7 @@
             self:SetNormalFontObject("GameFontHighlight");
             self:SetHighlightFontObject("GameFontHighlight");
             self.texture = self:CreateTexture(nil, "BORDER");
-            self.texture:SetTexture(0.39, 0.42, 0.64, 1.0);
+            self.texture:SetColorTexture(0.39, 0.42, 0.64, 1.0);
             self.texture:SetAllPoints(self);
             self.texture:SetBlendMode("BLEND");
             self.texture:SetAllPoints(self);

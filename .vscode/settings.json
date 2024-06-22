@@ -259,7 +259,8 @@
         "InterfaceOptions_AddCategory",
         "Settings",
         "GameMenuFrame",
-        "SmartDebuffOF_Title"
+        "SmartDebuffOF_Title",
+        "UnitPopupManager"
     ],
     "Lua.diagnostics.disable": [
         "need-check-nil",

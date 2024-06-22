@@ -8,11 +8,13 @@
 --@do-not-package@
 --[[
 https://wowpedia.fandom.com/wiki/World_of_Warcraft_API
+https://github.com/Gethe/wow-ui-source/blob/beta/Interface/AddOns/Blizzard_Deprecated/11_0_0_SpellBookAPITransitionGuide.lua
+PickupSpellBookItem(aIdOld, aLinkOld, BOOKTYPE_PET); > C_SpellBook.PickupSpellBookItem(index, spellBank)
 
 Sort actif pour le joueur ou le pet :
   not not FindSpellBookSlotBySpellID(spellID)
-  not not GetSpellInfo(spellName)  > uniqt avec le nom (sinon renvoie l'info de toute façon)
-  >> not not GetSpellInfo(GetSpellInfo(spellID))
+  not not ns.GetSpellInfo(spellName)  > uniqt avec le nom (sinon renvoie l'info de toute façon)
+  >> not not ns.GetSpellInfo(GetSpellInfo(spellID))
 
 Sort actif uniquement pour le joueur :
   IsPlayerSpell(spellID)
@@ -42,6 +44,7 @@ ou   DoesSpellExist(spellID)    :  pour tous les sorts du jeu
 
 ]]--
 --@end-do-not-package@
+local _, ns = ...
 
 local OG = nil;
 local O = nil;
@@ -126,6 +129,8 @@ local imgMenu       = nil;
 local imgMissing    = nil;
 
 local DebugChatFrame = DEFAULT_CHAT_FRAME;
+local PET_BOOK = "pet";
+
 
 local Icons = {
   ["DRUID"]       = "Interface\\AddOns\\SmartDebuff\\Icons\\Druid",
@@ -270,9 +275,9 @@ end
 -- Get spell cooldown
 local function GetSpellCD(spell)
   if (not spell) then return -1 end
-  local start, duration, enabled = GetSpellCooldown(spell);
-  if (start and start > 0 and duration > 1.5 and enabled > 0) then
-    return (start + duration) - GetTime();
+  local scd = ns.GetSpellCooldown(spell);
+  if (scd and scd.start and scd.start > 0 and scd.duration > 1.5 and scd.enabled > 0) then
+    return (scd.start + scd.duration) - GetTime();
   end
   return -1;
 end
@@ -313,11 +318,11 @@ local function GetActionKeyInfo(mode, i, extractDataOnly)
         SMARTDEBUFF_AddMsgD("ActionKeyInfo"..i.." "..aType.." = "..ChkS(aId)..",  Name = "..ChkS(aName) ); -- ..", Link = "..ChkS(aLink));
 
         if (aType == "spell" or aType == "petaction") then
-          -- local aId = select(7, GetSpellInfo(aName)) or aId; -- peut etre nécessaire un jour où ils auront des sorts et talents nommés à l'identique
+          -- local aId = select(7, ns.GetSpellInfo(aName)) or aId; -- peut etre nécessaire un jour où ils auront des sorts et talents nommés à l'identique
           -- O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][4] = aId;
           -- SMARTDEBUFF_AddMsgD("ActionKeyInfo spell = "..ChkS(aId)..",  Name = "..ChkS(aName)..", Type = "..ChkS(aType)..", Link = "..ChkS(aLink));
           if (not aLink) then
-            O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][5] = GetSpellLink(aName);
+            O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][5] = ns.GetSpellLink(aId);
           end
         elseif (aType == "item") then
           -- Item, refresh missing link (once cached)
@@ -343,7 +348,7 @@ local function GetActionKeyInfo(mode, i, extractDataOnly)
           -- O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][4] = aId;
           -- SMARTDEBUFF_AddMsgD("ActionKeyInfo action = "..ChkS(aId)..", Name = "..ChkS(aName)..", Link = "..ChkS(aLink));
           -- if (not aLink) then
-          --   O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][5] = GetSpellLink(aName);
+          --   O.Keys[mode][SMARTDEBUFF_ORDER_KEYS[i]][5] = ns.GetSpellLink(aId);
           -- end
         end
       else
@@ -713,10 +718,10 @@ function SMARTDEBUFF_SetUnits()
       if (name or (iTest > 0 and n <= iTest)) then
 
         if (iTest > 0) then
-          SMARTDEBUFF_AddUnit("raid", n, math.ceil(n / 5), cOrderClass[math.fmod(n - 1, #cOrderClass) + 1]);
-        else
-          SMARTDEBUFF_AddUnit("raid", n, subgroup, classeng);
+          subgroup = math.ceil(n / 5)
+          classeng = cOrderClass[math.fmod(n - 1, #cOrderClass) + 1];
         end
+        SMARTDEBUFF_AddUnit("raid", n, subgroup, classeng);
 
         --SmartBuff_AddToUnitList(1, sRUnit, subgroup);
         --SmartBuff_AddToUnitList(2, sRUnit, subgroup);
@@ -907,7 +912,7 @@ function SMARTDEBUFF_IsFeignDeath(unit)
   ifd_i = 0;
   while (true) do
     ifd_i = ifd_i + 1;
-    ifd_name, ifd_icon = UnitBuff(unit, ifd_i);
+    ifd_name, ifd_icon = ns.UnitBuff(unit, ifd_i);
     -- SMARTDEBUFF_AddMsgD("Check for FeignDeath Icon");
     if (ifd_icon) then
       if (ifd_icon == 132293) then
@@ -921,28 +926,10 @@ function SMARTDEBUFF_IsFeignDeath(unit)
 end
 -- END SMARTDEBUFF_IsFeignDeath
 
-function SDB_GetSpellInfo(spellnameOrId)
-  if (C_SpellBook.GetSpellInfo and type(spellnameOrId) == "number") then
-    return C_SpellBook.GetSpellInfo(spellnameOrId)
-  else
-    local spellName, _, iconID, _, _, _, spellID = GetSpellInfo(spellnameOrId);
-    if (spellName) then
-      return {
-            name = spellName,
-            spellID = spellID,
-            iconID = iconID,
-          };
-    else
-      return nil;
-    end
-  end
-end
 
 
 --@do-not-package@
 --[[
-  https://github.com/Gethe/wow-ui-source/blob/beta/Interface/AddOns/Blizzard_Deprecated/Deprecated_11_0_0.lua
-
 -- Search Spell in spellbook : returns spellId, bookIndex, book
 --- @param spellNameOrID string|number
 --- @param rank string
@@ -957,7 +944,7 @@ function SDB_FindSpellInBook(spellNameOrID, rank, book)
       id, index, book = spellNameOrID, FindSpellBookSlotBySpellID(spellNameOrID, true), book;
     end
     return id, index, book;
-    -- spellNameOrID = SDB_GetSpellInfo(spellNameOrID).name;
+    -- spellNameOrID = ns.GetSpellInfo(spellNameOrID).name;
   end
   if (not spellNameOrID) then
     return nil;
@@ -1019,9 +1006,9 @@ end
 --- @param book string
 --- @return boolean|nil isPassiveSpell true if spell is passive, or false, nil if not found
 function SDB_IsPassiveSpell(spellID, book)
-  if (C_SpellBook.GetSpellInfo) then
-    -- IsPassiveSpell takes spellID, Since DragonFlight (10)
-    return IsPassiveSpell(spellID)
+  if C_Spell and C_Spell.IsSpellPassive then
+    -- C_Spell.IsSpellPassive, Since DragonFlight (10)
+    return C_Spell.IsSpellPassive(spellID)
   else
     -- Classic (was using bookIndex)
     return IsPassiveSpell(FindSpellBookSlotBySpellID(spellID, book == BOOKTYPE_PET), book);
@@ -1050,11 +1037,11 @@ function SMARTDEBUFF_SetSpells()
       SMARTDEBUFF_AddMsgD("Checking for class dispels...");
       -- 1. Check for useable dispel, and enhancement
       for _, val in ipairs(SMARTDEBUFF_CLASS_DISPELS_LIST_ID[SDB_cachePlayerClass]) do
-        sSpellInfo = SDB_GetSpellInfo(val.Spell_ID);
+        sSpellInfo = ns.GetSpellInfo(val.Spell_ID);
         if (sSpellInfo) then
           -- Cache range detection dispel if possible (use base spell to ensure detection)
-          if not SDB_cacheRangeCheckSpell and SDB_IsBaseSpellInRange(sSpellInfo.name, "player") == 1 then
-            SDB_cacheRangeCheckSpell = SDB_GetBaseSpellInfo(sSpellInfo.spellID);
+          if not SDB_cacheRangeCheckSpell and SDB_IsBaseSpellInRange(sSpellInfo.name, "player") then
+            SDB_cacheRangeCheckSpell = SDB_GetBaseSpellName(sSpellInfo.spellID);
             SMARTDEBUFF_AddMsgD("Range detection will use: "..SDB_cacheRangeCheckSpell);
           end
 
@@ -1076,7 +1063,7 @@ function SMARTDEBUFF_SetSpells()
         -- 2a. select first (inactive) talent for current spec
         for _, val in ipairs(SMARTDEBUFF_CLASS_DISPELS_LIST_ID[SDB_cachePlayerClass]) do
           if SDB_IsSpellTalentExists(val.Spell_ID) then
-            sSpellInfo = SDB_GetSpellInfo(val.Spell_ID);
+            sSpellInfo = ns.GetSpellInfo(val.Spell_ID);
             sName = sSpellInfo.name;
             cSpellDefault["L"] = {_, val.Spell_Type or "spell", sSpellInfo.name, sSpellInfo.spellID};
             cSpellList[sSpellInfo.name] = {};
@@ -1093,7 +1080,7 @@ function SMARTDEBUFF_SetSpells()
               break;
             end
           end
-          sSpellInfo = SDB_GetSpellInfo(val.Spell_ID);
+          sSpellInfo = ns.GetSpellInfo(val.Spell_ID);
           if (sSpellInfo) then
             cSpellDefault["L"] = {_, val.Spell_Type or "spell", sSpellInfo.name, sSpellInfo.spellID};
             cSpellList[sSpellInfo.name] = {};
@@ -1108,7 +1095,7 @@ function SMARTDEBUFF_SetSpells()
   if (SDB_cachePlayerClass and SMARTDEBUFF_CLASS_SKILLS_LIST_ID[SDB_cachePlayerClass]) then
     SMARTDEBUFF_AddMsgD("Checking for other class spells...");
     for _, val in ipairs(SMARTDEBUFF_CLASS_SKILLS_LIST_ID[SDB_cachePlayerClass]) do
-      sSpellInfo = SDB_GetSpellInfo(val.Spell_ID);
+      sSpellInfo = ns.GetSpellInfo(val.Spell_ID);
 
       if (sSpellInfo) then
         local hasSpell = not not FindSpellBookSlotBySpellID(val.Spell_ID);
@@ -1119,8 +1106,8 @@ function SMARTDEBUFF_SetSpells()
         end
 
         -- Cache range detection spell if not already done
-        if not SDB_cacheRangeCheckSpell and SDB_IsBaseSpellInRange(sSpellInfo.name, "player") == 1 then
-          SDB_cacheRangeCheckSpell = SDB_GetBaseSpellInfo(sSpellInfo.spellID);
+        if not SDB_cacheRangeCheckSpell and SDB_IsBaseSpellInRange(sSpellInfo.name, "player") then
+          SDB_cacheRangeCheckSpell = SDB_GetBaseSpellName(sSpellInfo.spellID);
           SMARTDEBUFF_AddMsgD("Range detection fallback: "..SDB_cacheRangeCheckSpell);
         end
       elseif (val.Spell_Type == "item") then
@@ -1160,17 +1147,17 @@ function SDB_GetConfigSpellNames()
   SMARTDEBUFF_AddMsgD("Caching talents/spells id/name filter...");
   if (SMARTDEBUFF_CLASS_DISPELS_LIST_ID[SDB_cachePlayerClass]) then
     for _, val in ipairs(SMARTDEBUFF_CLASS_DISPELS_LIST_ID[SDB_cachePlayerClass]) do
-      list[val.Spell_ID] = GetSpellInfo(val.Spell_ID);
+      list[val.Spell_ID] = ns.GetSpellName(val.Spell_ID);
       SMARTDEBUFF_AddMsgD(" - Spell added to filter: "..val.Spell_ID.. ": "..list[val.Spell_ID]);
       if (val.Improved_Talent ~= nil) then
-        list[val.Improved_Talent] = GetSpellInfo(val.Improved_Talent);
+        list[val.Improved_Talent] = ns.GetSpellName(val.Improved_Talent);
         SMARTDEBUFF_AddMsgD(" - Talent added to filter: "..val.Improved_Talent.. ": "..list[val.Improved_Talent]);
       end
     end
   end
   if (SMARTDEBUFF_CLASS_SKILLS_LIST_ID[SDB_cachePlayerClass]) then
     for _, val in ipairs(SMARTDEBUFF_CLASS_SKILLS_LIST_ID[SDB_cachePlayerClass]) do
-      list[val.Spell_ID] = GetSpellInfo(val.Spell_ID);
+      list[val.Spell_ID] = ns.GetSpellName(val.Spell_ID);
       SMARTDEBUFF_AddMsgD(" - Spell added to filter: "..val.Spell_ID.. ": "..ChkS(list[val.Spell_ID]));
     end
   end
@@ -1269,37 +1256,29 @@ function SDB_GetTalentsList()
   return list
 end
 
---- GetSpellInfo of spell or baseSpell if found
---- @param spellNameOrId number|string Id or name of the spell to check
---- @return string? name 
---- @return string? rank 
---- @return number? icon
---- @return number? castTime
---- @return number? minRange 
---- @return number? maxRange 
---- @return number? spellID 
---- @return number? originalIcon 
-function SDB_GetBaseSpellInfo(spellNameOrId)
-  local spellId = type(spellNameOrId) == "number" and spellNameOrId or select(7,GetSpellInfo(spellNameOrId));
+function SDB_GetBaseSpellID(spellNameOrId)
+  local spellId = tonumber(spellNameOrId)
   if not spellId then
-    return nil
-  end;
-  local baseSpellId = FindBaseSpellByID(spellId);
-  return GetSpellInfo(baseSpellId);
+    local spellInfo = ns.GetSpellInfo(spellNameOrId)
+    if not spellInfo then
+      return nil
+    end
+    spellId = spellInfo.spellID
+  end
+  return FindBaseSpellByID(spellId), spellId;
+end
+--- GetSpellName of spell or baseSpellName if found
+--- @param spellNameOrId number|string Id or name of the spell to check
+--- @return string? name
+function SDB_GetBaseSpellName(spellNameOrId)
+  local baseSpellId = SDB_GetBaseSpellID(spellNameOrId) or -1
+  return ns.GetSpellName(baseSpellId);
 end
 
 --- @return boolean|nil isBaseSpellInRange returns if base spell in range, or nil if no spell found
 function SDB_IsBaseSpellInRange(spellNameOrId, unit)
-  local spellName, _, _, _, _, _, spellId = GetSpellInfo(spellNameOrId);
-  if not spellId then
-    return nil
-  end;
-  local baseSpellId = FindBaseSpellByID(spellId);
-  if (spellId == baseSpellId) then
-    return IsSpellInRange(spellName, unit);
-  else
-    return IsSpellInRange(GetSpellInfo(baseSpellId), unit);
-  end
+  local baseSpellId = SDB_GetBaseSpellID(spellNameOrId) or -1
+  return ns.IsSpellInRange(baseSpellId, unit);
 end
 
 local function CleanMem()
@@ -1490,7 +1469,7 @@ function SMARTDEBUFF_Options_Init()
   -- Get localized spellnames from id list
   for key, val in ipairs(SMARTDEBUFF_DEBUFFSKIP_ID) do
     if (val and type(val) == "number") then
-      sspellinfo = SDB_GetSpellInfo(val);
+      sspellinfo = ns.GetSpellInfo(val);
       if (sspellinfo) then
         SMARTDEBUFF_DEBUFFSKIP_NAME[key] = sspellinfo.name;
         --SMARTDEBUFF_AddMsgD("Debuff localized: "..key..". ".. sspellinfo.name);
@@ -1591,7 +1570,7 @@ function SMARTDEBUFF_SetDefaultNotRemovableDebuffs()
   local spellinfo;
   for _, v in ipairs(SMARTDEBUFF_NOTREMOVABLE_ID) do
     if (v) then
-      spellinfo = SDB_GetSpellInfo(v);
+      spellinfo = ns.GetSpellInfo(v);
       if (spellinfo) then
         table.insert(O.NotRemovableDebuffs, spellinfo.name);
       end
@@ -1775,7 +1754,7 @@ end
 --- Upgrades a debuff spell to the next better one and replaces it in all the key options
 function SMARTDEBUFF_UpgradeSpell(oldSpellName, oldSpellID, newSpellName, newSpellID)
   local v;
-  local newSpellLink = GetSpellLink(newSpellName)
+  local newSpellLink = ns.GetSpellLink(newSpellID)
   for mode = 1, 2, 1 do
     for _, k in ipairs(SMARTDEBUFF_ORDER_KEYS) do
       -- { spellType, spellName, spellRank, spellID, spellLink }
@@ -1924,15 +1903,10 @@ function SMARTDEBUFF_command(msgIn)
     SMARTDEBUFF_OptionsGlobal = nil;
     ReloadUI();
   elseif (msg == "tm") then
+    iTest = 0;
     if (msgs[2] ~= nil) then
-      iTest = tonumber(msgs[2]);
-      if (iTest == nil or iTest < 1) then
-        iTest = 0;
-      elseif (iTest > maxRaid) then
-        iTest = maxRaid;
-      end
-    else
-      iTest = 0;
+      iTest = tonumber(msgs[2]) or 0;
+      iTest = math.max(0, math.min(iTest, maxRaid))
     end
     SMARTDEBUFF_SetUnits();
     if (iTest > 0) then
@@ -2560,7 +2534,7 @@ function SMARTDEBUFF_SetButton(unit, idx, pet)
         btn:SetAttribute(pre.."type"..suf, v[1]);
         --SMARTDEBUFF_AddMsgD(idx.." set: "..pre.."type"..suf..":"..v[1]);
         if ((v[1] == "spell" or v[1] == "item") and v[2]) then
-          if (O.StopCast and (v[1] == "spell") and cSpellList[v[2]]) then
+          if (SMARTDEBUFF_MACROTEXT and O.StopCast and (v[1] == "spell") and cSpellList[v[2]]) then
             local s = format("/stopcasting\n/cast [@%s] %s", unit, v[2]);
             btn:SetAttribute(pre.."type"..suf, "macro");
             btn:SetAttribute(pre.."macrotext"..suf, s);
@@ -2659,7 +2633,11 @@ function SMARTDEBUFF_ButtonDropDown_Initialize(self)
 		name = RAID_TARGET_ICON;
 	end
 	if (menu) then
-		UnitPopup_ShowMenu(self, menu, unit, name, id);
+    if UnitPopupManager.OpenMenu then
+      UnitPopupManager:OpenMenu(menu, { unit= unit })
+    else
+      UnitPopup_ShowMenu(self, menu, unit, name, id);
+    end
 	end
 end
 
@@ -2737,7 +2715,7 @@ function SMARTDEBUFF_SetButtonState(unit, idx, nr, ir, ti, pet, spellcd)
 
   if (not sbs_iv and cSpellDefault["AL"] and cSpellDefault["AL"][3] ~= nil and O.ShowHealRange and not UnitIsDeadOrGhost(unit) and UnitIsConnected(unit)) then
 
-    if (SDB_IsBaseSpellInRange(cSpellDefault["AL"][3], unit) == 1) then
+    if (SDB_IsBaseSpellInRange(cSpellDefault["AL"][3], unit)) then
       sbs_btn:SetBackdropBorderColor(0, 0, 0, 0);
     else
       if (nr > 0) then
@@ -2981,6 +2959,10 @@ function SmartDebuff_SetButtonBars(btn, unit, unitclass)
     sbb_upt = UnitPowerType(unit);
     sbb_cur = UnitHealth(unit);
     sbb_nmax = UnitHealthMax(unit);
+    if (sbb_nmax == 0) then
+      sbb_cur = iTest
+      sbb_nmax = 25
+    end
     sbb_n = math.floor(sbb_w * (sbb_cur / sbb_nmax));
     if (O.ShowHPText) then
       sbb_col.r = 0; sbb_col.g = 0.9; sbb_col.b = 0;
@@ -3024,6 +3006,10 @@ function SmartDebuff_SetButtonBars(btn, unit, unitclass)
     -- sbb_nmax = UnitManaMax(unit);
     sbb_cur = UnitPower(unit,0);
     sbb_nmax = UnitPowerMax(unit,0);
+    if (sbb_nmax == 0) then
+      sbb_cur = iTest
+      sbb_nmax = 25
+    end
     sbb_n = math.floor(sbb_w * (sbb_cur / sbb_nmax));
     if (O.Invert) then sbb_n = sbb_w - sbb_n; end
     if (sbb_nmax == 1 or sbb_n < 1 or sbb_n > sbb_w or sbb_upt ~= 0 or sbb_dg or not O.ShowMana) then sbb_n = 0; end
@@ -3774,8 +3760,8 @@ function SMARTDEBUFF_CheckUnitDebuffs(spell, unit, idx, isActive, pet)
     if (spell == nil) then
       cud_ir = -1;
     elseif (
-      (SDB_cacheRangeCheckSpell and IsSpellInRange(SDB_cacheRangeCheckSpell, unit) == 1)
-      or SDB_IsBaseSpellInRange(spell, unit) == 1 -- type(spell) ~= "number" and IsSpellInRange
+      (SDB_cacheRangeCheckSpell and ns.IsSpellInRange(SDB_cacheRangeCheckSpell, unit) == 1)
+      or SDB_IsBaseSpellInRange(spell, unit)-- type(spell) ~= "number" and ns.IsSpellInRange
       or UnitInRange(unit)
     ) then
       cud_ir = 1;
@@ -3790,7 +3776,7 @@ function SMARTDEBUFF_CheckUnitDebuffs(spell, unit, idx, isActive, pet)
       --cud_name, _, cud_icon, _, cud_dtype, cud_dur, cud_tl, _ = UnitAura(unit, cud_n, "HARMFUL");
       -- BlizzardInterfaceCode\Interface\AddOns\Blizzard_NamePlates\Blizzard_NamePlates.lua:505
       -- local name, texture, count, debuffType, duration, expirationTime, caster, _, nameplateShowPersonal, spellId, _, _, _, nameplateShowAll = UnitAura(unit, i, filter);
-      cud_name, cud_icon, _, cud_dtype, cud_dur, cud_tl, _ = UnitAura(unit, cud_n, "HARMFUL");
+      cud_name, cud_icon, _, cud_dtype, cud_dur, cud_tl, _ = ns.UnitAura(unit, cud_n, "HARMFUL");
       if (not cud_icon) then
         break;
       end
@@ -3902,7 +3888,10 @@ function SMARTDEBUFF_OFOnShow()
 end
 
 function SMARTDEBUFF_OFOnHide()
-  iTest = 0;
+  if iTest ~= 0 then
+    iTest = 0;
+    SMARTDEBUFF_SetUnits();
+  end
   SMARTDEBUFF_LinkSpellsToKeys();
   SMARTDEBUFF_CheckAutoHide();
   HideF(SmartDebuffWNF);
@@ -4479,15 +4468,52 @@ end
 function SMARTDEBUFF_ColorsOnHide(self)
 end
 
-function SMARTDEBUFF_ColorsSetBackdrop()
+--[[
+! Color Widget New
+-- Removed OpacitySliderFrame, Since Dragonflight (10)
+]]
+local function SMARTDEBUFF_ColorsBackdrop_New(pickedCallback, cancelledCallback)
+  local c = O.ColBack;
+	local r,g,b,o = c.r, c.g, c.b, c.a;
+	local info = {
+		swatchFunc = pickedCallback,
+
+		hasOpacity = (o ~= nil),
+		opacityFunc = pickedCallback,
+		opacity = o,
+
+		cancelFunc = cancelledCallback,
+
+		r = r,
+		g = g,
+		b = b,
+	}
+	ColorPickerFrame:SetupColorPickerAndShow(info)
+end
+local function SMARTDEBUFF_ColorsSetBackdrop()
+  local c = O.ColBack;
+	c.r, c.g, c.b = ColorPickerFrame:GetColorRGB();
+	c.a = ColorPickerFrame:GetColorAlpha();
+  SmartDebuffColors_btnTestBG.texture:SetColorTexture(c.r, c.g, c.b, c.a);
+  SMARTDEBUFF_CheckSFBackdrop();
+end
+local function SMARTDEBUFF_ColorsCancelBackdrop()
+  local c = O.ColBack;
+	c.r, c.g, c.b, c.a = ColorPickerFrame:GetPreviousValues();
+  SmartDebuffColors_btnTestBG.texture:SetColorTexture(c.r, c.g, c.b, c.a);
+  SMARTDEBUFF_CheckSFBackdrop();
+end
+--[[
+! Color Widget Classic
+]]
+function SMARTDEBUFF_ColorsSetBackdrop_Classic()
   local c = O.ColBack;
   c.r, c.g, c.b = ColorPickerFrame:GetColorRGB();
   c.a = 1.0 - OpacitySliderFrame:GetValue();
   SmartDebuffColors_btnTestBG.texture:SetColorTexture(c.r, c.g, c.b, c.a);
   SMARTDEBUFF_CheckSFBackdrop();
 end
-
-function SMARTDEBUFF_ColorsCancelBackdrop(p)
+function SMARTDEBUFF_ColorsCancelBackdrop_Classic(p)
   local c = O.ColBack;
 	if (p.r) then
     c.r = p.r; c.g = p.g; c.b = p.b;
@@ -4498,17 +4524,23 @@ function SMARTDEBUFF_ColorsCancelBackdrop(p)
 	SmartDebuffColors_btnTestBG.texture:SetColorTexture(c.r, c.g, c.b, c.a);
 	SMARTDEBUFF_CheckSFBackdrop();
 end
-
-function SMARTDEBUFF_ColorsBackdrop()
+function SMARTDEBUFF_ColorsBackdrop_Classic(pickedCallback, cancelledCallback)
   local c = O.ColBack;
   ColorPickerFrame.previousValues = {r = c.r, g = c.g, b = c.b, a = c.a};
-  ColorPickerFrame.func = SMARTDEBUFF_ColorsSetBackdrop;
-  ColorPickerFrame.cancelFunc = SMARTDEBUFF_ColorsCancelBackdrop;
-  ColorPickerFrame.opacityFunc = SMARTDEBUFF_ColorsSetBackdrop;
+  ColorPickerFrame.func, ColorPickerFrame.swatchFunc, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc =
+		pickedCallback, pickedCallback, pickedCallback, cancelledCallback;
   ColorPickerFrame.hasOpacity = 1;
   ColorPickerFrame.opacity = 1-c.a;
   ColorPickerFrame:SetColorRGB(c.r, c.g, c.b)
   ShowUIPanel(ColorPickerFrame);
+end
+
+function SMARTDEBUFF_ColorsBackdrop()
+  if ColorPickerFrame.SetupColorPickerAndShow then
+    SMARTDEBUFF_ColorsBackdrop_New(SMARTDEBUFF_ColorsSetBackdrop, SMARTDEBUFF_ColorsCancelBackdrop)
+  else
+    SMARTDEBUFF_ColorsBackdrop_Classic(SMARTDEBUFF_ColorsSetBackdrop_Classic, SMARTDEBUFF_ColorsCancelBackdrop_Classic)
+  end
 end
 
 function SMARTDEBUFF_ColorsUpdate(b)
@@ -4595,10 +4627,10 @@ function SmartDebuffAOFKeys_OnShow(self)
     local isEnabled = true;
     if ((aType == "spell" or aType == "petaction") and aName) then
       if (aId) then
-        local getSpellInfo = SDB_GetSpellInfo(aId);
+        local getSpellInfo = ns.GetSpellInfo(aId);
         SetATexture(btn, getSpellInfo and getSpellInfo.iconID or imgMissing);
         isMovable = SMARTDEBUFF_IsSpellMovable(aType, aName, aRank, aId, aLink);
-        isEnabled = isMovable and not not GetSpellInfo(aName);
+        isEnabled = isMovable and not not ns.GetSpellInfo(aName);
       else
         isMovable = false;
         isEnabled = false;
@@ -4698,26 +4730,26 @@ function SMARTDEBUFF_PickAction(self, button)
         if (aType == "spell") then
           -- SMARTDEBUFF_AddMsgD("Pick: "..ChkS(aId).." - "..ChkS(aName.." - "..ChkS(aRank));
           if (aId and SMARTDEBUFF_IsSpellMovable(aType, aName, aRank, aId, aLink)) then
-            PickupSpell(aId);
+            ns.PickupSpell(aId);
           else
             -- Do nothing (spell not found: can't move)
             return;
           end
         elseif (aType == "petaction") then
           if (aId and SMARTDEBUFF_IsSpellMovable(aType, aName, aRank, aId, aLink)) then
-            PickupPetSpell(aId);
+            ns.PickupSpellBookItem(aId, PET_BOOK);
           else
             -- Do nothing (spell not found: can't move)
             return;
           end
         elseif (aType == "item") then
-          PickupItem(aId);
+          C_Item.PickupItem(aId);
           resetLabel = false;
         elseif (aType == "macro") then
           PickupMacro(aId);
           resetLabel = false;
         elseif (aType == "action") then
-          PickupSpellBookItem(aId, BOOKTYPE_PET);
+          ns.PickupSpellBookItem(aId, PET_BOOK);
         elseif (aType == "menu" or aType == "target") then
           -- Do nothing with sdb actions
           return;
@@ -4795,13 +4827,13 @@ function SMARTDEBUFF_DropAction(self, button)
     end
 
     if ((infoType == "spell" or infoType == "petaction" or infoType == "action") and not SDB_IsPassiveSpell(spellId, info2)) then
-      local aSpellInfo = SDB_GetSpellInfo(spellId);
+      local aSpellInfo = ns.GetSpellInfo(spellId);
       if (aSpellInfo) then
         aName, aRank, aTexture = aSpellInfo.name,  "", aSpellInfo.iconID;
-        SetActionInfo(mode, i, infoType, aName, aRank, spellId, GetSpellLink(aName));
+        SetActionInfo(mode, i, infoType, aName, aRank, spellId, ns.GetSpellLink(spellId));
         -- Spell can still be unpickable once dropped (if picked up before changing pet...)
         isMovable = SMARTDEBUFF_IsSpellMovable(infoType, aName, aRank, spellId, _);
-        isEnabled = isMovable and not not GetSpellInfo(aName);
+        isEnabled = isMovable and not not ns.GetSpellInfo(aName);
         bDroped = true;
       end
     elseif (infoType == "item") then
@@ -4836,15 +4868,15 @@ function SMARTDEBUFF_DropAction(self, button)
       SMARTDEBUFF_SetButtons();
       if (aTypeOld) then
         if (aTypeOld == "spell") then
-          PickupSpell(aIdOld);
+          ns.PickupSpell(aIdOld);
         elseif (aTypeOld == "petaction") then
-          PickupPetSpell(aIdOld);
+          ns.PickupSpellBookItem(aIdOld, PET_BOOK);
         elseif (aTypeOld == "item") then
-          PickupItem(aIdOld);
+          C_Item.PickupItem(aIdOld);
         elseif (aTypeOld == "macro") then
           PickupMacro(aIdOld);
         elseif (aTypeOld == "action") then
-          PickupSpellBookItem(aIdOld, aLinkOld, BOOKTYPE_PET);
+          ns.PickupSpellBookItem(aIdOld, PET_BOOK);
         elseif (aTypeOld == "menu") then
           -- Do nothing
           return;
@@ -4862,15 +4894,15 @@ function SMARTDEBUFF_DropAction(self, button)
         if (IsModifierKeyDown()) then
           -- reclone after drop
           if (infoType == "spell") then
-            PickupSpell(spellId);
+            ns.PickupSpell(spellId);
           elseif (infoType == "petaction") then
-            PickupPetSpell(spellId);
+            ns.PickupSpellBookItem(spellId, PET_BOOK);
           elseif (infoType == "item") then
-            PickupItem(infoId);
+            C_Item.PickupItem(infoId);
           elseif (infoType == "macro") then
             PickupMacro(infoId);
           elseif (infoType == "action") then
-            PickupSpellBookItem(spellId, GetSpellLink(aName), BOOKTYPE_PET);
+            ns.PickupSpellBookItem(spellId, PET_BOOK);
           end
         end
       end
@@ -4894,7 +4926,7 @@ function SDB_GetPickupOverride(PickupType, PickupID)
 end
 
 
---- Checks if a spell is movable in the game. If the game is in retail mode, it uses the GetSpellInfo function to check the spell's movability.
+--- Checks if a spell is movable in the game. If the game is in retail mode, it uses the ns.GetSpellInfo function to check the spell's movability.
 --- If the game is not in retail mode, the function always returns true, assuming all spells are movable.
 --- @param spellType "spell"|"petaction" The type of the spell to check
 --- @param spellName string The name of the spell to check
@@ -4943,7 +4975,7 @@ function SMARTDEBUFF_BtnActionOnEnter(self, motion)
     if (aId) then
       local isPet = (aType == "petaction");
       isMovable = SMARTDEBUFF_IsSpellMovable(aType, aName, aRank, aId, aLink);
-      local isEnabled = isMovable and not not GetSpellInfo(aName);
+      local isEnabled = isMovable and not not ns.GetSpellInfo(aName);
 
       GameTooltip:SetSpellByID(aId);
       GameTooltip:AddLine(isPet and ORL..SMARTDEBUFF_TT_PETACTION.."\n\n" or " ");

@@ -1,3 +1,11 @@
+v10.2.707
+- The War Within fixes
+  > uses C_Spell infos when available
+  > Test mode fixed
+- Interrupt spell option disabled on TWW (macrotext not supported)
+- Configure colors: Backdrop Color picker fixed
+- TWW spells list ready?
+
 v10.2.706
 - SoundID is stored (more sounds to come)
 
