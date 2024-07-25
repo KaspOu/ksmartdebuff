@@ -4,10 +4,12 @@
 
 SMARTDEBUFF_UPGRADED = "SmartDebuff upgraded to "..SMARTDEBUFF_VERSION;
 -- Whats new info
-SMARTDEBUFF_WHATSNEW = "|cffffffffWhats new:|r\n\n"
-  .."- Spells list version displayed\n\n"
-  .."- |cffff1111Wow Classic|r, |cff87CEEBWrath|r & |cffc16600Cata|r versions\n"
-  ;
+SMARTDEBUFF_WHATSNEW = [[|cffffffffWhats new:|r
+
+- The War Within ready
+
+- Spells list version displayed
+]];
 
 --@do-not-package@
 -- Debuff types, in english in game! => global

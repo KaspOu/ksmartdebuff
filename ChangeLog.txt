@@ -1,3 +1,6 @@
+v11.0.001
+- The War Within Prepatch
+
 v10.2.707
 - The War Within fixes
   > uses C_Spell infos when available

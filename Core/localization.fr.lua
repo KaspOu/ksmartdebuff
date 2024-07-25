@@ -6,10 +6,12 @@ if (GetLocale() == "frFR") then
 
 SMARTDEBUFF_UPGRADED = "SmartDebuff mis \195\160 jour : "..SMARTDEBUFF_VERSION;
 
-SMARTDEBUFF_WHATSNEW = "|cffffffffNouveaut\195\169s :|r\n\n"
-  .."- Affichage de la liste de sorts utilis\195\169e\n\n"
-  .."- Versions |cffff1111Wow Classic|r, |cff87CEEBWrath|r & |cffc16600Cataclysm|r !\n\n"
-  ;
+SMARTDEBUFF_WHATSNEW = [[|cffffffffNouveautés :|r
+
+- Prêt pour The War Within
+
+- Affichage de la liste de sorts utilisée
+]]
 
 --@do-not-package@
 -- Debuff types, in english in game!
