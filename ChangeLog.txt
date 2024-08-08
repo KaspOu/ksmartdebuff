@@ -1,3 +1,6 @@
+v11.0.002
+- Interrupt spell option back (macrotext finally ok)
+
 v11.0.001
 - The War Within Prepatch
 

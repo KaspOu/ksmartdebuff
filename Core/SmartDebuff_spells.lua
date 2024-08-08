@@ -43,9 +43,10 @@ Vérifier :
 --@end-do-not-package@
 
 SMARTDEBUFF_SPELLS_VERSION = "The War Within";
+SMARTDEBUFF_MACROTEXT = true;
+
 if select(4, GetBuildInfo()) < 110000 then
   SMARTDEBUFF_SPELLS_VERSION = "Dragonflight";
-  SMARTDEBUFF_MACROTEXT = true;
 end
 
 -- Debuff spell IDs (for L button)
