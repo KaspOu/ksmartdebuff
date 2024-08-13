@@ -32,7 +32,7 @@ ou   DoesSpellExist(spellID)    :  pour tous les sorts du jeu
 
   >>> IsSpellKnownOrOverridesKnown(spellID, isPet) ?
 
-  IsUsableSpell(spellName) :
+  IsUsableSpell(spellName) : (devient C_Spell.IsSpellUsable )
     false avec un talent inactif (true si actif)
     mais true avec un pet inactif ?
 
@@ -276,8 +276,8 @@ end
 local function GetSpellCD(spell)
   if (not spell) then return -1 end
   local scd = ns.GetSpellCooldown(spell);
-  if (scd and scd.start and scd.start > 0 and scd.duration > 1.5 and scd.enabled > 0) then
-    return (scd.start + scd.duration) - GetTime();
+  if (scd and scd.startTime and scd.startTime > 0 and scd.duration > 1.5 and scd.isEnabled) then
+    return (scd.startTime + scd.duration) - GetTime();
   end
   return -1;
 end

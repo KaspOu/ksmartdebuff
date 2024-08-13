@@ -260,7 +260,19 @@
         "Settings",
         "GameMenuFrame",
         "SmartDebuffOF_Title",
-        "UnitPopupManager"
+        "UnitPopupManager",
+        "C_Spell",
+        "Enum",
+        "C_UnitAuras",
+        "GetLocale",
+        "LOCALIZED_CLASS_NAMES_MALE",
+        "hooksecurefunc",
+        "GetNumSpecializations",
+        "GetTalentInfoBySpecialization",
+        "tContains",
+        "GetNumMacros",
+        "IsSpellKnownOrOverridesKnown",
+        "GetMacroBody"
     ],
     "Lua.diagnostics.disable": [
         "need-check-nil",

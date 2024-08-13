@@ -12,9 +12,9 @@ ns.GetSpellCooldown = C_Spell.GetSpellCooldown or function (spellnameOrId)
   local start, duration, enabled, modRate = GetSpellCooldown(spellnameOrId);
   if (start) then
     return {
-      start = start,
+      startTime = start,
       duration = duration,
-      enabled = enabled,
+      isEnabled = enabled > 0,
       modRate = modRate,
     };
   else
