@@ -1953,13 +1953,13 @@ end
 function SMARTDEBUFF_CheckSFButtons(hide)
   if (SMARTDEBUFF_IsVisible()) then
     if (canDebuff and O.ShowHeaderRow and not InCombatLockdown() and not hide) then
-      SmartDebuffSF_Title:SetText("martDebuff");
+      SmartDebuffSF_Title:SetText(SMARTDEBUFF_HEADERS[2]);
       SmartDebuffSF_btnClose:Show();
       SmartDebuffSF_btnStyle:Show();
       SmartDebuffSF_btnOptions:Show();
     else
       if (O.ShowHeaderRow) then
-        SmartDebuffSF_Title:SetText("SmartDebuff");
+        SmartDebuffSF_Title:SetText(SMARTDEBUFF_HEADERS[1]);
       else
         SmartDebuffSF_Title:SetText("");
       end

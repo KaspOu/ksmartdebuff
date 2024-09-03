@@ -6,6 +6,7 @@ SMARTDEBUFF_VERSION       = "v"..C_AddOns.GetAddOnMetadata("SmartDebuff", "Versi
 SMARTDEBUFF_VERSIONNR     = tonumber(gsub(SMARTDEBUFF_VERSION, "%D", ""), 10); -- "100202"
 SMARTDEBUFF_BREAKINGVERSION = 102602;
 SMARTDEBUFF_TITLE         = "SmartDebuff";
+SMARTDEBUFF_HEADERS        = {"SmartDebuff", "martDebuff"}
 SMARTDEBUFF_SUBTITLE      = "Debuff support";
 SMARTDEBUFF_DESC          = "Supports you to cast debuff spells on friendly units";
 SMARTDEBUFF_VERS_TITLE    = SMARTDEBUFF_TITLE .. " " .. SMARTDEBUFF_VERSION;
@@ -17,6 +18,13 @@ SMARTDEBUFF_MACROTEXT = false;
 BINDING_HEADER_SMARTDEBUFF = SMARTDEBUFF_TITLE;
 BINDING_NAME_SMARTDEBUFF =  SMARTDEBUFF_TITLE.." options";
 SMARTDEBUFF_BOOK_TYPE_SPELL = "spell";
+
+--@do-not-package@
+-- Development icons
+local devVer = "|TInterface/PVPFrame/Icons/prestige-icon-8-3:16|t"
+SMARTDEBUFF_OPTIONS_TITLE = SMARTDEBUFF_VERS_TITLE ..devVer.. " Options"
+SMARTDEBUFF_HEADERS = { SMARTDEBUFF_HEADERS[1]..devVer, SMARTDEBUFF_HEADERS[2]..devVer }
+--@end-do-not-package@
 
 
 -- wowversion, wowbuild, wowdate, wowtocversion = GetBuildInfo()
