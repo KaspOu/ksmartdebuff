@@ -398,6 +398,7 @@ end
 -- SMARTDEBUFF_OnLoad
 function SMARTDEBUFF_OnLoad(self)
   self:RegisterEvent("ADDON_LOADED");
+  self:RegisterEvent("CVAR_UPDATE");
   self:RegisterEvent("PLAYER_ENTERING_WORLD");
   --self:RegisterEvent("WORLD_MAP_UPDATE");
   self:RegisterEvent("UNIT_NAME_UPDATE");
@@ -413,7 +414,7 @@ function SMARTDEBUFF_OnLoad(self)
 
   self:RegisterEvent("SPELLS_CHANGED");
   self:RegisterEvent("UPDATE_MACROS");
-  self:RegisterEvent("BAG_UPDATE");  
+  self:RegisterEvent("BAG_UPDATE");
   self:RegisterEvent("TRAIT_CONFIG_UPDATED"); -- ! Changement d'un talent / de config sauvée
   self:RegisterEvent("PLAYER_TALENT_UPDATE"); -- ! Changement de spécialisation -- Ne marche pas avec le pretre sacré?
   self:RegisterEvent("CHARACTER_POINTS_CHANGED"); -- Classic version of PLAYER_TALENT_UPDATE
@@ -455,6 +456,8 @@ function SMARTDEBUFF_OnEvent(self, event, ...)
   elseif(event == "ADDON_LOADED" and arg1 == SMARTDEBUFF_TITLE) then
     isLoaded = true;
     self:UnregisterEvent("ADDON_LOADED");
+  elseif(event == "CVAR_UPDATE" and arg1 == "ActionButtonUseKeyDown") then
+    SMARTDEBUFF_AddMsgErr(SMARTDEBUFF_ERR_RELOADREQUIRED)
   end
 
   if (isLoaded and isPlayer and isTTreeLoaded and not isInit) then
@@ -2031,7 +2034,6 @@ function SMARTDEBUFF_CheckSFBackdrop()
       f:SetBackdrop(nil);
       f:SetBackdropColor(0,0,0,0);
     end
-    --SmartDebuffSF:EnableMouse(O.ShowBackdrop);
     f:EnableMouse(true);
   end
 end
@@ -2182,7 +2184,7 @@ function SMARTDEBUFF_CreateButtons()
 
       button:EnableMouse(true);
       --button:EnableMouseWheel(true);
-      button:RegisterForClicks("AnyDown");
+      button:RegisterForClicks(SMARTDEBUFF_KEYFORCLICK);
       button:SetScript("OnEnter", SMARTDEBUFF_ButtonTooltipOnEnter);
       button:SetScript("OnLeave", SMARTDEBUFF_ButtonTooltipOnLeave);
 
@@ -2262,7 +2264,7 @@ function SMARTDEBUFF_CreateButtons()
       end
 
       button:EnableMouse(true);
-      button:RegisterForClicks("AnyDown");
+      button:RegisterForClicks(SMARTDEBUFF_KEYFORCLICK);
       button:SetScript("OnEnter", SMARTDEBUFF_ButtonTooltipOnEnter);
       button:SetScript("OnLeave", SMARTDEBUFF_ButtonTooltipOnLeave);
 
@@ -4137,7 +4139,7 @@ local function CreateScrollButton(name, parent, cBtn, onClick, onDragStop)
 	local button = CreateFrame("Button", name, parent);
 	button:SetWidth(parent:GetWidth());
 	button:SetHeight(ScrBtnHeight);
-  button:RegisterForClicks("AnyDown");
+  button:RegisterForClicks(SMARTDEBUFF_KEYFORCLICK);
 	button:SetScript("OnClick", onClick);
 
   if (onDragStop ~= nil) then

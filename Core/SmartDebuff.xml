@@ -113,7 +113,7 @@
         </Anchors>
         <Scripts>
           <OnLoad>
-            self:RegisterForClicks("AnyDown");
+            self:RegisterForClicks(SMARTDEBUFF_KEYFORCLICK);
             self:SetAlpha(0.8);
             self:SetNormalFontObject(SmartDebuff_GameFontNormalMicro);
             self:SetHighlightFontObject(SmartDebuff_GameFontHighlightMicro);
@@ -198,7 +198,7 @@
 
     <Scripts>
       <OnLoad>
-        --self:RegisterForClicks("AnyDown");
+        --self:RegisterForClicks(SMARTDEBUFF_KEYFORCLICK);
         self:RegisterForDrag("LeftButton");
         self:EnableMouse(true);
         self:SetMovable(true);

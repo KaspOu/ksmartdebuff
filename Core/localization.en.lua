@@ -215,3 +215,5 @@ SMARTDEBUFF_TT_SOUNDLIST 			= "Click to select Sound";
 SMARTDEBUFF_FUBAR_TT           = "\nLeft Click: Open options\nShift-Left Click: On/Off";
 SMARTDEBUFF_BROKER_TT          = "Left Click: Open options\nRight Click: On/Off";
 
+SMARTDEBUFF_ERR_RELOADREQUIRED  = "A reload may be required to make clicks work ( write /reload )";
+

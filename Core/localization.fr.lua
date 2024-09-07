@@ -214,6 +214,7 @@ SMARTDEBUFF_TT_SOUNDLIST        = "Cliquez pour s\195\169lectionner le son";
 SMARTDEBUFF_FUBAR_TT           = "\nClic gauche : Ouvrir les options\nMaj-Clic gauche : On/Off";
 SMARTDEBUFF_BROKER_TT          = "Clic gauche : Ouvrir les options\nClic droit : On/Off";
 
+SMARTDEBUFF_ERR_RELOADREQUIRED  = [[Un rechargement ( /reload ) pourrait être nécessaire pour faire fonctionner les clicks]];
 
 end
 
