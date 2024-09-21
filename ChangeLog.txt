@@ -1,3 +1,6 @@
+v11.0.203
+- New sounds
+
 v11.0.202
 - Fixes unclickables buttons on retail version
   > detects CVar ActionButtonUseKeyDown

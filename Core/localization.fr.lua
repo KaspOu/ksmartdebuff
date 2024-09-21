@@ -11,6 +11,10 @@ SMARTDEBUFF_WHATSNEW = [[|cffffffffNouveautés :|r
 - Prêt pour The War Within
 
 - Affichage de la liste de sorts utilisée
+
+- Correction des clicks pour certains utilisateurs (détection de la CVar)
+
+- Quelques sons ajoutés
 ]]
 
 --@do-not-package@

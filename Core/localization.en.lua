@@ -9,6 +9,10 @@ SMARTDEBUFF_WHATSNEW = [[|cffffffffWhats new:|r
 - The War Within ready
 
 - Spells list version displayed
+
+- Fixed click for some users (CVar detection)
+
+- Some sounds added
 ]];
 
 --@do-not-package@
