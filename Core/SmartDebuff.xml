@@ -1,6 +1,30 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 
+
+	<Slider name="SmartDebuffOptionsSliderTemplate" inherits="UISliderTemplate" virtual="true">
+		<Size x="144" y="17"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" parentKey="Text" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="BOTTOM" relativePoint="TOP"/>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentLow" parentKey="Low" inherits="GameFontHighlightSmall" text="LOW">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="-4" y="3"/>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentHigh" parentKey="High" inherits="GameFontHighlightSmall" text="HIGH">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" x="4" y="3"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Slider>
+
   <Frame name="SmartDebuffFrame">
     <Scripts>
       <OnLoad>
@@ -2515,7 +2539,7 @@
         </Scripts>
       </CheckButton>
 
-      <Slider name="$parent_sldCheckInterval" inherits="OptionsSliderTemplate" hidden="false">
+      <Slider name="$parent_sldCheckInterval" inherits="SmartDebuffOptionsSliderTemplate" hidden="false">
         <Size>
           <AbsDimension x="132" y="16"/>
         </Size>
@@ -2551,7 +2575,7 @@
         </Scripts>
       </Slider>
 
-      <Slider name="$parent_sldFontsize" inherits="OptionsSliderTemplate" hidden="false">
+      <Slider name="$parent_sldFontsize" inherits="SmartDebuffOptionsSliderTemplate" hidden="false">
         <Size>
           <AbsDimension x="132" y="16"/>
         </Size>
@@ -2588,7 +2612,7 @@
         </Scripts>
       </Slider>
 
-      <Slider name="$parent_sldIconSize" inherits="OptionsSliderTemplate" hidden="false">
+      <Slider name="$parent_sldIconSize" inherits="SmartDebuffOptionsSliderTemplate" hidden="false">
         <Size>
           <AbsDimension x="132" y="16"/>
         </Size>
@@ -2625,7 +2649,7 @@
         </Scripts>
       </Slider>
 
-      <Slider name="$parent_sldColumns" inherits="OptionsSliderTemplate" hidden="false">
+      <Slider name="$parent_sldColumns" inherits="SmartDebuffOptionsSliderTemplate" hidden="false">
         <Size>
           <AbsDimension x="132" y="16"/>
         </Size>
@@ -2662,7 +2686,7 @@
         </Scripts>
       </Slider>
 
-      <Slider name="$parent_sldBarHeight" inherits="OptionsSliderTemplate" hidden="false">
+      <Slider name="$parent_sldBarHeight" inherits="SmartDebuffOptionsSliderTemplate" hidden="false">
         <Size>
           <AbsDimension x="132" y="16"/>
         </Size>
@@ -2699,7 +2723,7 @@
         </Scripts>
       </Slider>
 
-      <Slider name="$parent_sldBtnW" inherits="OptionsSliderTemplate" hidden="false">
+      <Slider name="$parent_sldBtnW" inherits="SmartDebuffOptionsSliderTemplate" hidden="false">
         <Size>
           <AbsDimension x="132" y="16"/>
         </Size>
@@ -2736,7 +2760,7 @@
         </Scripts>
       </Slider>
 
-      <Slider name="$parent_sldBtnH" inherits="OptionsSliderTemplate" hidden="false">
+      <Slider name="$parent_sldBtnH" inherits="SmartDebuffOptionsSliderTemplate" hidden="false">
         <Size>
           <AbsDimension x="132" y="16"/>
         </Size>
@@ -2773,7 +2797,7 @@
         </Scripts>
       </Slider>
 
-      <Slider name="$parent_sldSpaceX" inherits="OptionsSliderTemplate" hidden="false">
+      <Slider name="$parent_sldSpaceX" inherits="SmartDebuffOptionsSliderTemplate" hidden="false">
         <Size>
           <AbsDimension x="132" y="16"/>
         </Size>
@@ -2810,7 +2834,7 @@
         </Scripts>
       </Slider>
 
-      <Slider name="$parent_sldSpaceY" inherits="OptionsSliderTemplate" hidden="false">
+      <Slider name="$parent_sldSpaceY" inherits="SmartDebuffOptionsSliderTemplate" hidden="false">
         <Size>
           <AbsDimension x="132" y="16"/>
         </Size>
@@ -3645,7 +3669,7 @@
         </Scripts>
       </EditBox>
 
-      <Slider name="$parent_sldADebuff" orientation="VERTICAL" inherits="OptionsSliderTemplate" hidden="false">
+      <Slider name="$parent_sldADebuff" orientation="VERTICAL" inherits="SmartDebuffOptionsSliderTemplate" hidden="false">
         <Size>
           <AbsDimension x="12" y="210"/>
         </Size>
@@ -3989,7 +4013,7 @@
         </Scripts>
       </ColorSelect>
 
-      <Slider name="$parent_sldNormal" inherits="OptionsSliderTemplate" hidden="false">
+      <Slider name="$parent_sldNormal" inherits="SmartDebuffOptionsSliderTemplate" hidden="false">
         <Size>
           <AbsDimension x="156" y="16"/>
         </Size>
@@ -4028,7 +4052,7 @@
         </Scripts>
       </Slider>
 
-      <Slider name="$parent_sldNormalOOR" inherits="OptionsSliderTemplate" hidden="false">
+      <Slider name="$parent_sldNormalOOR" inherits="SmartDebuffOptionsSliderTemplate" hidden="false">
         <Size>
           <AbsDimension x="156" y="16"/>
         </Size>

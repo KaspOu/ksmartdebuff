@@ -1,3 +1,6 @@
+v11.0.204
+- Wow Classic 1.15.4 fix
+
 v11.0.203
 - New sounds
 

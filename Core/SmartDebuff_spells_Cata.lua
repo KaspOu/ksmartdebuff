@@ -140,4 +140,5 @@ Lightning\
 Lightning 2\
 Lightning 3\
 Pet Level Up\
+Spell\
 ";

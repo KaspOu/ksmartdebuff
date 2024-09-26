@@ -142,6 +142,8 @@ Lightning 3\
 Pet Level Up\
 Rubber Ducky\
 Shing\
+Spell\
+Sunflower\
 Short Circuit\
 Simon Chime\
 Simon Tick\
