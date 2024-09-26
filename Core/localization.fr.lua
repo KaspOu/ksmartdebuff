@@ -198,7 +198,7 @@ SMARTDEBUFF_TT_DROPEXCHANGE    = "Clic de la souris :\nGauche pour \195\169chang
 SMARTDEBUFF_TT_CANTDROP        = "Clic de la souris :\nDroit pour rel\195\162cher";
 
 --Tooltips added by Semi#1287
-SMARTDEBUFF_TT_OPTIONS          = "|cff20d2ff- Bouton O -|r\nClic gauche : Ouvrir les options";
+SMARTDEBUFF_TT_OPTIONS          = "|cff20d2ff- Bouton O -|r\nClic gauche : Ouvrir les options\nClic droit : Modifier les raccourcis";
 SMARTDEBUFF_OFT_CLASSSORT       = "Liste tri\195\169e des classes";
 SMARTDEBUFF_TT_CLASSSORT 	      = "Cliquez pour modifier l'ordre des classes";
 SMARTDEBUFF_OFT_NOTREMOVABLE_LIST = "Liste de protection contre les d\195\169buffs";

@@ -177,12 +177,17 @@
         </Anchors>
         <Scripts>
           <OnLoad>
+            self:RegisterForClicks(SMARTDEBUFF_KEYFORCLICK);
             self:SetAlpha(0.8);
             self:SetNormalFontObject(SmartDebuff_GameFontNormalMicro);
             self:SetHighlightFontObject(SmartDebuff_GameFontHighlightMicro);
           </OnLoad>
           <OnClick>
-            SMARTDEBUFF_ToggleOF();
+            if (button == "RightButton") then
+              SMARTDEBUFF_ToggleWhatsNew();
+            else
+              SMARTDEBUFF_ToggleOF();
+            end
           </OnClick>
           <OnEnter>
             if (not InCombatLockdown()) then

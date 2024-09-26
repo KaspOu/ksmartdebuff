@@ -1385,7 +1385,7 @@ function SMARTDEBUFF_Options_Init()
   if (O.BtnSpY == nil) then O.BtnSpY = 2; end
 
   if (O.ShowTooltip == nil) then O.ShowTooltip = true; end
-  if (O.UseSound == nil) then O.UseSound = false; end
+  if (O.UseSound == nil) then O.UseSound = true; end
   if (O.TargetMode == nil) then O.TargetMode = false; end
   if (O.ShowHealRange == nil) then O.ShowHealRange = true; end
   if (O.ShowAggro == nil) then O.ShowAggro = true; end
@@ -4680,12 +4680,21 @@ function SmartDebuffAOFKeys_OnShow(self)
 end
 
 function SMARTDEBUFF_ShowWhatsNew()
+  if (not isInit or not canDebuff or InCombatLockdown()) then return; end
   ShowF(SmartDebuffOF);
   ShowF(SmartDebuffAOFKeys);
   SmartDebuffWNF_lblText:SetText(SMARTDEBUFF_WHATSNEW);
   ShowF(SmartDebuffWNF);
   shouldCallSetSpells = true;
   shouldCallSetMacros = true;
+end
+
+function SMARTDEBUFF_ToggleWhatsNew()
+  if SmartDebuffAOFKeys:IsVisible() then
+    SMARTDEBUFF_ToggleOF();
+  else
+    SMARTDEBUFF_ShowWhatsNew();
+  end
 end
 
 

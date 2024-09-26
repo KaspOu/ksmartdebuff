@@ -199,7 +199,7 @@ SMARTDEBUFF_TT_DROPEXCHANGE    = "Mouse click:\nLeft to exchange\nRight to relea
 SMARTDEBUFF_TT_CANTDROP        = "Mouse click:\nRight to release";
 
 --Tooltips added by Semi#1287
-SMARTDEBUFF_TT_OPTIONS		   		= "|cff20d2ff- O button -|r\nLeft click: Open options";
+SMARTDEBUFF_TT_OPTIONS		   		= "|cff20d2ff- O button -|r\nLeft click: Open options\nnRight Click: Edit mouse shortcuts";
 SMARTDEBUFF_OFT_CLASSSORT       = "Sorted list of classes";
 SMARTDEBUFF_TT_CLASSSORT        = "Click to modify the class order";
 SMARTDEBUFF_OFT_NOTREMOVABLE_LIST 	= "Debuff Guard List";
