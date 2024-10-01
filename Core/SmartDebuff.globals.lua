@@ -226,6 +226,16 @@ SMARTDEBUFF_SOUNDS = {
   {"Wham", 566946},
   {"Whisper Ping", 567421},
 
+  {"Artifact forge: Gold trait", 1489541},
+  {"Artifact forge: Refund end", 1600379},
+  {"Artifact forge: Trait available", 1272545},
+  {"Artifact forge: Relic place", 1272543},
+  {"Ashran player looted", 1053672},
+  {"Glyph: Minor Create", 567487},
+  {"Glyph: Minor Destroy", 567447},
+  {"Put down Gems", 567574},
+  {"Pick up Gems", 567568},
+  {"Pick up Wand", 567544},
   {"QuestFailed", 567459},
   {"RaidWarning", 567397},
   {"Spell", 4614157},
@@ -235,4 +245,4 @@ SMARTDEBUFF_SOUNDS = {
 };
 SMARTDEBUFF_DISABLED_SOUNDS = "";
 
-SMARTDEBUFF_SOUNDS_DEFAULT = 568975 -- Short Circuit
+SMARTDEBUFF_SOUNDS_DEFAULT = 567447 -- Glyph: Minor Destroy

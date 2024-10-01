@@ -6,13 +6,11 @@ SMARTDEBUFF_UPGRADED = "SmartDebuff upgraded to "..SMARTDEBUFF_VERSION;
 -- Whats new info
 SMARTDEBUFF_WHATSNEW = [[|cffffffffWhats new:|r
 
-- The War Within ready
+- Even more sounds, have fun!
 
-- Spells list version displayed
+- Default sound changed
 
-- Fixed click for some users (CVar detection)
-
-- Some sounds added
+- Fix for |cffff1111Wow Classic|r
 ]];
 
 --@do-not-package@

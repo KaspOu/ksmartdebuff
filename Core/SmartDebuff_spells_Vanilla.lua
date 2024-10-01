@@ -127,6 +127,11 @@ SMARTDEBUFF_CLASS_SKILLS_LIST_ID = {
 SMARTDEBUFF_OVERRIDE_PICKUP_LIST_ID = {}
 
 SMARTDEBUFF_DISABLED_SOUNDS = "\
+Artifact forge: Gold trait\
+Artifact forge: Refund end\
+Artifact forge: Trait available\
+Artifact forge: Relic place\
+Ashran player looted\
 Bell Karazhan\
 Cartoon FX\
 Cheer\
@@ -135,6 +140,8 @@ Explosion\
 Fel Nova\
 Fel Portal\
 Follower Level Up\
+Glyph: Minor Create\
+Glyph: Minor Destroy\
 Humm\
 Lightning\
 Lightning 2\

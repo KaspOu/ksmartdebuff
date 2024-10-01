@@ -8,13 +8,11 @@ SMARTDEBUFF_UPGRADED = "SmartDebuff mis \195\160 jour : "..SMARTDEBUFF_VERSION;
 
 SMARTDEBUFF_WHATSNEW = [[|cffffffffNouveautés :|r
 
-- Prêt pour The War Within
+- Encore plus de sons, bon jeu!
 
-- Affichage de la liste de sorts utilisée
+- Son par défaut modifié
 
-- Correction des clicks pour certains utilisateurs (détection de la CVar)
-
-- Quelques sons ajoutés
+- Fix pour |cffff1111Wow Classic|r
 ]]
 
 --@do-not-package@

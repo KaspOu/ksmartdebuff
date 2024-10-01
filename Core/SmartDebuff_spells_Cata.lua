@@ -135,6 +135,11 @@ SMARTDEBUFF_CLASS_SKILLS_LIST_ID = {
 SMARTDEBUFF_OVERRIDE_PICKUP_LIST_ID = {}
 
 SMARTDEBUFF_DISABLED_SOUNDS = "\
+Artifact forge: Gold trait\
+Artifact forge: Refund end\
+Artifact forge: Trait available\
+Artifact forge: Relic place\
+Ashran player looted\
 Follower Level Up\
 Lightning\
 Lightning 2\

@@ -1,3 +1,7 @@
+v11.0.205
+- Even more sounds, have fun!
+- Default sound changed
+
 v11.0.204
 - Wow Classic 1.15.4 fix
 
