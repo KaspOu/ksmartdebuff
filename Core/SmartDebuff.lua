@@ -1785,10 +1785,7 @@ function SMARTDEBUFF_LinkSpellsToKeys()
   cSpells = { };
   local idx = 0;
   local v;
-  local mode = 1;
-  if (O.TargetMode) then
-    mode = 2;
-  end
+  local mode = O.TargetMode and 2 or 1;
   for _, k in ipairs(SMARTDEBUFF_ORDER_KEYS) do
     v = O.Keys[mode][k];
     if (v and v[1] and ((v[1] == "spell" or v[1] == "petaction") or (v[1] == "action" and v[4])) and v[2]) then
@@ -2362,18 +2359,17 @@ end
 function SMARTDEBUFF_SetButtons()
   if (not isInit or not canDebuff or InCombatLockdown()) then return; end
 
-  local i, j;
   -- reset all buttons
   for i = 1, maxRaid, 1 do
     SMARTDEBUFF_SetButton(nil, i);
     SMARTDEBUFF_SetButton(nil, i, 1);
   end
 
-  i = 1;
+  local i = 1;
+  local uc;
   iVehicles = 0;
-  local cl, data, unit, uc;
   if (O.SortedByClass) then
-    for j, cl in ipairs(O.OrderClass) do
+    for _, cl in ipairs(O.OrderClass) do
       if (cl and cClasses[cl] and O.DebuffClasses[cl]) then
         for _, data in pairs(cClasses[cl]) do
           if (data and LUnitExists(data.Unit) and O.DebuffGrp[data.Subgroup]) then
@@ -2389,7 +2385,7 @@ function SMARTDEBUFF_SetButtons()
     end
   else
     --for cl = 1, 8, 1 do
-    for j, cl in ipairs(O.OrderGrp) do
+    for _, cl in ipairs(O.OrderGrp) do
       if (cl and cGroups[cl] and O.DebuffGrp[cl]) then
         for _, data in pairs(cGroups[cl]) do
           if (data and LUnitExists(data.Unit)) then
@@ -2423,7 +2419,6 @@ end
 function SMARTDEBUFF_SetPetButtons(b)
   if (not isInit or not canDebuff or InCombatLockdown()) then return; end
 
-  local i;
   -- reset buttons
   if (b) then
     for i = (iVehicles + 1), maxPets, 1 do
@@ -2431,7 +2426,7 @@ function SMARTDEBUFF_SetPetButtons(b)
     end
   end
 
-  local data;
+  local i;
   if (O.ShowPets or O.ShowPetsWL or O.ShowPetsDK) then
     i = iVehicles + 1;
     for _, data in pairs(cPets) do
