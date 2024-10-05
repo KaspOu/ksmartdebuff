@@ -1897,6 +1897,7 @@
           <OnClick>
             if (SMARTDEBUFF_Options) then
               SMARTDEBUFF_Options.TargetMode = not SMARTDEBUFF_Options.TargetMode;
+              SmartDebuffAOFKeys_OnShow();
               SMARTDEBUFF_SetButtons();
             end
           </OnClick>

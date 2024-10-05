@@ -6,6 +6,8 @@ SMARTDEBUFF_UPGRADED = "SmartDebuff upgraded to "..SMARTDEBUFF_VERSION;
 -- Whats new info
 SMARTDEBUFF_WHATSNEW = [[|cffffffffWhats new:|r
 
+- Shortcuts display enhanced
+
 - Even more sounds, have fun!
 
 - Default sound changed

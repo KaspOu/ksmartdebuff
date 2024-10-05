@@ -1,3 +1,6 @@
+v11.0.206
+- Shortcuts display enhanced (column highlights)
+
 v11.0.205
 - Even more sounds, have fun!
 - Default sound changed

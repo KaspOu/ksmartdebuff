@@ -4658,6 +4658,22 @@ function SmartDebuffAOFKeys_OnShow(self)
     if (not isMovable) then
       btn:GetNormalTexture():SetGradient("VERTICAL", CreateColor(1,1,1,.05), CreateColor(1,1,1,.85));
     end
+
+    -- Enable/disable column buttons
+    if ((O.TargetMode and 2 or 1) == mode) then
+      btn:SetAlpha(1)
+    else
+      btn:SetAlpha(.6)
+      btn:GetNormalTexture():SetDesaturated(true);
+    end
+  end
+  -- Enable/disable column titles
+  if (O.TargetMode) then
+    SmartDebuff_lblColumn13:SetTextColor(0, 1, 0, 1);
+    SmartDebuff_lblColumn1:SetTextColor(1, 0, 0, .6);
+  else
+    SmartDebuff_lblColumn1:SetTextColor(0, 1, 0, 1);
+    SmartDebuff_lblColumn13:SetTextColor(1, 0, 0, .6);
   end
 end
 

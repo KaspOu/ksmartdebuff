@@ -8,6 +8,8 @@ SMARTDEBUFF_UPGRADED = "SmartDebuff mis \195\160 jour : "..SMARTDEBUFF_VERSION;
 
 SMARTDEBUFF_WHATSNEW = [[|cffffffffNouveautés :|r
 
+- Affichage des raccourcis amélioré
+
 - Encore plus de sons, bon jeu!
 
 - Son par défaut modifié
