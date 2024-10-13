@@ -1,4 +1,4 @@
-## Interface: 110002
+## Interface: 110002, 110005
 ### Interface: 100000
 ## Title: Smart|cffffffffDebuff|r Reloaded by |cff00ff00Kallye|r
 ## Title-frFR: Smart|cffffffffDebuff|r Reloaded, par |cff00ff00Kallye|r
