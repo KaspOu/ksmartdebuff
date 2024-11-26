@@ -1,4 +1,4 @@
-## Interface: 11504
+## Interface: 11504, 11505
 ## Title: Smart|cffffffffDebuff|r Reloaded by |cff00ff00Kallye|r
 ## Title-frFR: Smart|cffffffffDebuff|r Reloaded, par |cff00ff00Kallye|r
 ## Version: 11.0.501
