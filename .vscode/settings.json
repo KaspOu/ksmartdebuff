@@ -187,7 +187,10 @@
         "SmartDebuffOF_Title",
         "UnitPopupManager",
         "LOCALIZED_CLASS_NAMES_MALE",
-        "tContains"
+        "tContains",
+        "WOW_PROJECT_ID",
+        "WOW_PROJECT_MAINLINE",
+        "GetCVar"
     ],
     "Lua.diagnostics.disable": [
         "need-check-nil",
@@ -239,6 +242,6 @@
         "utf8": "disable"
     },
     "Lua.workspace.library": [
-        "c:\\Users\\kaspo\\.cursor\\extensions\\ketho.wow-api-0.17.6\\Annotations"
+        "c:\\Users\\kaspo\\.cursor\\extensions\\ketho.wow-api-0.18.2\\Annotations"
     ]
 }

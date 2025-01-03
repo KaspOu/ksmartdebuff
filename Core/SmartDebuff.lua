@@ -1929,7 +1929,7 @@ function SMARTDEBUFF_ToggleSF()
   O.ShowSF = not O.ShowSF;
   SMARTDEBUFF_CheckSF();
 
-  if ((C_AddOns.IsAddOnLoaded and C_AddOns.IsAddOnLoaded("SmartBuff") or IsAddOnLoaded("SmartBuff")) and SMARTDEBUFF_IsVisible()) then
+  if (C_AddOns.IsAddOnLoaded("SmartBuff") and SMARTDEBUFF_IsVisible()) then
     if (SmartBuffOptionsFrame_cbSmartDebuff) then
       SmartBuffOptionsFrame_cbSmartDebuff:SetChecked(O.ShowSF);
     end
@@ -3770,7 +3770,7 @@ function SMARTDEBUFF_CheckUnitDebuffs(spell, unit, idx, isActive, pet)
     cud_n = 1;
     while (true) do
       --name,rank,icon,count,type = UnitDebuff("unit", id or "name"[,"rank"])
-      --cud_name, _, cud_icon, _, cud_dtype, cud_dur, cud_tl, _ = UnitAura(unit, cud_n, "HARMFUL");
+      --cud_name, _, cud_icon, _, cud_dtype, cud_dur, cud_tl, _ = ns.UnitAura(unit, cud_n, "HARMFUL");
       -- BlizzardInterfaceCode\Interface\AddOns\Blizzard_NamePlates\Blizzard_NamePlates.lua:505
       -- local name, texture, count, debuffType, duration, expirationTime, caster, _, nameplateShowPersonal, spellId, _, _, _, nameplateShowAll = UnitAura(unit, i, filter);
       cud_name, cud_icon, _, cud_dtype, cud_dur, cud_tl, _ = ns.UnitAura(unit, cud_n, "HARMFUL");
@@ -4648,7 +4648,7 @@ function SmartDebuffAOFKeys_OnShow(self)
     elseif (aType == "menu") then
       SetATexture(btn, imgMenu);
     elseif (aType == "action" and aId) then
-      SetATexture(btn, GetSpellTexture(aId, BOOKTYPE_PET) or imgMissing);
+      SetATexture(btn, ns.GetSpellTexture(aId, BOOKTYPE_PET) or imgMissing);
     else
       SetATexture(btn, imgActionSlot);
     end

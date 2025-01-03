@@ -5,8 +5,8 @@ ns.PickupSpell = C_Spell.PickupSpell or PickupSpell;
 ns.GetSpellLink = C_Spell.GetSpellLink or GetSpellLink;
 
 ns.IsSpellInRange = C_Spell.IsSpellInRange or function (spellnameOrId)
-    return IsSpellInRange(spellnameOrId) == 1
-  end
+  return IsSpellInRange(spellnameOrId) == 1
+end
 
 ns.GetSpellCooldown = C_Spell.GetSpellCooldown or function (spellnameOrId)
   local start, duration, enabled, modRate = GetSpellCooldown(spellnameOrId);
@@ -23,30 +23,31 @@ ns.GetSpellCooldown = C_Spell.GetSpellCooldown or function (spellnameOrId)
 end;
 
 ns.GetSpellInfo = C_Spell.GetSpellInfo or function (spellnameOrId)
-    local spellName, _, iconID, castTime, minRange, maxRange, spellID, originalIconID = GetSpellInfo(spellnameOrId);
-    if (spellName) then
-      return {
-            name = spellName,
-            spellID = spellID,
-            iconID = iconID,
-            castTime = castTime,
-            minRange = minRange,
-            maxRange = maxRange,
-            originalIconID = originalIconID,
-          };
-    else
-      return nil;
-    end
+  local spellName, _, iconID, castTime, minRange, maxRange, spellID, originalIconID = GetSpellInfo(spellnameOrId);
+  if (spellName) then
+    return {
+          name = spellName,
+          spellID = spellID,
+          iconID = iconID,
+          castTime = castTime,
+          minRange = minRange,
+          maxRange = maxRange,
+          originalIconID = originalIconID,
+        };
+  else
+    return nil;
   end
+end
+
 ns.GetSpellName = C_Spell.GetSpellName or function (spellnameOrId)
-    local spellName = GetSpellInfo(spellnameOrId);
-    return spellName
-  end
+  local spellName = GetSpellInfo(spellnameOrId);
+  return spellName
+end
 
 ns.GetSpellTexture = C_Spell.GetSpellTexture or function (spellnameOrId)
-    local _, _, iconID = GetSpellInfo(spellnameOrId);
-    return iconID
-  end
+  local _, _, iconID = GetSpellInfo(spellnameOrId);
+  return iconID
+end
 
 -- Check for older API before newest
 
