@@ -1,3 +1,7 @@
+v11.0.703
+- Sounds in alphabetical order
+- Classic / Cata: Unavailable sounds hidden
+
 v11.0.702
 - Minor bugfix
 

@@ -224,11 +224,13 @@ local SDB_ERROR_SOUND = 565853; -- BellTollHorde.ogg
 
 -- Global update: Sounds
 if SMARTDEBUFF_DISABLED_SOUNDS ~= "" then
-  for key=1, #SMARTDEBUFF_SOUNDS do
-    if string.find(SMARTDEBUFF_DISABLED_SOUNDS, "\n"..SMARTDEBUFF_SOUNDS[key][1].."\n") then
-      SMARTDEBUFF_SOUNDS[key][1] = RD..SMARTDEBUFF_SOUNDS[key][1].."|r"
+  local filteredSounds = {}
+  for _, sound in ipairs(SMARTDEBUFF_SOUNDS) do
+    if not string.find(SMARTDEBUFF_DISABLED_SOUNDS, "\n"..sound[1].."\n") then
+      table.insert(filteredSounds, sound)
     end
   end
+  SMARTDEBUFF_SOUNDS = filteredSounds
 end
 
 
